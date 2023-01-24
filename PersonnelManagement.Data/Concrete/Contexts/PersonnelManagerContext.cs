@@ -27,6 +27,7 @@ namespace PersonnelManagement.Data.Concrete.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
@@ -34,17 +35,12 @@ namespace PersonnelManagement.Data.Concrete.Contexts
 
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Position)
-                .WithMany()
+                .WithMany(p => p.Employees)
                 .HasForeignKey(e => e.PositionId);
 
             modelBuilder.Entity<Department>()
                 .HasMany(d => d.Positions)
                 .WithOne(p => p.Department)
-                .HasForeignKey(p => p.DepartmentId);
-
-            modelBuilder.Entity<Position>()
-                .HasOne(p => p.Department)
-                .WithMany(d => d.Positions)
                 .HasForeignKey(p => p.DepartmentId);
         }
     }
