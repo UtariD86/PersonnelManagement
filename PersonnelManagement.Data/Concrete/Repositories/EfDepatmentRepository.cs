@@ -1,0 +1,36 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PersonnelManagement.Data.Abstract;
+using PersonnelManagement.Data.Concrete.Contexts;
+using PersonnelManagement.Entities.Concrete;
+using PersonnelManagement.Entities.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using zurafworks.Shared.Data.Concrete.EntityFramework;
+
+namespace PersonnelManagement.Data.Concrete.Repositories
+{
+    public class EfDepatmentRepository : EfEntityRepositoryBase<Department>, IDepartmentRepository
+    {
+        public EfDepatmentRepository(DbContext context) : base(context)
+        {
+
+        }
+
+        public List<DepartmentDetailsDto> GetAllDepartments()
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var departments = from dep in context.Departments
+                                  select new DepartmentDetailsDto
+                                  {
+                                      DepartmentName = dep.Name,
+                                      Positions = dep.Positions
+                                  };
+                return departments.ToList();
+            }
+        }
+    }
+}

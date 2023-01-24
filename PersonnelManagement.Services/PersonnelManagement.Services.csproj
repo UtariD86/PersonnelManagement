@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Zuraf\zurafRepo\zurafworks.Shared\zurafworks.Shared.csproj" />
+    <ProjectReference Include="..\PersonnelManagement.Data\PersonnelManagement.Data.csproj" />
+    <ProjectReference Include="..\PersonnelManagement.Entities\PersonnelManagement.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

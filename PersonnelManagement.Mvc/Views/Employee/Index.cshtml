@@ -1,0 +1,83 @@
+﻿@using PersonnelManagement.Entities.Concrete
+@using PersonnelManagement.Entities.DTOs;
+@using PersonnelManagement.Mvc
+@model List<EmployeeDetailsDto>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.css"/>
+<link href="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\content\css\buttons.datatables.min.css" rel="stylesheet" />
+<link href="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\content\css\jquery.datatables.min.css" rel="stylesheet" />
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\buttons.html5.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\buttons.print.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\datatables.buttons.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery-3.5.1.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery.datatables.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jszip.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\pdfmake.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\vfs_fonts.js"></script>
+
+
+<h1>Index</h1>
+<form action="choose">
+<input type="radio"name="choose" id="dep" />Departman Tablosu
+<input type="radio"name="choose" id="emp" />Employee Tablosu
+</form>
+
+@*<table id = "try">
+    <tr>
+        <th>Personel Adı</th>
+        <th>Departmanı</th>
+        <th>Pozisyonu</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.EmployeeName</td>
+            <td>@item.DepartmentName</td>
+            <td>@item.PositionName</td>
+        </tr>
+    }
+</table>*@
+
+<hr />
+<body>
+<table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Personel Adı</th>
+                <th>Departmanı</th>
+                <th>Pozisyonu</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.EmployeeName</td>
+                    <td>@item.DepartmentName</td>
+                    <td>@item.PositionName</td>
+                    <td id="buttons" class="dt-button">@*<button>Save</button><button>Delete</button>*@</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+<hr />
+    <form>
+        <label>Yeni Çalışanın Adı</label><input type="text" /> <br />
+        <label>Departmanı</label><select name="Departments" id="deplist">@foreach(var item in Model)
+            {
+                <option value="@item.DepartmentName">@item.DepartmentName</option>    
+            }</select><br />
+        <label>Pozisyonu</label><select name="Positions" id="poslist">@foreach (var item in Model) //Her departman için ayrı liste yapılacak
+            {
+                    <option value="@item.PositionName">@item.PositionName</option>    
+            }</select><br />
+    </form>
+</body>

@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PersonnelManagement.Mvc</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PersonnelManagement.Mvc.styles.css" asp-append-version="true" />
+@*    <link href="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\content\css\jquery.datatables.min.css" rel="stylesheet" />
+    <link href="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\content\css\buttons.datatables.min.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+    <style>
+        tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PersonnelManagement.Mvc</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - PersonnelManagement.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @*<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery.datatables.min.js"></script>
+
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\datatables.buttons.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jszip.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\pdfmake.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\vfs_fonts.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\buttons.html5.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\buttons.print.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery.datatables.min.js"></script>
+<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery-3.5.1.js"></script>*@
+<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready( function () {
+    $('#example').DataTable({
+        columnDefs: [
+            {
+                targets: -1,
+                data: null,
+                defaultContent: '<button>Save</button> | <button>Delete</button>',
+            },
+        ],
+    });
+
+    $('#example tbody').on('click', 'button', function () {
+        //var data = table.row($(this).parents('tr')).data();
+        //alert(/*data[0] + "nin görevi" + data[2]*/);
+        window.alert("Tıklandı")
+        
+    });
+} );
+</script>
+
+@*<script>
+    $('#buttons1').DataTable( {
+    buttons: [
+        'Save', 'Delete'
+    ]
+} );
+</script>*@
+
+@*<script>
+    @await RenderSectionAsync("Scripts", required: false)
+        <script>$(document).ready(function () {
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each(function () {
+        var title = $(this).text();
+        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    });
+
+    // DataTable
+    var table = $('#example').DataTable({
+        initComplete: function () {
+            // Apply the search
+            this.api()
+                .columns()
+                .every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+        },
+    });
+
+    $('#buttons').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'güncelle', 'sil'
+        ]
+    } );
+});</script>*@
+</body>
+</html>
