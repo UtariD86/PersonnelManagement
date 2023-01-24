@@ -31,17 +31,20 @@ namespace PersonnelManagement.Data.Concrete.Contexts
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
-                .HasForeignKey(e => e.DepartmentId);
+                .HasForeignKey(e => e.DepartmentId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Position)
-                .WithMany(p => p.Employees)
-                .HasForeignKey(e => e.PositionId);
+                .WithMany()
+                .HasForeignKey(e => e.PositionId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Department>()
                 .HasMany(d => d.Positions)
                 .WithOne(p => p.Department)
-                .HasForeignKey(p => p.DepartmentId);
+                .HasForeignKey(p => p.DepartmentId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
-    }
+    }//sırada ekleme için dropdownları yapmak var
 }

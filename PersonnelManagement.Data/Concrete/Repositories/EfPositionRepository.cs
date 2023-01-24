@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Entities.Concrete;
+using PersonnelManagement.Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,11 @@ namespace PersonnelManagement.Data.Concrete.Repositories
     {
         public EfPositionRepository(DbContext context) : base(context)
         {
+        }
+
+        List<PositionDetailsDto> IPositionRepository.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

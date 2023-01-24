@@ -1,4 +1,5 @@
 ﻿using PersonnelManagement.Entities.Concrete;
+using PersonnelManagement.Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace PersonnelManagement.Data.Abstract
 {
     public interface IPositionRepository : IEntityRepository<Position>
     {
-        List<PositionDeta> GetAll();
+        List<PositionDetailsDto> GetAll();
     }
 }
