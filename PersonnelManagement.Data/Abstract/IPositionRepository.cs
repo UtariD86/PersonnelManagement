@@ -11,6 +11,6 @@ namespace PersonnelManagement.Data.Abstract
 {
     public interface IPositionRepository : IEntityRepository<Position>
     {
-        List<PositionDetailsDto> GetAll();
+        List<PositionDetailsDto> GetAllPositions();
     }
 }

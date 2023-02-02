@@ -46,5 +46,5 @@ namespace PersonnelManagement.Data.Concrete.Contexts
                 .HasForeignKey(p => p.DepartmentId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
-    }//sırada ekleme için dropdownları yapmak var
+    }//sırada ekleme için dropdownları yapmak var 
 }

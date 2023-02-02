@@ -83,6 +83,8 @@
         window.alert("Tıklandı")
         
     });
+
+    
 } );
 </script>
 
@@ -128,5 +130,34 @@
         ]
     } );
 });</script>*@
+@*<script>
+    //its not over until i win
+        $(document).ready(function() {
+        $('#deplist').on('change', function() {
+            window.alert("DEĞİŞTİ")
+        var selectedDepartment = $('#deplist').val();
+        debugger;
+        console.log(selectedDepartment);
+        $.ajax({
+            type: "GET",
+            url: "/Employee",
+            data: { department: selectedDepartment },
+            console.log(selectedDepartment);
+            debugger;
+            success: function(data) {
+                var options = "";
+                for (var i = 0; i < Model.Positions.length; i++) {
+                    if(Model.Positions[i].DepartmentName == selectedDepartment){
+                        options += "<option value='deneme'>deneme</option>"
+                        options += "<option value='" + Model.Positions[i].PositionName + "'>" + Model.Positions[i].PositionName + "</option>";
+                    }
+                }
+                $('#poslist').html(options)
+            }
+        });
+    });
+});
+
+</script>*@
 </body>
 </html>

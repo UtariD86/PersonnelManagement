@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonnelManagement.Data.Abstract;
+using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Entities.DTOs;
 using System;
@@ -17,9 +18,19 @@ namespace PersonnelManagement.Data.Concrete.Repositories
         {
         }
 
-        List<PositionDetailsDto> IPositionRepository.GetAll()
+        List<PositionDetailsDto> IPositionRepository.GetAllPositions()
         {
-            throw new NotImplementedException();
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var positions = from pos in context.Positions
+                                  join d in context.Departments on pos.DepartmentId equals d.Id
+                                  select new PositionDetailsDto
+                                  {
+                                      PositionName = pos.Name,
+                                      DepartmentName = d.Name
+                                  };
+                return positions.ToList();
+            }
         }
     }
 }
