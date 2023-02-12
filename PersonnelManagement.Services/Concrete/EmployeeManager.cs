@@ -19,15 +19,44 @@ namespace PersonnelManagement.Services.Concrete
     public class EmployeeManager : IEmployeeService
     {
         IEmployeeRepository _employeeRepository;
+        IDepartmentRepository _departmentRepository;
+        IPositionRepository _positionRepository;
 
-        public EmployeeManager(IEmployeeRepository employeeRepository)
+        public EmployeeManager(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository, IPositionRepository positionRepository)
         {
             _employeeRepository = employeeRepository;
+            _departmentRepository = departmentRepository;
+            _positionRepository = positionRepository;
         }
 
-        public Task<IDataResult<EmployeeDetailsDto>> Add()
+        public async Task<IDataResult<EmployeeDetailsDto>> Add(EmployeeDetailsDto employeeDetailsDto)
         {
-            throw new NotImplementedException();
+            //isme göre departman ve pozisyon getir fonksiyona dtodan gelen departman ve pozisyon adını gönder ama önce getbyname yazmalsıın her biri için
+            var department = await _departmentRepository.GetByName(employeeDetailsDto?.DepartmentName);
+            var position = await _positionRepository.GetByName(employeeDetailsDto?.PositionName);
+
+            if (department == null)
+            {
+                return new DataResult<EmployeeDetailsDto>(ResultStatus.Error, "Seçili Departman Bulunamadı", null);
+            }
+
+            if (position == null)
+            {
+                return new DataResult<EmployeeDetailsDto>(ResultStatus.Error, "Seçili Pozisyon Bulunamadı", null);
+            }
+
+            var employee = new EmployeeDetailsDto()
+            {
+                EmployeeName = employeeDetailsDto.EmployeeName,
+                DepartmentName = department.DepartmentName,
+                PositionName = position.PositionName
+            };
+
+            _employeeRepository.Add(employee);
+
+            return new DataResult<EmployeeDetailsDto>(ResultStatus.Success, employee.EmployeeName + "Başarıyla Eklendi", employee);
+            //her biri için null ise hata döndür değilse isim idler ve createdbyname i eşitle ve ekleme fonksiyonunu çağır. succes döndür
+
         }
 
         public async Task<IDataResult<List<EmployeeDetailsDto>>> GetAll()

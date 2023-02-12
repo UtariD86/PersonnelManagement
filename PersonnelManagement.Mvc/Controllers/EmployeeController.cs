@@ -9,25 +9,31 @@ using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Services.Concrete;
 using System.Dynamic;
 using zurafworks.Shared.Utilities.Results.ComplexTypes;
+using PersonnelManagement.Mvc.Models;
+using Newtonsoft.Json;
 
 namespace PersonnelManagement.Mvc.Controllers
 {
-    public class Employee : Controller
+    public class EmployeeController : Controller
     {
+        
         //EmployeeManager em = new EmployeeManager();
+        //Sayfaları ayrı yap
         EmployeeManager em;
         DepartmentManager dm;
         PositionManager pm;
-        public Employee()
+        public EmployeeController()
         {
             IEmployeeRepository employeeRepository = new EfEmployeeRepository(new PersonnelManagerContext());
             IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
             IPositionRepository positionRepository = new EfPositionRepository(new PersonnelManagerContext());
-            em = new EmployeeManager(employeeRepository);
+            em = new EmployeeManager(employeeRepository, departmentRepository, positionRepository);
             dm = new DepartmentManager(departmentRepository);
             pm = new PositionManager(positionRepository);
             
         }
+
+        
         public IActionResult Index()
         {
             
@@ -36,23 +42,35 @@ namespace PersonnelManagement.Mvc.Controllers
             if (result.ResultStatus == ResultStatus.Success)
             {
                 dynamic mymodel = new ExpandoObject();
-                //dynamic posmodel = new ExpandoObject();
+
                 mymodel.Employees = em.GetAll().Result.Data;
                 mymodel.Departments = dm.GetAll().Result.Data;
                 mymodel.Positions = pm.GetAll().Result.Data;
-                //posmodel = pm.GetAll().Result.Data;
-                //mymodel.FiltredPositions = pm.GetAll().Result.Data.Where(x => x.DepartmentName == mymodel.Departments.DepartmentName).ToList();
-
-                //var values = mymodel.Data;
-                return View(mymodel/*, posmodel*/);
+                
+                return View(mymodel);
+                
             }
             return NotFound();
+        }
 
-            
-            
+        public JsonResult GetEmployees()
+        {
+            var data = em.GetAll().Result.Data;
+            return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
+        }
 
-            //var values = em.GetAll();
-            //return View(values);
+        [HttpPost]
+        public IActionResult Index(AddEmployeeModel empModel)
+        {
+            var newEmp = new EmployeeDetailsDto();
+
+            newEmp.EmployeeName = empModel.NewEmployee;
+            newEmp.DepartmentName = empModel.SelectedDepartment;
+            newEmp.PositionName = empModel.SelectedPosition;
+
+            em.Add(newEmp);
+
+            return RedirectToAction("Index");
         }
     }
 }

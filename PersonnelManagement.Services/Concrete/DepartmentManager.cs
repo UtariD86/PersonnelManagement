@@ -31,5 +31,16 @@ namespace PersonnelManagement.Services.Concrete
             }
             return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Error, "Hiç Departman bulunamadı", null);
         }
+
+        public async Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName)
+        {
+            var department = await _departmentRepository.GetByName(departmentName);
+            if (department != null)
+            {
+                return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, department);
+            }
+            return new DataResult<DepartmentDetailsDto>(ResultStatus.Error, "Departman bulunamadı", null);
+
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace PersonnelManagement.Services.Abstract
 {
     public interface IEmployeeService
     {
-        Task<IDataResult<EmployeeDetailsDto>> Add(); //içine muhtemelen model gönderilecek
+        Task<IDataResult<EmployeeDetailsDto>> Add(EmployeeDetailsDto employeeDetailsDto); //içine createdbyname i de gönder giriş yapan kullanıcıya göre
         Task<IDataResult<List<EmployeeDetailsDto>>> GetAll();
     }
 }

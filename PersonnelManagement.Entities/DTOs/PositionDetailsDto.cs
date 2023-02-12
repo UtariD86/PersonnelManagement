@@ -8,6 +8,7 @@ namespace PersonnelManagement.Entities.DTOs
 {
     public class PositionDetailsDto
     {
+        public int PositionId { get; set; }
         public string PositionName { get; set; }
         public string DepartmentName { get; set; }
     }

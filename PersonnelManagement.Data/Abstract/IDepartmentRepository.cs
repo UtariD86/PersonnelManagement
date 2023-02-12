@@ -11,6 +11,7 @@ namespace PersonnelManagement.Data.Abstract
 {
     public interface IDepartmentRepository : IEntityRepository<Department>
     {
+        Task<DepartmentDetailsDto> GetByName(string departmentName);
         List<DepartmentDetailsDto> GetAllDepartments();
     }
 }

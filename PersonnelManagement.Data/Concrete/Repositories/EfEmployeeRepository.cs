@@ -18,9 +18,27 @@ namespace PersonnelManagement.Data.Concrete.Repositories
         {
         }
 
-        public void Add(Employee employee)
+        public void Add(EmployeeDetailsDto employeeDetailsDto)
         {
-            throw new NotImplementedException();
+            using(PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var employee = new Employee();
+                var department = context.Departments.FirstOrDefault(d => d.Name == employeeDetailsDto.DepartmentName);
+                var position = context.Positions.FirstOrDefault(p => p.Name == employeeDetailsDto.PositionName);
+                if(department != null && position !=null)
+                {
+                    employee.Name = employeeDetailsDto.EmployeeName;
+                    employee.DepartmentId = department.Id;
+                    employee.PositionId = position.Id;
+                    employee.IsDeleted = false;
+                    employee.CreatedByName = "default";//şimdilik
+                    employee.ModifiedByName = employee.CreatedByName;
+                    employee.CreatedDate = DateTime.Now;
+
+                    context.Employees.Add(employee);
+                    context.SaveChanges();
+                }
+            }
         }
 
         public List<EmployeeDetailsDto> GetAllEmployees()

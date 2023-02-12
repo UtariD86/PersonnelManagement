@@ -11,7 +11,7 @@ namespace PersonnelManagement.Data.Abstract
 {
     public interface IEmployeeRepository : IEntityRepository<Employee>
     {
-        void Add(Employee employee);
+        void Add(EmployeeDetailsDto employeeDetailsDto);
         List<EmployeeDetailsDto> GetAllEmployees();
     }
 }

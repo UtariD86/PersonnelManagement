@@ -18,6 +18,24 @@ namespace PersonnelManagement.Data.Concrete.Repositories
         {
         }
 
+        public async Task<PositionDetailsDto> GetByName(string positionName)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var position = await context.Positions
+                    .Where(p => p.Name == positionName)
+                    .Select(p => new PositionDetailsDto
+                    {
+                        PositionId = p.Id,
+                        PositionName = p.Name,
+                        DepartmentName = p.Department.Name
+                    })
+                    .FirstOrDefaultAsync();
+
+                return position;
+            }
+        }
+
         List<PositionDetailsDto> IPositionRepository.GetAllPositions()
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())

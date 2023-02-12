@@ -1,100 +1,221 @@
-﻿@using PersonnelManagement.Entities.Concrete
+﻿@*==========================================================*@
+@using PersonnelManagement.Entities.Concrete
 @using PersonnelManagement.Entities.DTOs;
 @using PersonnelManagement.Mvc
+@using PersonnelManagement.Mvc.Models
 @model dynamic
 @{
     
 
     //ViewData["Title"] = "Index";
 }
+@*==========================================================*@
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.css"/>
+<!DOCTYPE html>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<html lang="en">
 
-<h1>Index</h1>
-<form action="choose">
-<select name="DataList" id="dataList" onchange="onDataListChange(this)">
+<head>
+    
+    @*><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><*@
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Your page title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    @*><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><*@
+    
+
+    @*==========================================================*@
+    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.css"/>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>*@
+    @*==========================================================*@
+
+</head>
+
+<body>
+    
+
+
+
+
+    @*==========================================================*@
+    
+
+    
+    @*<form action="choose">
+    <select name="DataList" id="dataList" onchange="onDataListChange(this)">
 
             <option disabled hidden selected>Listelenecek Tabloyu Seçiniz</option>
             <option>Çalışanlar</option>
             <option>Departmanlar</option>
             <option>Pozisyonlar</option>
 
-</select>
-</form>
+    </select>
+    </form>*@
 
-<hr />
-<body>
-    <table id="example" class="display" style="width:100%">
-        thead>
-            <tr>
-                <th>Personel Adı</th>
-                <th>Departmanı</th>
-                <th>Pozisyonu</th>
-                <th>Options</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Employees)
-            {
-                    <tr>
-                        <td>@item.EmployeeName</td>
-                        <td>@item.DepartmentName</td>
-                        <td>@item.PositionName</td>
-                        <td id="buttons" class="dt-button"></td>
-                    </tr>
-            }
-        </tbody>*@
-    </table>
     <hr />
-    
-    <form id ="newForm">
-        <input type="text" name= = "NewEmployeeName" placeholder ="Yeni Çalışan Adı" /> <br />
-        
-        <select name="Departments" id="deplist" onchange="onDepartmentChange(this)">
-            
-            <option disabled hidden selected>Departmanı</option>
-            @foreach (var item in Model.Departments)
-            {
-                    <option value="@item.DepartmentName">@item.DepartmentName</option>  
-            }
-            
-        </select>
-        
-        <br />
-        
-        <select name="Positions" id="poslist">
-            
-            <option disabled hidden selected>Pozisyonu</option>
-            
-        </select>
-        
-        <br />
 
-        <button id ="newButton" onclick="onClickSave();return false">Save</button>
-    </form>
+    <table id="example" class="display" style="width:100%"></table>
     
     
+    <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
 
-</body>
 
 
-<script>
+    <div id = "myModal" class="modal" style="display:none">
+        <div class="modal-content">
+            @Html.Partial("_AddEmployeePartial")
+        </div>
+    </div>
+    @*==========================================================*@
 
-        
-    //its not over until i win
+
+    @*><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><*@
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+    @*><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><*@
+
+
+    <script  type="text/javascript">
+       
+        $("#jqGrid").jqGrid({
+                url: '/Employee/GetEmployees',
+                mtype: "POST",
+                datatype: "json",
+                colnames: ["EmployeeName", "DepartmentName", "PositionName"],
+                colModel: [
+                    { label: 'EmployeeName', name: 'EmployeeName', key:true, width: 150 },
+                    { label: 'DepartmentName', name: 'DepartmentName', width: 75 },
+                    { label: 'PositionName', name: 'PositionName', width: 75 },
+                ],
+                //sort
+                //formatter
+                viewrecords: true,
+                width: 900,
+                height: 250,
+                rowNum: 20,
+                pager: "#jqGridPager"
+                
+        });
+
+        $( '#jqGrid' ).trigger( 'reloadGrid');//refresh
+
+
         $(document).ready(function() {
+            debugger;
+            //======================================================
+            //var myModel = Html.Raw(Json.Serialize(Model)); at koy
+            
+            //======================================================
+            
+            //><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>< JQGRID
+            
+            
 
-            var myModel = @Html.Raw(Json.Serialize(Model));        
+            //><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
+            
+            //===============================================================================
+            //onDepartmentChange = function(){
 
+            //    var selectedDepartment = $('#deplist option:selected').text()
+            //    var options = "";
+                
+            //    for (var i = 0; i < myModel.Positions.length;) {
+
+            //        if(myModel.Positions[i].departmentName == selectedDepartment){
+
+            //            options += "<option value='" + myModel.Positions[i].positionName + "'>" + myModel.Positions[i].positionName + "</option>";
+
+            //        }
+            //        i++;
+            //    }
+
+            //    $('#poslist').html(options)
+
+            //};
+            
+            //onDataListChange = function(){
+
+            //    var selectedData = $('#dataList option:selected').text()
+
+            //    if(selectedData == "Çalışanlar"){
+            //        $('#example').empty();
+            //        var table = $('#example');
+            //        var thead = $('<thead><tr><th>Personel Adı</th><th>Departmanı</th><th>Pozisyonu</th><th>Options</th></tr></thead>');
+            //        table.append(thead);
+
+            //        var tbody = $('<tbody></tbody>');
+            //        for(var i = 0; i < myModel.Employees.length; i++) {
+            //            var item = myModel.Employees[i];
+            //            var row = $('<tr><td>' + item.employeeName + '</td><td>' + item.departmentName + '</td><td>' + item.positionName + '</td><td onclick = onClickSave()><button>Save</button> | <button>Delete</button></td>')/*.append(buttons)*/;
+            //            tbody.append(row);
+            //        }
+            //    table.append(tbody);
+            //    }
+
+            //    if(selectedData == "Departmanlar"){
+            //        $('#example').empty();
+            //        var table = $('#example');
+            //        var thead = $('<thead><tr><th>Departmanlar</th><th>Options</th></tr></thead>');
+            //        table.append(thead);
+
+            //        var tbody = $('<tbody></tbody>');
+            //        for(var i = 0; i < myModel.Departments.length; i++) {
+            //            var item = myModel.Departments[i];
+            //            var row = $('<tr><td>' + item.departmentName + '</td><td onclick = onClickSave()><button>Save</button> | <button>Delete</button></td>')/*.append(buttons)*/;
+            //            tbody.append(row);
+            //        }
+            //    table.append(tbody);
+            //    }
+
+            //    if(selectedData == "Pozisyonlar"){
+            //        $('#example').empty();
+            //        var table = $('#example');
+            //        var thead = $('<thead><tr><th>Pozisyonlar</th><th>Departmanlar</th><th>Options</th></tr></thead>');
+            //        table.append(thead);
+
+            //        var tbody = $('<tbody></tbody>');
+            //        for(var i = 0; i < myModel.Positions.length; i++) {
+            //            var item = myModel.Positions[i];
+            //            var row = $('<tr><td>' + item.positionName + '</td><td>' + item.departmentName + '</td><td onclick = onClickSave()><button>Save</button> | <button>Delete</button></td>')/*.append(buttons)*/;
+            //            tbody.append(row);
+            //        }
+            //    table.append(tbody);
+            //    }
+            //}
+
+            //onClickSave = function(){
+            //    window.alert("tıklandı")
+            //}
+
+            onClickNewAdd = function() {
+                debugger;
+                console.log("clicked")
+                    $.ajax({
+                            url: "/Employee",
+                            type: "GET",
+                            success: function (result) {
+                            $("#myModal.modal-content").html(result);
+                            document.getElementById("myModal").style.display = "block";
+                            debugger;
+                            }
+                    });
+            }
+
+            
+
+            var myModel = @Html.Raw(Json.Serialize(Model));
             onDepartmentChange = function(){
-
                 var selectedDepartment = $('#deplist option:selected').text()
                 var options = "";
-                
+
                 for (var i = 0; i < myModel.Positions.length;) {
 
                     if(myModel.Positions[i].departmentName == selectedDepartment){
@@ -109,74 +230,38 @@
 
             };
 
-            onDataListChange = function(){
-
-                var selectedData = $('#dataList option:selected').text()
-
-                if(selectedData == "Çalışanlar"){
-                    $('#example').empty();
-                    var table = $('#example');
-                    var thead = $('<thead><tr><th>Personel Adı</th><th>Departmanı</th><th>Pozisyonu</th><th>Options</th></tr></thead>');
-                    var buttons = $('<td><button>Save</button></td></tr>');
-                    table.append(thead);
-
-                    var tbody = $('<tbody></tbody>');
-                    for(var i = 0; i < myModel.Employees.length; i++) {
-                        var item = myModel.Employees[i];
-                        debugger;
-                        var row = $('<tr><td>' + item.employeeName + '</td><td>' + item.departmentName + '</td><td>' + item.positionName + '</td>' + buttons);
-                        tbody.append(row);
-                    }
-                table.append(tbody);
-                }
-
-                if(selectedData == "Departmanlar"){
-                    console.log(selectedData)
-                }
-
-                if(selectedData == "Pozisyonlar"){
-                    console.log(selectedData)
-                }
-            }
-
+            ////partial geldikten sonra çalışması gerekiyor olabilir
             onClickSave = function(){
-                window.alert("tıklandı")
+                var inputtedName = $('#inputtedName').val()
+                var selectedDepartment = $('#deplist option:selected').text()
+                var selectedPosition = $('#poslist option:selected').text()
+                
+                var employeeData = {
+                    NewEmployee: inputtedName,
+                    SelectedDepartment: selectedDepartment,
+                    SelectedPosition: selectedPosition
+                };
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/Employee/Index",//hatırla
+                    data: employeeData,
+                    success: function(data) {
+                       
+                        document.getElementById("myModal").style.display = "none";
+                    },
+                    error: function(error) {
+                    console.log(error);
+                    }
+                });
+                
+                debugger;
             }
 
-            @*//-----------------------------------------------------------------------------------
-            onDataListChange2 = function(){
-
-                var selectedData = $('#dataList option:selected').text()
-
-                if(selectedData == "Çalışanlar"){
-                    console.log(selectedData)
-                    var model = Model.Employees;
-                }
-
-                if(selectedData == "Departmanlar"){
-                    console.log(selectedData)
-                    var model = Model.Departments;
-                }
-
-                if(selectedData == "Pozisyonlar"){
-                    console.log(selectedData)
-                    var model = Model.Positions;
-                }
-
-                // tabloyu dinamik olarak güncelleme kodları
-                $('#example').empty();
-                var table = $('#example');
-                var thead = $('<thead><tr><th>Personel Adı</th><th>Departmanı</th><th>Pozisyonu</th><th>Options</th></tr></thead>');
-                table.append(thead);
-                var tbody = $('<tbody></tbody>');
-                for(var i = 0; i < model.length; i++) {
-                    var item = model[i];
-                    var row = $('<tr><td>' + item.EmployeeName + '</td><td>' + item.DepartmentName + '</td><td>' + item.PositionName + '</td><td id="buttons" class="dt-button"></td></tr>');
-                    tbody.append(row);
-                }
-                table.append(tbody);
-            }
-            //-----------------------------------------------------------------------------------*@
+            //===================================================================
 
         });
-</script>
+    </script>
+</body>
+
+</html>

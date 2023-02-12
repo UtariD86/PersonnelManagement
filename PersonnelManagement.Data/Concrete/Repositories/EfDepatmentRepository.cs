@@ -32,5 +32,23 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                 return departments.ToList();
             }
         }
+
+        async Task<DepartmentDetailsDto> IDepartmentRepository.GetByName(string departmentName)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var department = await context.Departments
+                    .Where(d => d.Name == departmentName)
+                    .Select(d => new DepartmentDetailsDto
+                    {
+                        DepartmentId = d.Id,
+                        DepartmentName = d.Name,
+                        Positions = d.Positions
+                    })
+                    .FirstOrDefaultAsync();
+
+                return department;
+            }
+        }
     }
 }
