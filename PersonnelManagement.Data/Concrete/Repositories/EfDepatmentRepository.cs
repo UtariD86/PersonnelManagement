@@ -26,6 +26,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                 var departments = from dep in context.Departments
                                   select new DepartmentDetailsDto
                                   {
+                                      DepartmentId = dep.Id,
                                       DepartmentName = dep.Name,
                                       Positions = dep.Positions
                                   };

@@ -48,13 +48,48 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                 var employees = from emp in context.Employees
                                 join d in context.Departments on emp.DepartmentId equals d.Id
                                 join p in context.Positions on emp.PositionId equals p.Id
+                                where(emp.IsDeleted == false)
                                 select new EmployeeDetailsDto
                                 {
+                                    EmployeeId= emp.Id,
                                     EmployeeName = emp.Name,
                                     DepartmentName = d.Name,
                                     PositionName = p.Name
                                 };
                 return employees.ToList();
+            }
+        }
+
+        public async void Delete(int employeeId, string modifiedByName)
+        {
+            using(PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var employee = await context.Employees.FindAsync(employeeId);
+                if (employee != null)
+                {
+                    employee.IsDeleted = true;
+                    employee.ModifiedByName = modifiedByName;
+                    employee.ModifiedDate = DateTime.Now;
+
+                    context.Employees.Update(employee);
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        public async Task<EmployeeDetailsDto> GetById(int employeeId)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var employee = await context.Employees
+                    .Where(e => e.Id == employeeId)
+                    .Select(e => new EmployeeDetailsDto
+                    {
+                        EmployeeId = e.Id
+                    })
+                    .FirstOrDefaultAsync();
+
+                return employee;
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete;
 using PersonnelManagement.Data.Concrete.Contexts;
@@ -57,6 +58,19 @@ namespace PersonnelManagement.Services.Concrete
             return new DataResult<EmployeeDetailsDto>(ResultStatus.Success, employee.EmployeeName + "Başarıyla Eklendi", employee);
             //her biri için null ise hata döndür değilse isim idler ve createdbyname i eşitle ve ekleme fonksiyonunu çağır. succes döndür
 
+        }
+
+        public async Task<IResult> Delete(int employeeId, string modifiedByName)
+        {
+            var employee = _employeeRepository.GetById(employeeId);
+
+            
+            if (employee != null)
+            {
+                _employeeRepository.Delete(employeeId, modifiedByName);
+                return new Result(ResultStatus.Success, "Başarıyla Silindi");
+            }
+            return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
         }
 
         public async Task<IDataResult<List<EmployeeDetailsDto>>> GetAll()

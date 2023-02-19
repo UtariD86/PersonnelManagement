@@ -1,0 +1,206 @@
+﻿@*==========================================================*@
+@using PersonnelManagement.Entities.Concrete
+@using PersonnelManagement.Entities.DTOs;
+@using PersonnelManagement.Mvc
+@using PersonnelManagement.Mvc.Models
+@model dynamic
+@{
+}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Your page title</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>var $ = jQuery.noConflict(false);</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+
+</head>
+
+<body>
+
+
+    <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
+
+
+
+    @*<div id = "myModal" class="modal" style="display:none">
+        <div class="modal-content">
+            @Html.Partial("_AddPositionPartial")
+        </div>
+    </div>*@
+
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+    <script  type="text/javascript">
+
+        $("#jqGrid").jqGrid({
+                url: '/Position/GetPositions',
+                mtype: "POST",
+                datatype: "json",
+                colnames: ["PositionId", "PositionName","DepartmentName"],
+                colModel: [
+                    { label: 'PositionId', name: 'PositionId', key:true, width: 15 },
+                    { label: 'PositionName', name: 'PositionName', width: 75 },
+                    { label: 'DepartmentName', name: 'DepartmentName', width: 75 },
+                    {
+                        name: 'actions',
+                        index: 'actions',
+                        width: 100,
+                        align: 'center',
+                        sortable: false,
+                        formatter: function(cellvalue, options, rowObject) {
+                            return '<button class="edit_btn" >Edit</button>&nbsp;&nbsp;&nbsp;' + 
+                                    '<button href="#" class="del_btn" >Delete</button>';
+                        }
+                    }
+
+                ],
+                sortable: true,
+                viewrecords: true,
+                width: 900,
+                height: 250,
+                rowNum: 50,
+                pager: "#jqGridPager",
+
+
+        });
+
+        $( '#jqGrid' ).trigger( 'reloadGrid');
+
+        $(document).on('click', '.edit_btn', function () {
+            //debugger;
+            //    var employeeName2 = $(this).data('employee-name');
+            //    console.log('Employee Name:', employeeName);
+            //    debugger;
+            //        window.alert("Edit!!")
+
+            //    debugger;
+            //    var row = $(this).closest('tr.jqgrow');
+            //    var rowId = row.attr('id');
+            //    debugger;
+            //    var rowData = $('#jqGrid').jqGrid('getRowData', rowId);
+            //    var employeeName = rowData.EmployeeName;
+            //    debugger;
+            //    var employeeName = rowId.EmployeeName;
+
+            //    debugger;
+            window.alert("Edit!!")
+        });
+
+        $(document).on('click', '.del_btn', function () {
+                //debugger;
+                //var row = $(this).closest('tr.jqgrow');
+                //var rowId = row.attr('id');
+                //debugger;
+
+                //var modifiedByName = "mvcDefault" //şimdilik
+
+                //var choosedEmployee = {
+                //    EmployeeId: rowId,
+                //    ModifiedByName: modifiedByName,
+                //};
+
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/Employee/DeleteEmployees",
+                //    data: choosedEmployee,
+                //    success: function(data) {
+                //        window.alert("Başarıyla Silindi");
+                //        debugger;
+                //        //$("#jqGrid").jqGrid('delRowData', rowId, { url: '/Employee/DeleteEmployees' });
+                //        // setTimeout(function() {
+                //        //                        $("#jqGrid").jqGrid('reloadGrid');
+                //        //}, 500);
+                //        //sildikten sonra yenilenmiyor
+                //        debugger;
+                //    },
+                //    error: function(error) {
+                //    console.log(error);
+                //    }
+                //});
+                //debugger;
+                window.alert("Delete!!")
+        });
+
+        $(document).ready(function() {
+
+            onClickNewAdd = function() {
+                //debugger;
+                //console.log("clicked")
+                //    $.ajax({
+                //            url: "/Employee",
+                //            type: "GET",
+                //            success: function (result) {
+                //            $("#myModal.modal-content").html(result);
+                //            document.getElementById("myModal").style.display = "block";
+                //            debugger;
+                //            }
+                //    });
+                window.alert("Add!!")
+            }
+
+            //var myModel = @Html.Raw(Json.Serialize(Model));
+            //onDepartmentChange = function(){
+            //    var selectedDepartment = $('#deplist option:selected').text()
+            //    var options = "";
+
+            //    for (var i = 0; i < myModel.Positions.length;) {
+
+            //        if(myModel.Positions[i].departmentName == selectedDepartment){
+
+            //            options += "<option value='" + myModel.Positions[i].positionName + "'>" + myModel.Positions[i].positionName + "</option>";
+
+            //        }
+            //        i++;
+            //    }
+
+            //    $('#poslist').html(options)
+
+            //};
+
+            ////partial geldikten sonra çalışması gerekiyor olabilir
+            onClickSave = function(){
+                var inputtedName = $('#inputtedName').val()
+                var selectedDepartment = $('#deplist option:selected').text()
+                var selectedPosition = $('#poslist option:selected').text()
+
+                var employeeData = {
+                    NewEmployee: inputtedName,
+                    SelectedDepartment: selectedDepartment,
+                    SelectedPosition: selectedPosition
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Employee/AddEmployees",//hatırla
+                    data: employeeData,
+                    success: function(data) {
+
+                        document.getElementById("myModal").style.display = "none";
+                    },
+                    error: function(error) {
+                    console.log(error);
+                    }
+                });
+
+                debugger;
+            }
+        });
+
+
+
+    </script>
+</body>
+
+</html>

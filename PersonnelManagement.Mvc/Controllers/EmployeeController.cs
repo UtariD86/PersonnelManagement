@@ -60,7 +60,7 @@ namespace PersonnelManagement.Mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(AddEmployeeModel empModel)
+        public IActionResult AddEmployees(AddEmployeeModel empModel)
         {
             var newEmp = new EmployeeDetailsDto();
 
@@ -69,6 +69,13 @@ namespace PersonnelManagement.Mvc.Controllers
             newEmp.PositionName = empModel.SelectedPosition;
 
             em.Add(newEmp);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteEmployees(DeleteEmployeeModel empModel)
+        {
+            em.Delete(empModel.EmployeeId, empModel.ModifiedByName);
 
             return RedirectToAction("Index");
         }

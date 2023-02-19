@@ -44,6 +44,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                   join d in context.Departments on pos.DepartmentId equals d.Id
                                   select new PositionDetailsDto
                                   {
+                                      PositionId = pos.Id,
                                       PositionName = pos.Name,
                                       DepartmentName = d.Name
                                   };
