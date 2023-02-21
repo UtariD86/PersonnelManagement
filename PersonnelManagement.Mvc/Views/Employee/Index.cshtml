@@ -11,7 +11,7 @@
 <html lang="en">
 
 <head>
-    
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -19,16 +19,18 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>var $ = jQuery.noConflict(false);</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+
 </head>
 
 <body>
-    
-    
+
+
     <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
 
 
@@ -38,12 +40,12 @@
             @Html.Partial("_AddEmployeePartial")
         </div>
     </div>
-    
+
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
 
     <script  type="text/javascript">
-       
+
         $("#jqGrid").jqGrid({
                 url: '/Employee/GetEmployees',
                 mtype: "POST",
@@ -75,10 +77,11 @@
                 rowNum: 50,
                 pager: "#jqGridPager",
 
-
         });
 
-        $( '#jqGrid' ).trigger( 'reloadGrid');
+        //$( '#jqGrid' ).trigger( 'reloadGrid');
+
+        //$('#jqGrid').jqGrid('sortGrid', 'EmployeeName', true, 'asc');
 
         $(document).on('click', '.edit_btn', function () {
             debugger;
@@ -100,10 +103,8 @@
         });
 
         $(document).on('click', '.del_btn', function () {
-                debugger;
                 var row = $(this).closest('tr.jqgrow');
                 var rowId = row.attr('id');
-                debugger;
 
                 var modifiedByName = "mvcDefault" //şimdilik
 
@@ -111,28 +112,72 @@
                     EmployeeId: rowId,
                     ModifiedByName: modifiedByName,
                 };
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-                $.ajax({
-                    type: "POST",
-                    url: "/Employee/DeleteEmployees",
-                    data: choosedEmployee,
-                    success: function(data) {
-                        window.alert("Başarıyla Silindi");
-                        debugger;
-                        //$("#jqGrid").jqGrid('delRowData', rowId, { url: '/Employee/DeleteEmployees' });
-                        // setTimeout(function() {
-                        //                        $("#jqGrid").jqGrid('reloadGrid');
-                        //}, 500);
-                        //sildikten sonra yenilenmiyor
-                        debugger;
-                    },
-                    error: function(error) {
-                    console.log(error);
+                        $.ajax({
+                            type: "POST",
+                            url: "/Employee/DeleteEmployees",
+                            data: choosedEmployee,
+                            success: function(data) {
+                                $( '#jqGrid' ).trigger( 'reloadGrid');
+                            },
+                            error: function(error) {
+                                console.log(error);
+                            }
+                        });
+
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
                     }
-                });
-                debugger;
+                })
+
+
+
+
         });
-        
+
+        //$('#gview_' + '#jqGrid' + ' .ui-jqgrid-view').on('click', '.ui-jqgrid-sortable', function() {
+        //$('#jqGrid').on('click', '.ui-jqgrid-sortable', function() {
+
+        //    debugger;
+
+        //        var colName = $(this).attr('id'); // Sıralama yapılacak sütunun adını al
+        //        var sortOrder = $('#jqGrid').jqGrid('getGridParam', 'sortorder'); // Varsayılan sıralama yöntemini al
+
+        //        debugger;
+
+        //        if (sortOrder === 'asc') {
+        //            sortOrder = 'desc'; // Sıralama yöntemini tersine çevir
+        //        } else {
+        //            sortOrder = 'asc';
+        //        }
+
+        //        debugger;
+
+        //        $('#jqGrid').jqGrid('setGridParam', {
+        //            sortname: colName, // Sıralama yapılacak sütunun adını ayarla
+        //            sortorder: sortOrder // Sıralama yöntemini ayarla
+        //        }).trigger('reloadGrid'); // jqGrid'i yeniden yükle
+
+        //        debugger;
+        //});
+
+
+        $( '#jqGrid' ).trigger( 'reloadGrid');
+
         $(document).ready(function() {
 
             onClickNewAdd = function() {
@@ -173,31 +218,29 @@
                 var inputtedName = $('#inputtedName').val()
                 var selectedDepartment = $('#deplist option:selected').text()
                 var selectedPosition = $('#poslist option:selected').text()
-                
+
                 var employeeData = {
                     NewEmployee: inputtedName,
                     SelectedDepartment: selectedDepartment,
                     SelectedPosition: selectedPosition
                 };
-                
+
                 $.ajax({
                     type: "POST",
                     url: "/Employee/AddEmployees",//hatırla
                     data: employeeData,
                     success: function(data) {
-                       
+
                         document.getElementById("myModal").style.display = "none";
                     },
                     error: function(error) {
                     console.log(error);
                     }
                 });
-                
-                debugger;
             }
         });
 
-        
+
 
     </script>
 </body>
