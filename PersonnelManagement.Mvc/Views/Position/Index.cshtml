@@ -33,11 +33,11 @@
 
 
 
-    @*<div id = "myModal" class="modal" style="display:none">
+    <div id = "myModal" class="modal" style="display:none">
         <div class="modal-content">
             @Html.Partial("_AddPositionPartial")
         </div>
-    </div>*@
+    </div>
 
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
@@ -136,66 +136,52 @@
         $(document).ready(function() {
 
             onClickNewAdd = function() {
-                //debugger;
-                //console.log("clicked")
-                //    $.ajax({
-                //            url: "/Employee",
-                //            type: "GET",
-                //            success: function (result) {
-                //            $("#myModal.modal-content").html(result);
-                //            document.getElementById("myModal").style.display = "block";
-                //            debugger;
-                //            }
-                //    });
-                window.alert("Add!!")
-            }
-
-            //var myModel = @Html.Raw(Json.Serialize(Model));
-            //onDepartmentChange = function(){
-            //    var selectedDepartment = $('#deplist option:selected').text()
-            //    var options = "";
-
-            //    for (var i = 0; i < myModel.Positions.length;) {
-
-            //        if(myModel.Positions[i].departmentName == selectedDepartment){
-
-            //            options += "<option value='" + myModel.Positions[i].positionName + "'>" + myModel.Positions[i].positionName + "</option>";
-
-            //        }
-            //        i++;
-            //    }
-
-            //    $('#poslist').html(options)
-
-            //};
-
-            ////partial geldikten sonra çalışması gerekiyor olabilir
-            onClickSave = function(){
-                var inputtedName = $('#inputtedName').val()
-                var selectedDepartment = $('#deplist option:selected').text()
-                var selectedPosition = $('#poslist option:selected').text()
-
-                var employeeData = {
-                    NewEmployee: inputtedName,
-                    SelectedDepartment: selectedDepartment,
-                    SelectedPosition: selectedPosition
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Employee/AddEmployees",//hatırla
-                    data: employeeData,
-                    success: function(data) {
-
-                        document.getElementById("myModal").style.display = "none";
-                    },
-                    error: function(error) {
-                    console.log(error);
-                    }
-                });
-
                 debugger;
+                console.log("clicked")
+                    $.ajax({
+                            url: "/Employee",
+                            type: "GET",
+                            success: function (result) {
+                            $("#myModal.modal-content").html(result);
+                            document.getElementById("myModal").style.display = "block";
+                            debugger;
+                            }
+                    });
             }
+
+            onClickSave = function(){
+                var selectedDepartment = $('#deplist option:selected').text()
+                var inputtedPosition = $('#inputtedPosition').val()
+                //var quit = 0
+                //var alert = 0
+                debugger;
+                //while(quit = 1){
+                //    if(selectedDepartment == "Departmanı"){
+                //            debugger;
+                //            while(alert==1){
+
+                //                break
+                //            }
+                //    }else{
+                        var positionData = {
+                            SelectedDepartment: selectedDepartment,
+                            NewPosition: inputtedPosition,
+                        }
+                    debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "/Position/AddPositions",//hatırla
+                        data: positionData,
+                        success: function(data) {
+
+                            document.getElementById("myModal").style.display = "none";
+                        },
+                        error: function(error) {
+                        console.log(error);
+                        }
+                    });
+            }
+
         });
 
 

@@ -19,6 +19,23 @@ namespace PersonnelManagement.Data.Concrete.Repositories
 
         }
 
+        public void Add(DepartmentDetailsDto departmentDetailsDto)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var department = new Department();
+                
+                department.Name = departmentDetailsDto.DepartmentName;
+                department.IsDeleted = false;
+                department.CreatedByName = "default";//şimdilik
+                department.ModifiedByName = department.CreatedByName;
+                department.CreatedDate = DateTime.Now;
+
+                context.Departments.Add(department);
+                context.SaveChanges();
+            }
+        }
+
         public List<DepartmentDetailsDto> GetAllDepartments()
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())

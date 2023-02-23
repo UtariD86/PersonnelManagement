@@ -2,6 +2,8 @@
 using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Data.Concrete.Repositories;
+using PersonnelManagement.Entities.DTOs;
+using PersonnelManagement.Mvc.Models;
 using PersonnelManagement.Services.Concrete;
 using System.Dynamic;
 using zurafworks.Shared.Utilities.Results.ComplexTypes;
@@ -40,18 +42,18 @@ namespace PersonnelManagement.Mvc.Controllers
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
-        //[HttpPost]
-        //public IActionResult AddDepartment(AddPositionModel posModel)
-        //{
-        //    var newPos = new PositionDetailsDto();
+        [HttpPost]
+        public IActionResult AddDepartment(AddDepartmentModel depModel)
+        {
+            var newDep = new DepartmentDetailsDto();
 
 
-        //    newEmp.PositionName = posModel.SelectedPosition;
+            newDep.DepartmentName = depModel.NewDepartment;
 
-        //    pm.Add(newPos);
+            dm.Add(newDep);
 
-        //    return RedirectToAction("Index");
-        //}
+            return RedirectToAction("Index");
+        }
 
         //public IActionResult DeleteEmployees(DeleteEmployeeModel empModel)
         //{

@@ -18,6 +18,27 @@ namespace PersonnelManagement.Data.Concrete.Repositories
         {
         }
 
+        public void Add(PositionDetailsDto positionDetailsDto)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var position = new Position();
+                var department = context.Departments.FirstOrDefault(d => d.Name == positionDetailsDto.DepartmentName);
+                if (department != null)
+                {
+                    position.Name = positionDetailsDto.PositionName;
+                    position.DepartmentId = department.Id;
+                    position.IsDeleted = false;
+                    position.CreatedByName = "default";//şimdilik
+                    position.ModifiedByName = position.CreatedByName;
+                    position.CreatedDate = DateTime.Now;
+
+                    context.Positions.Add(position);
+                    context.SaveChanges();
+                }
+            }
+        }
+
         public async Task<PositionDetailsDto> GetByName(string positionName)
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())

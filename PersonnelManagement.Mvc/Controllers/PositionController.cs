@@ -13,10 +13,13 @@ namespace PersonnelManagement.Mvc.Controllers
     public class PositionController : Controller
     {
         PositionManager pm;
+        DepartmentManager dm;
         public PositionController()
         {
             IPositionRepository positionRepository = new EfPositionRepository(new PersonnelManagerContext());
-            pm = new PositionManager(positionRepository);
+            IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
+            pm = new PositionManager(positionRepository, departmentRepository);
+            dm = new DepartmentManager(departmentRepository);
 
         }
 
@@ -29,6 +32,7 @@ namespace PersonnelManagement.Mvc.Controllers
             {
                 dynamic mymodel = new ExpandoObject();
                 mymodel.Positions = pm.GetAll().Result.Data;
+                mymodel.Departments = dm.GetAll().Result.Data;
 
                 return View(mymodel);
 
@@ -42,18 +46,19 @@ namespace PersonnelManagement.Mvc.Controllers
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
-        //[HttpPost]
-        //public IActionResult AddEmployees(AddPositionModel posModel)
-        //{
-        //    var newPos = new PositionDetailsDto();
+        [HttpPost]
+        public IActionResult AddPositions(AddPositionModel posModel)
+        {
+            var newPos = new PositionDetailsDto();
 
 
-        //    newEmp.PositionName = posModel.SelectedPosition;
+            newPos.PositionName = posModel.NewPosition;
+            newPos.DepartmentName = posModel.SelectedDepartment;
 
-        //    pm.Add(newPos);
+            pm.Add(newPos);
 
-        //    return RedirectToAction("Index");
-        //}
+            return RedirectToAction("Index");
+        }
 
         //public IActionResult DeleteEmployees(DeleteEmployeeModel empModel)
         //{

@@ -11,5 +11,6 @@ namespace PersonnelManagement.Services.Abstract
     public interface IPositionService
     {
         Task<IDataResult<List<PositionDetailsDto>>> GetAll();
+        Task<IDataResult<PositionDetailsDto>> Add(PositionDetailsDto positionDetailsDto);
     }
 }

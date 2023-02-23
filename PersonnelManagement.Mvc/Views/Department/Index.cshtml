@@ -33,11 +33,11 @@
 
 
 
-    @*<div id = "myModal" class="modal" style="display:none">
+    <div id = "myModal" class="modal" style="display:none">
         <div class="modal-content">
-            @Html.Partial("_AddPositionPartial")
+            @Html.Partial("_AddDepartmentPartial")
         </div>
-    </div>*@
+    </div>
 
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
@@ -135,18 +135,17 @@
         $(document).ready(function() {
 
             onClickNewAdd = function() {
-                //debugger;
-                //console.log("clicked")
-                //    $.ajax({
-                //            url: "/Employee",
-                //            type: "GET",
-                //            success: function (result) {
-                //            $("#myModal.modal-content").html(result);
-                //            document.getElementById("myModal").style.display = "block";
-                //            debugger;
-                //            }
-                //    });
-                window.alert("Add!!")
+                debugger;
+                console.log("clicked")
+                    $.ajax({
+                            url: "/Employee",
+                            type: "GET",
+                            success: function (result) {
+                            $("#myModal.modal-content").html(result);
+                            document.getElementById("myModal").style.display = "block";
+                            debugger;
+                            }
+                    });
             }
 
             //var myModel = @Html.Raw(Json.Serialize(Model));
@@ -170,20 +169,17 @@
 
             ////partial geldikten sonra çalışması gerekiyor olabilir
             onClickSave = function(){
-                var inputtedName = $('#inputtedName').val()
-                var selectedDepartment = $('#deplist option:selected').text()
-                var selectedPosition = $('#poslist option:selected').text()
+                var inputtedDepartment = $('#inputtedDepartment').val()
 
-                var employeeData = {
-                    NewEmployee: inputtedName,
-                    SelectedDepartment: selectedDepartment,
-                    SelectedPosition: selectedPosition
+                var departmentData = {
+                    NewDepartment: inputtedDepartment
                 };
+                debugger;
 
                 $.ajax({
                     type: "POST",
                     url: "/Department/AddDepartment",//hatırla
-                    data: employeeData,
+                    data: departmentData,
                     success: function(data) {
 
                         document.getElementById("myModal").style.display = "none";

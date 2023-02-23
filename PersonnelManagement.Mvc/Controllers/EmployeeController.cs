@@ -29,7 +29,7 @@ namespace PersonnelManagement.Mvc.Controllers
             IPositionRepository positionRepository = new EfPositionRepository(new PersonnelManagerContext());
             em = new EmployeeManager(employeeRepository, departmentRepository, positionRepository);
             dm = new DepartmentManager(departmentRepository);
-            pm = new PositionManager(positionRepository);
+            pm = new PositionManager(positionRepository, departmentRepository);
             
         }
 

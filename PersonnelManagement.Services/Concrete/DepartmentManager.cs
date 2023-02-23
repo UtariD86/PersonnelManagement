@@ -22,6 +22,26 @@ namespace PersonnelManagement.Services.Concrete
             _departmentRepository= departmentRepository;
         }
 
+        public async Task<IDataResult<DepartmentDetailsDto>> Add(DepartmentDetailsDto departmentDetailsDto)
+        {
+            var checkDepartment = await _departmentRepository.GetByName(departmentDetailsDto?.DepartmentName);
+
+            if (checkDepartment != null)
+            {
+                return new DataResult<DepartmentDetailsDto>(ResultStatus.Error, "Departman Halihazırda Mevcut", null);
+            }
+
+            var newDepartment = new DepartmentDetailsDto()
+            {
+                DepartmentName = departmentDetailsDto.DepartmentName
+            };
+
+            _departmentRepository.Add(newDepartment);
+
+            return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, newDepartment.DepartmentName + "Başarıyla Eklendi",newDepartment);
+
+        }
+
         public async Task<IDataResult<List<DepartmentDetailsDto>>> GetAll()
         {
             var departments = _departmentRepository.GetAllDepartments();

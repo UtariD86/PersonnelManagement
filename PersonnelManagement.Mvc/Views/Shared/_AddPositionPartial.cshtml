@@ -1,0 +1,50 @@
+﻿@using PersonnelManagement.Entities.Concrete
+@using PersonnelManagement.Entities.DTOs;
+@using PersonnelManagement.Mvc
+@model dynamic
+
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}
+
+</style>
+
+<form id ="newForm" method="post">
+        
+        <select name="Departments" id="deplist" onchange="onDepartmentChange(this)">
+
+            <option disabled hidden selected>Departmanı</option>
+        @foreach (var item in Model.Departments)
+        {
+                            <option value="@item.DepartmentName">@item.DepartmentName</option>  
+        }
+
+        </select>
+
+        <br />
+
+        <input type="text" id="inputtedPosition" name= = "NewPosition" placeholder ="Yeni Pozisyonun Adı" />
+
+        <br />
+
+        <button id ="newButton" type= "submit" onclick="onClickSave()">Save</button>
+</form>

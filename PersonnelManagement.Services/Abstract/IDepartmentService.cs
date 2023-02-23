@@ -12,5 +12,6 @@ namespace PersonnelManagement.Services.Abstract
     {
         Task<IDataResult<List<DepartmentDetailsDto>>> GetAll();
         Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName);
+        Task<IDataResult<DepartmentDetailsDto>> Add(DepartmentDetailsDto DepartmentDetailsDto);
     }
 }

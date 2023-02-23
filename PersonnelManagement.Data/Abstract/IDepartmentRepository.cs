@@ -13,5 +13,6 @@ namespace PersonnelManagement.Data.Abstract
     {
         Task<DepartmentDetailsDto> GetByName(string departmentName);
         List<DepartmentDetailsDto> GetAllDepartments();
+        public void Add(DepartmentDetailsDto departmentDetailsDto);
     }
 }
