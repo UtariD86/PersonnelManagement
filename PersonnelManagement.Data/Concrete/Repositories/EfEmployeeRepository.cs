@@ -60,15 +60,15 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             }
         }
 
-        public async void Delete(int employeeId, string modifiedByName)
+        public async void Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto)
         {
             using(PersonnelManagerContext context = new PersonnelManagerContext())
             {
-                var employee = await context.Employees.FindAsync(employeeId);
+                var employee = await context.Employees.FindAsync(employeeDetailsDto.EmployeeId);
                 if (employee != null)
                 {
                     employee.IsDeleted = true;
-                    employee.ModifiedByName = modifiedByName;
+                    employee.ModifiedByName = employeeDetailsDto.ModifiedByName;
                     employee.ModifiedDate = DateTime.Now;
 
                     context.Employees.Update(employee);
@@ -77,19 +77,48 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             }
         }
 
-        public async Task<EmployeeDetailsDto> GetById(int employeeId)
+        public async Task<EmployeeUpdateDto> GetById(int employeeId)
         {
+            
             using (PersonnelManagerContext context = new PersonnelManagerContext())
             {
                 var employee = await context.Employees
                     .Where(e => e.Id == employeeId)
-                    .Select(e => new EmployeeDetailsDto
+                    .Select(e => new EmployeeUpdateDto
                     {
-                        EmployeeId = e.Id
+                        Id = e.Id,
+                        Name = e.Name,
+                        DepartmentId= e.DepartmentId,
+                        PositionId= e.PositionId,
                     })
                     .FirstOrDefaultAsync();
 
                 return employee;
+            }
+        }
+
+        public async void Update(EmployeeUpdateDto employeeUpdateDto)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var employee = await context.Employees.FindAsync(employeeUpdateDto.Id);
+                if (employee != null)
+                {
+                    employee.Name= employeeUpdateDto.Name;
+                    if(employeeUpdateDto.DepartmentId != null) 
+                    { 
+                        employee.DepartmentId = (int)employeeUpdateDto.DepartmentId;
+                    }
+                    if (employeeUpdateDto.PositionId != null)
+                    {
+                        employee.PositionId = (int)employeeUpdateDto.PositionId;
+                    }
+                    employee.ModifiedByName = employeeUpdateDto.ModifiedByName;
+                    employee.ModifiedDate = DateTime.Now;
+
+                    context.Employees.Update(employee);
+                    context.SaveChanges();
+                }
             }
         }
     }

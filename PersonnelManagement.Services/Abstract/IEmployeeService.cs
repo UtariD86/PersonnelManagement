@@ -12,6 +12,7 @@ namespace PersonnelManagement.Services.Abstract
     {
         Task<IDataResult<EmployeeDetailsDto>> Add(EmployeeDetailsDto employeeDetailsDto); //içine createdbyname i de gönder giriş yapan kullanıcıya göre
         Task<IDataResult<List<EmployeeDetailsDto>>> GetAll();
-        Task<IResult> Delete(int employeeId, string modifiedByName);
+        Task<IResult> Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto);
+        Task<IResult> Update(EmployeeDetailsDto employeeDetailsDto);
     }
 }

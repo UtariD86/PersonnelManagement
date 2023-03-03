@@ -39,6 +39,39 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             }
         }
 
+        public async void Delete(int positionId, string modifiedByName)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var position = await context.Positions.FindAsync(positionId);
+                if (position != null)
+                {
+                    position.IsDeleted = true;
+                    position.ModifiedByName = modifiedByName;
+                    position.ModifiedDate = DateTime.Now;
+
+                    context.Positions.Update(position);
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        public async Task<PositionDetailsDto> GetById(int positionId)
+        {
+            using(PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var position = await context.Positions
+                    .Where(p => p.Id == positionId)
+                    .Select(p => new PositionDetailsDto
+                    {
+                        PositionId = p.Id
+                    })
+                    .FirstOrDefaultAsync();
+
+                return position;
+            }
+        }
+
         public async Task<PositionDetailsDto> GetByName(string positionName)
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())
@@ -63,7 +96,8 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             {
                 var positions = from pos in context.Positions
                                   join d in context.Departments on pos.DepartmentId equals d.Id
-                                  select new PositionDetailsDto
+                                where (pos.IsDeleted == false && d.IsDeleted == false)
+                                select new PositionDetailsDto
                                   {
                                       PositionId = pos.Id,
                                       PositionName = pos.Name,

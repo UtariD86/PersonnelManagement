@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using zurafworks.Shared.Utilities.Results.Abstract;
 using zurafworks.Shared.Utilities.Results.Concrete;
 using zurafworks.Shared.Utilities.Results.ComplexTypes;
+using PersonnelManagement.Entities.Concrete;
 
 namespace PersonnelManagement.Services.Concrete
 {
@@ -40,6 +41,19 @@ namespace PersonnelManagement.Services.Concrete
 
             return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, newDepartment.DepartmentName + "Başarıyla Eklendi",newDepartment);
 
+        }
+
+        public async Task<IResult> Delete(int departmentId, string modifiedByName)
+        {
+            var department = _departmentRepository.GetById(departmentId);
+
+
+            if (department != null)
+            {
+                _departmentRepository.Delete(departmentId, modifiedByName);
+                return new Result(ResultStatus.Success, "Başarıyla Silindi");
+            }
+            return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
         }
 
         public async Task<IDataResult<List<DepartmentDetailsDto>>> GetAll()

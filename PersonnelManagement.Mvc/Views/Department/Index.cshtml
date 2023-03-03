@@ -19,10 +19,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>var $ = jQuery.noConflict(false);</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
 
 </head>
 
@@ -51,7 +53,7 @@
                 colnames: ["DepartmentId", "DepartmentName"],
                 colModel: [
                     { label: 'DepartmentId', name: 'DepartmentId', key:true, width: 15 },
-                    { label: 'DepartmentName', name: 'DepartmentName', width: 75 },
+                    { label: 'DepartmentName', name: 'DepartmentName', width: 75, sorttype: function(cell, obj) {return turkishToLower(cell);} },
                     {
                         name: 'actions',
                         index: 'actions',
@@ -65,6 +67,8 @@
                     }
 
                 ],
+                loadonce: true,
+                multiSort: true,
                 sortable: true,
                 viewrecords: true,
                 width: 900,
@@ -79,7 +83,7 @@
 
         $(document).on('click', '.edit_btn', function () {
             //debugger;
-            //    var employeeName2 = $(this).data('employee-name');
+            //    var departmentName2 = $(this).data('employee-name');
             //    console.log('Employee Name:', employeeName);
             //    debugger;
             //        window.alert("Edit!!")
@@ -98,38 +102,55 @@
         });
 
         $(document).on('click', '.del_btn', function () {
-                //debugger;
-                //var row = $(this).closest('tr.jqgrow');
-                //var rowId = row.attr('id');
-                //debugger;
+                debugger;
+                var row = $(this).closest('tr.jqgrow');
+                var rowId = row.attr('id');
+                debugger;
 
-                //var modifiedByName = "mvcDefault" //şimdilik
+                var modifiedByName = "mvcDefault" //şimdilik
 
-                //var choosedEmployee = {
-                //    EmployeeId: rowId,
-                //    ModifiedByName: modifiedByName,
-                //};
+                var choosedDepartment = {
+                    DepartmentId: rowId,
+                    ModifiedByName: modifiedByName,
+                };
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-                //$.ajax({
-                //    type: "POST",
-                //    url: "/Employee/DeleteEmployees",
-                //    data: choosedEmployee,
-                //    success: function(data) {
-                //        window.alert("Başarıyla Silindi");
-                //        debugger;
-                //        //$("#jqGrid").jqGrid('delRowData', rowId, { url: '/Employee/DeleteEmployees' });
-                //        // setTimeout(function() {
-                //        //                        $("#jqGrid").jqGrid('reloadGrid');
-                //        //}, 500);
-                //        //sildikten sonra yenilenmiyor
-                //        debugger;
-                //    },
-                //    error: function(error) {
-                //    console.log(error);
-                //    }
-                //});
-                //debugger;
-                window.alert("Delete!!")
+                        $.ajax({
+                            type: "POST",
+                            url: "/Department/DeleteDepartments",
+                            data: choosedDepartment,
+                            success: function(data) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                                )
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+
+
+                        
+                    }
+                })
+                
+                debugger;
+                //window.alert("Delete!!")
         });
 
         $(document).ready(function() {
@@ -193,7 +214,9 @@
             }
         });
 
-
+        function turkishToLower(str) {
+            return str.replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/İ/g, 'i').replace(/I/g, 'i').toLocaleLowerCase('tr');
+        }
 
     </script>
 </body>

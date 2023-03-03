@@ -75,7 +75,27 @@ namespace PersonnelManagement.Mvc.Controllers
 
         public IActionResult DeleteEmployees(DeleteEmployeeModel empModel)
         {
-            em.Delete(empModel.EmployeeId, empModel.ModifiedByName);
+            var deleteEmp = new EmployeeDetailsDto();
+
+            deleteEmp.EmployeeId = empModel.EmployeeId;
+            deleteEmp.ModifiedByName = empModel.ModifiedByName;
+
+            em.Delete(deleteEmp);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult UpdateEmployees(UpdateEmployeeModel empModel)
+        {
+            var newEmp = new EmployeeDetailsDto();
+
+            newEmp.EmployeeId = empModel.EmployeeId;
+            newEmp.EmployeeName = empModel.NewEmployee;
+            newEmp.DepartmentName = empModel.SelectedDepartment;
+            newEmp.PositionName = empModel.SelectedPosition;
+            newEmp.ModifiedByName = empModel.ModifiedByName;
+
+            em.Update(newEmp);
 
             return RedirectToAction("Index");
         }

@@ -60,14 +60,14 @@ namespace PersonnelManagement.Services.Concrete
 
         }
 
-        public async Task<IResult> Delete(int employeeId, string modifiedByName)
+        public async Task<IResult> Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto)
         {
-            var employee = _employeeRepository.GetById(employeeId);
+            var employee = _employeeRepository.GetById(employeeDetailsDto.EmployeeId);
 
             
             if (employee != null)
             {
-                _employeeRepository.Delete(employeeId, modifiedByName);
+                _employeeRepository.Delete(employeeDetailsDto);
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
@@ -82,6 +82,51 @@ namespace PersonnelManagement.Services.Concrete
             }
             return new DataResult<List<EmployeeDetailsDto>>(ResultStatus.Error, "Hiç çalışan bulunamadı", null);
             
+        }
+
+        public async Task<IResult> Update(EmployeeDetailsDto employeeDetailsDto)
+        {
+            var department = await _departmentRepository.GetByName(employeeDetailsDto?.DepartmentName);
+            var position = await _positionRepository.GetByName(employeeDetailsDto?.PositionName);
+
+            var employee = _employeeRepository.GetById(employeeDetailsDto.EmployeeId);
+
+            if (employeeDetailsDto.EmployeeName == null) 
+            {
+                employeeDetailsDto.EmployeeName = employee.Result.Name;
+            }
+
+
+
+            if (employee != null)
+            {
+
+                var newEmployee = new EmployeeUpdateDto();
+
+                newEmployee.Id = employeeDetailsDto.EmployeeId;
+                newEmployee.Name = employeeDetailsDto.EmployeeName;
+                if(department!= null)
+                {
+                    newEmployee.DepartmentId = department.DepartmentId;
+                }
+                else
+                {
+                    newEmployee.DepartmentId = null;
+                }
+                if (position != null)
+                {
+                    newEmployee.PositionId = position.PositionId;
+                }
+                else
+                {
+                    newEmployee.PositionId = null;
+                }
+                newEmployee.ModifiedByName = employeeDetailsDto.ModifiedByName;
+
+                _employeeRepository.Update(newEmployee);
+                return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
+            }
+            return new Result(ResultStatus.Error, "Seçili çalışan güncellenemedi");
         }
     }
 }

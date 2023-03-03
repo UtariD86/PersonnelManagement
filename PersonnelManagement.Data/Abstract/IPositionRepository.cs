@@ -14,5 +14,7 @@ namespace PersonnelManagement.Data.Abstract
         Task<PositionDetailsDto> GetByName(string positionName);
         List<PositionDetailsDto> GetAllPositions();
         void Add(PositionDetailsDto positionDetailsDto);
+        public Task<PositionDetailsDto> GetById(int positionId);
+        void Delete(int positionId, string modifiedByName);
     }
 }

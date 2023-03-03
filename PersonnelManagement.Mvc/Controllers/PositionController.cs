@@ -60,11 +60,11 @@ namespace PersonnelManagement.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
-        //public IActionResult DeleteEmployees(DeleteEmployeeModel empModel)
-        //{
-        //    pm.Delete(empModel.EmployeeId, empModel.ModifiedByName);
+        public IActionResult DeletePositions(DeletePositionModel posModel)
+        {
+            pm.Delete(posModel.PositionId, posModel.ModifiedByName);
 
-        //    return RedirectToAction("Index");
-        //}
+            return RedirectToAction("Index");
+        }
     }
 }

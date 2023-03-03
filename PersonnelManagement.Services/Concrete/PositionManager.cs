@@ -1,5 +1,6 @@
 ﻿using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete.Repositories;
+using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Services.Abstract;
 using System;
@@ -49,6 +50,19 @@ namespace PersonnelManagement.Services.Concrete
 
             return new DataResult<PositionDetailsDto>(ResultStatus.Success, newPosition.PositionName + "Başarıyla Eklendi", newPosition);
 
+        }
+
+        public async Task<IResult> Delete(int positionId, string modifiedByName)
+        {
+            var position = _positionRepository.GetById(positionId);
+
+
+            if (position != null)
+            {
+                _positionRepository.Delete(positionId, modifiedByName);
+                return new Result(ResultStatus.Success, "Başarıyla Silindi");
+            }
+            return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
         }
 
         public async Task<IDataResult<List<PositionDetailsDto>>> GetAll()

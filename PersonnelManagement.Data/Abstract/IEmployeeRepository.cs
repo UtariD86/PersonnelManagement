@@ -13,7 +13,8 @@ namespace PersonnelManagement.Data.Abstract
     {
         void Add(EmployeeDetailsDto employeeDetailsDto);
         List<EmployeeDetailsDto> GetAllEmployees();
-        void Delete(int employeeId, string modifiedByName);
-        public Task<EmployeeDetailsDto> GetById(int employeeId);
+        void Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto);
+        public Task<EmployeeUpdateDto> GetById(int employeeId);
+        void Update(EmployeeUpdateDto employeeUpdateDto);
     }
 }

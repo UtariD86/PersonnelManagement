@@ -36,11 +36,29 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             }
         }
 
+        public async void Delete(int departmentId, string modifiedByName)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var department = await context.Departments.FindAsync(departmentId);
+                if (department != null)
+                {
+                    department.IsDeleted = true;
+                    department.ModifiedByName = modifiedByName;
+                    department.ModifiedDate = DateTime.Now;
+
+                    context.Departments.Update(department);
+                    context.SaveChanges();
+                }
+            }
+        }
+
         public List<DepartmentDetailsDto> GetAllDepartments()
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())
             {
                 var departments = from dep in context.Departments
+                                  where (dep.IsDeleted == false)
                                   select new DepartmentDetailsDto
                                   {
                                       DepartmentId = dep.Id,
@@ -48,6 +66,22 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                       Positions = dep.Positions
                                   };
                 return departments.ToList();
+            }
+        }
+
+        public async Task<DepartmentDetailsDto> GetById(int departmentId)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var department = await context.Departments
+                    .Where(e => e.Id == departmentId)
+                    .Select(e => new DepartmentDetailsDto
+                    {
+                        DepartmentId = e.Id
+                    })
+                    .FirstOrDefaultAsync();
+
+                return department;
             }
         }
 

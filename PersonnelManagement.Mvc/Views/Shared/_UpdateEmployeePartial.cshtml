@@ -28,29 +28,29 @@
 
 </style>
 
-<form id ="newForm" method="post" onsubmit="return false">
-        <input type="text" id="inputtedName" name= = "NewEmployeeName" placeholder ="Yeni Çalışan Adı" /> <br />
+<form id ="newForm2" method="post" onsubmit="return false">
+        <input type="text" id="inputtedName2" name = "editedEmployeeName" placeholder ="Çalışan Adı" /> <br />
 
-        <select name="Departments" id="deplist" onchange="onDepartmentChange(this)">
+        <select name="Departments" id="deplist2" onchange="onDepartmentChange2(this)">
 
-            <option disabled hidden selected>Departmanı</option>
+            <option disabled hidden selected>Yeni Departmanı</option>
         @foreach (var item in Model.Departments)
         {
-                        <option value="@item.DepartmentName">@item.DepartmentName</option>  
+                            <option value="@item.DepartmentName">@item.DepartmentName</option>  
         }
 
         </select>
 
         <br />
 
-        
-        <select name="Positions" id="poslist">
 
-            <option disabled hidden selected>Pozisyonu</option>
+        <select name="Positions" id="poslist2">
+
+            <option disabled hidden selected>Yeni Pozisyonu</option>
 
         </select>
 
         <br />
 
-        <button id ="newButton" type= "submit" onclick="onClickSave()">Save</button>
+        <button id ="updateButton" type= "submit" onclick="onClickUpdate()">Update</button>
 </form>

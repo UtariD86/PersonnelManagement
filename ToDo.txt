@@ -1,0 +1,7 @@
+-Yapýlacaklar-
+>Reload Grid sorunu düzeltilecek. Loadonce yüzünden farklý bir yaklaþým denenmeli
+>Join yaparken PositionId tekrarý düzeltilecek
+>Alfabetik sýralama yaparken kullanýlan regex noktalý ve noktasýz harfler arasýndaki hiyerarþiyi düzgün yansýtýp doðru sýralanmasý için gözden geçirilip düzeltilecek
+>UnitOfWork Kavranýp projede aktif þekilde kullanýlacak
+>Request,Schedule,Shift Entityleri ile genel bir program mantýðý kurulup projeye dahil edilecek. Proje tam olarak þekillenmeye baþlayacak
+>Genel mantýk tamamlandýktan sonra Authantication ve Authorize araþtýrýlýp projeye uygulanacak
