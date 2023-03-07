@@ -1,5 +1,5 @@
 -Yapýlacaklar-
->Reload Grid sorunu düzeltilecek. Loadonce yüzünden farklý bir yaklaþým denenmeli
+>Employee index için geçerli her þey department ve positions indexlerinde uygulanacak. Pop uplar sweetalert ile deðiþtirilecek
 >Join yaparken PositionId tekrarý düzeltilecek
 >Alfabetik sýralama yaparken kullanýlan regex noktalý ve noktasýz harfler arasýndaki hiyerarþiyi düzgün yansýtýp doðru sýralanmasý için gözden geçirilip düzeltilecek
 >UnitOfWork Kavranýp projede aktif þekilde kullanýlacak
