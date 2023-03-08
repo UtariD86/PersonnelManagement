@@ -16,5 +16,6 @@ namespace PersonnelManagement.Data.Abstract
         List<DepartmentDetailsDto> GetAllDepartments();
         public void Add(DepartmentDetailsDto departmentDetailsDto);
         void Delete(int departmentId, string modifiedByName);
+        void Update(DepartmentUpdateDto departmentUpdateDto);
     }
 }

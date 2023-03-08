@@ -13,5 +13,6 @@ namespace PersonnelManagement.Services.Abstract
         Task<IDataResult<List<PositionDetailsDto>>> GetAll();
         Task<IDataResult<PositionDetailsDto>> Add(PositionDetailsDto positionDetailsDto);
         Task<IResult> Delete(int positionId, string modifiedByName);
+        Task<IResult> Update(PositionDetailsDto positionDetailsDto);
     }
 }

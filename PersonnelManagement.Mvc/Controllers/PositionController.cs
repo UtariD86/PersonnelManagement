@@ -66,5 +66,19 @@ namespace PersonnelManagement.Mvc.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult UpdatePositions(UpdatePositionModel posModel)
+        {
+            var newPos = new PositionDetailsDto();
+
+            newPos.PositionId = posModel.PositionId;
+            newPos.PositionName = posModel.NewPosition;
+            newPos.DepartmentName = posModel.SelectedDepartment;
+            newPos.ModifiedByName = posModel.ModifiedByName;
+
+            pm.Update(newPos);
+
+            return RedirectToAction("Index");
+        }
     }
 }

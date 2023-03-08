@@ -85,6 +85,23 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             }
         }
 
+        public async void Update(DepartmentUpdateDto departmentUpdateDto)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var department = await context.Departments.FindAsync(departmentUpdateDto.Id);
+                if (department != null)
+                {
+                    department.Name = departmentUpdateDto.Name;
+                    department.ModifiedByName = departmentUpdateDto.ModifiedByName;
+                    department.ModifiedDate = DateTime.Now;
+
+                    context.Departments.Update(department);
+                    context.SaveChanges();
+                }
+            }
+        }
+
         async Task<DepartmentDetailsDto> IDepartmentRepository.GetByName(string departmentName)
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())

@@ -76,5 +76,32 @@ namespace PersonnelManagement.Services.Concrete
             return new DataResult<DepartmentDetailsDto>(ResultStatus.Error, "Departman bulunamadı", null);
 
         }
+
+        public async Task<IResult> Update(DepartmentDetailsDto departmentDetailsDto)
+        {
+
+            var department = _departmentRepository.GetById(departmentDetailsDto.DepartmentId);
+
+            if (departmentDetailsDto.DepartmentName == null)
+            {
+                departmentDetailsDto.DepartmentName = department.Result.DepartmentName;
+            }
+
+
+
+            if (department != null)
+            {
+
+                var newDepartment = new DepartmentUpdateDto();
+
+                newDepartment.Id = departmentDetailsDto.DepartmentId;
+                newDepartment.Name = departmentDetailsDto.DepartmentName;
+                newDepartment.ModifiedByName = departmentDetailsDto.ModifiedByName;
+
+                _departmentRepository.Update(newDepartment);
+                return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
+            }
+            return new Result(ResultStatus.Error, "Seçili Departman güncellenemedi");
+        }
     }
 }

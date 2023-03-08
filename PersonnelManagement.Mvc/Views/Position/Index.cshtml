@@ -1,4 +1,4 @@
-﻿@*==========================================================*@
+﻿@*====================POSITION=====================*@
 @using PersonnelManagement.Entities.Concrete
 @using PersonnelManagement.Entities.DTOs;
 @using PersonnelManagement.Mvc
@@ -45,6 +45,14 @@
     <div id="jqGridPager"></div>
 
     <script  type="text/javascript">
+
+         function onNeedReload(){
+                debugger;
+                grid.setGridParam({ datatype: 'json' });
+                debugger;
+                grid.trigger("reloadGrid", [{page: 1, current: true}]);
+        }
+
 
         $("#jqGrid").jqGrid({
                 url: '/Position/GetPositions',
@@ -201,7 +209,7 @@
                         }
                     });
             }
-
+            onNeedReload();
         });
 
         function turkishToLower(str) {

@@ -90,6 +90,28 @@ namespace PersonnelManagement.Data.Concrete.Repositories
             }
         }
 
+        public async void Update(PositionUpdateDto positionUpdateDto)
+        {
+            using (PersonnelManagerContext context = new PersonnelManagerContext())
+            {
+                var position = await context.Positions.FindAsync(positionUpdateDto.Id);
+                if (position != null)
+                {
+                    position.Name = positionUpdateDto.Name;
+                    if (positionUpdateDto.DepartmentId != null)
+                    {
+                        position.DepartmentId = (int)positionUpdateDto.DepartmentId;
+                    }
+                  
+                    position.ModifiedByName = positionUpdateDto.ModifiedByName;
+                    position.ModifiedDate = DateTime.Now;
+
+                    context.Positions.Update(position);
+                    context.SaveChanges();
+                }
+            }
+        }
+
         List<PositionDetailsDto> IPositionRepository.GetAllPositions()
         {
             using (PersonnelManagerContext context = new PersonnelManagerContext())

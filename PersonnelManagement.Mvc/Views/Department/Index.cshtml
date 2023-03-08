@@ -1,4 +1,4 @@
-﻿@*==========================================================*@
+﻿@*==============DEPARTMENT=================*@
 @using PersonnelManagement.Entities.Concrete
 @using PersonnelManagement.Entities.DTOs;
 @using PersonnelManagement.Mvc
@@ -31,20 +31,38 @@
 <body>
 
 
-    <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
+    <div id="container" style="position: relative;">
+        <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
+        <input type="text" id="mySearchBox"  placeholder="Arama..." class="searchBar" style="position: absolute; top: 0; margin-left: 630px;">
 
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
 
-
-    <div id = "myModal" class="modal" style="display:none">
+    <div id = "addModal" class="modal" style="display:none">
         <div class="modal-content">
             @Html.Partial("_AddDepartmentPartial")
         </div>
     </div>
 
-    <table id="jqGrid"></table>
-    <div id="jqGridPager"></div>
+    <div id = "editModal" class="modal" style="display:none">
+        <div class="modal-content">
+            @Html.Partial("_UpdateDepartmentPartial")
+        </div>
+    </div>
 
     <script  type="text/javascript">
+
+        var currentId = 0;
+
+        var grid = $("#jqGrid");
+
+        function onNeedReload(){
+                debugger;
+                grid.setGridParam({ datatype: 'json' });
+                debugger;
+                grid.trigger("reloadGrid", [{page: 1, current: true}]);
+        }
 
         $("#jqGrid").jqGrid({
                 url: '/Department/GetDepartments',
@@ -52,8 +70,8 @@
                 datatype: "json",
                 colnames: ["DepartmentId", "DepartmentName"],
                 colModel: [
-                    { label: 'DepartmentId', name: 'DepartmentId', key:true, width: 15 },
-                    { label: 'DepartmentName', name: 'DepartmentName', width: 75, sorttype: function(cell, obj) {return turkishToLower(cell);} },
+                    { label: 'Id', name: 'DepartmentId', key:true, width: 15 },
+                    { label: 'Department', name: 'DepartmentName', width: 75, sorttype: function(cell, obj) {return turkishToLower(cell);} },
                     {
                         name: 'actions',
                         index: 'actions',
@@ -68,9 +86,12 @@
 
                 ],
                 loadonce: true,
+                navOptions:{reloadGridOptions:{fromServer:true}},
                 multiSort: true,
+                multiSelect: true,
                 sortable: true,
                 viewrecords: true,
+                search: true,
                 width: 900,
                 height: 250,
                 rowNum: 50,
@@ -79,78 +100,104 @@
 
         });
 
-        $( '#jqGrid' ).trigger( 'reloadGrid');
+        $("#mySearchBox").keyup(function () {
+            debugger;
+            var rules = [], i, cm,
+            postData = grid.jqGrid("getGridParam", "postData"),
+            colModel = grid.jqGrid("getGridParam", "colModel"),
+            searchText = $("#mySearchBox").val(),
+            l = colModel.length;
+
+            for (i = 0; i < l; i++) {
+                cm = colModel[i];
+                    if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                        rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                }
+            }
+
+            $.extend (postData, {
+                filters: {
+                    groupOp: "OR",
+                    rules: rules
+                }
+            });
+
+            grid.jqGrid("setGridParam", { search: true, postData: postData });
+            grid.trigger("reloadGrid", [{page: 1, current: true}]);
+            return false;
+        });
 
         $(document).on('click', '.edit_btn', function () {
-            //debugger;
-            //    var departmentName2 = $(this).data('employee-name');
-            //    console.log('Employee Name:', employeeName);
-            //    debugger;
-            //        window.alert("Edit!!")
 
-            //    debugger;
-            //    var row = $(this).closest('tr.jqgrow');
-            //    var rowId = row.attr('id');
-            //    debugger;
-            //    var rowData = $('#jqGrid').jqGrid('getRowData', rowId);
-            //    var employeeName = rowData.EmployeeName;
-            //    debugger;
-            //    var employeeName = rowId.EmployeeName;
+            var row = $(this).closest('tr.jqgrow');
+            var rowId = row.attr('id');
+            var rowName = row.find('td:eq(1)').text();
+            var myModel = @Html.Raw(Json.Serialize(Model));
+            debugger;
+            currentId = rowId;
+            var modifiedByName = "mvcDefault" //şimdilik
 
-            //    debugger;
-            window.alert("Edit!!")
+            document.getElementById("inputtedName2").value = rowName;
+
+            $.ajax({
+                url: "/Department",
+                type: "GET",
+                success: function (result) {
+                $("#editModal.modal-content").html(result);
+                document.getElementById("editModal").style.display = "block";
+                }
+            });
+
         });
 
         $(document).on('click', '.del_btn', function () {
-                debugger;
-                var row = $(this).closest('tr.jqgrow');
-                var rowId = row.attr('id');
-                debugger;
+            debugger;
+            var row = $(this).closest('tr.jqgrow');
+            var rowId = row.attr('id');
 
-                var modifiedByName = "mvcDefault" //şimdilik
+            var modifiedByName = "mvcDefault" //şimdilik
 
-                var choosedDepartment = {
-                    DepartmentId: rowId,
-                    ModifiedByName: modifiedByName,
-                };
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
+            var choosedDepartment = {
+                DepartmentId: rowId,
+                ModifiedByName: modifiedByName,
+            };
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed){
+                    $.ajax({
+                        type: "POST",
+                        url: "/Department/DeleteDepartments",
+                        data: choosedDepartment,
+                        success: function(data) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your choose has been deleted.',
+                                'success'
+                            )
+                            onNeedReload();
+                        },
+                        error: function(error) {
+                            Swal.fire(
+                                'Error!',
+                                'Deleting failed.',
+                                'error'
+                            )
+                        }
 
-                        $.ajax({
-                            type: "POST",
-                            url: "/Department/DeleteDepartments",
-                            data: choosedDepartment,
-                            success: function(data) {
-                                Swal.fire(
-                                    'Deleted!',
-                                    'Your choose has been deleted.',
-                                    'success'
-                                )
-                            },
-                            error: function(error) {
-                                Swal.fire(
-                                    'Error!',
-                                    'Deleting failed.',
-                                    'error'
-                                )
-                            }
-                        });
-
-
-                        
-                    }
-                })
-                
-                debugger;
-                //window.alert("Delete!!")
+                    });
+                }
+            });
         });
 
         $(document).ready(function() {
@@ -162,33 +209,16 @@
                             url: "/Employee",
                             type: "GET",
                             success: function (result) {
-                            $("#myModal.modal-content").html(result);
-                            document.getElementById("myModal").style.display = "block";
+                            $("#addModal.modal-content").html(result);
+                            document.getElementById("addModal").style.display = "block";
                             debugger;
                             }
                     });
             }
 
-            //var myModel = @Html.Raw(Json.Serialize(Model));
-            //onDepartmentChange = function(){
-            //    var selectedDepartment = $('#deplist option:selected').text()
-            //    var options = "";
+            var myModel = @Html.Raw(Json.Serialize(Model));
+            var reloadNeed = true;
 
-            //    for (var i = 0; i < myModel.Positions.length;) {
-
-            //        if(myModel.Positions[i].departmentName == selectedDepartment){
-
-            //            options += "<option value='" + myModel.Positions[i].positionName + "'>" + myModel.Positions[i].positionName + "</option>";
-
-            //        }
-            //        i++;
-            //    }
-
-            //    $('#poslist').html(options)
-
-            //};
-
-            ////partial geldikten sonra çalışması gerekiyor olabilir
             onClickSave = function(){
                 var inputtedDepartment = $('#inputtedDepartment').val()
 
@@ -204,14 +234,62 @@
                     success: function(data) {
 
                         document.getElementById("myModal").style.display = "none";
+                        $("#inputtedName").val('');
                     },
                     error: function(error) {
                     console.log(error);
                     }
                 });
 
-                debugger;
+                onNeedReload();
             }
+            
+            onClickUpdate = function(){
+                var modifiedByName = "mvcDefault" //şimdilik
+                var inputtedName = $('#inputtedName2').val()
+
+                var departmentData = {
+                    DepartmentId: currentId,
+                    NewDepartment: inputtedName,
+                    modifiedByName: modifiedByName
+                };
+
+                document.getElementById("editModal").style.display = "none";
+
+                Swal.fire({
+                    title: 'Are you sure about that?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if (result.isConfirmed){
+                        $.ajax({
+                            type: "POST",
+                            url: "/Department/UpdateDepartments",
+                            data: departmentData,
+                            success: function(data) {
+                                Swal.fire(
+                                    'Updated!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                                )
+                                onNeedReload();
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+                    }
+                });
+            }
+
         });
 
         function turkishToLower(str) {

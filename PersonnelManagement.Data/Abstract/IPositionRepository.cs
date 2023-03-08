@@ -16,5 +16,6 @@ namespace PersonnelManagement.Data.Abstract
         void Add(PositionDetailsDto positionDetailsDto);
         public Task<PositionDetailsDto> GetById(int positionId);
         void Delete(int positionId, string modifiedByName);
+        void Update(PositionUpdateDto positionUpdateDto);
     }
 }

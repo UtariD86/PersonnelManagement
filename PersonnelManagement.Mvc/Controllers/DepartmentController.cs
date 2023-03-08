@@ -61,6 +61,19 @@ namespace PersonnelManagement.Mvc.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult UpdateDepartments(UpdateDepartmentModel depModel)
+        {
+            var newDep = new DepartmentDetailsDto();
+
+            newDep.DepartmentId = depModel.DepartmentId;
+            newDep.DepartmentName = depModel.NewDepartment;
+            newDep.ModifiedByName = depModel.ModifiedByName;
+
+            dm.Update(newDep);
+
+            return RedirectToAction("Index");
+        }
     }
 }
 

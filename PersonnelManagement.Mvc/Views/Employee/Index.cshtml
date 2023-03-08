@@ -1,4 +1,4 @@
-﻿@*==========================================================*@
+﻿@*====================EMPLOYEE===================*@
 @using PersonnelManagement.Entities.Concrete
 @using PersonnelManagement.Entities.DTOs;
 @using PersonnelManagement.Mvc
@@ -40,6 +40,7 @@
         <table id="jqGrid"></table>
         <div id="jqGridPager"></div>
     </div>
+
     <div id = "addModal" class="modal" style="display:none">
         <div class="modal-content">
             @Html.Partial("_AddEmployeePartial")
@@ -99,7 +100,6 @@
                 width: 900,
                 height: 250,
                 rowNum: 50,
-
                 pager: "#jqGridPager",
 
         });

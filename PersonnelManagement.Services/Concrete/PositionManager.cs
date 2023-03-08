@@ -74,5 +74,40 @@ namespace PersonnelManagement.Services.Concrete
             }
             return new DataResult<List<PositionDetailsDto>>(ResultStatus.Error, "Hiç çalışan bulunamadı", null);
         }
+
+        public async Task<IResult> Update(PositionDetailsDto positionDetailsDto)
+        {
+            var department = await _departmentRepository.GetByName(positionDetailsDto?.DepartmentName);
+
+            var position = _positionRepository.GetById(positionDetailsDto.PositionId);
+
+            if (positionDetailsDto.PositionName == null)
+            {
+                positionDetailsDto.PositionName = position.Result.PositionName;
+            }
+
+            if (position != null)
+            {
+
+                var newPosition = new PositionUpdateDto();
+
+                newPosition.Id = positionDetailsDto.PositionId;
+                newPosition.Name = positionDetailsDto.PositionName;
+                if (department != null)
+                {
+                    newPosition.DepartmentId = department.DepartmentId;
+                }
+                else
+                {
+                    newPosition.DepartmentId = null;
+                }
+             
+                newPosition.ModifiedByName = positionDetailsDto.ModifiedByName;
+
+                _positionRepository.Update(newPosition);
+                return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
+            }
+            return new Result(ResultStatus.Error, "Seçili pozisyon güncellenemedi");
+        }
     }
 }
