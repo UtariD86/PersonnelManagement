@@ -61,7 +61,10 @@
                 debugger;
                 grid.setGridParam({ datatype: 'json' });
                 debugger;
-                grid.trigger("reloadGrid", [{page: 1, current: true}]);
+                var pageCount = grid.getGridParam("lastpage");
+                for (let i = 0; i < pageCount; i++) {
+                        grid.trigger("reloadGrid", [{page: i, current: true}]);
+                }
         }
 
         $("#jqGrid").jqGrid({
