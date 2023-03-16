@@ -135,7 +135,7 @@
             return false;
         });
 
-         $(document).on('click', '.edit_btn', function () {
+        $(document).on('click', '.edit_btn', function () {
 
             var row = $(this).closest('tr.jqgrow');
             var rowId = row.attr('id');
@@ -228,6 +228,7 @@
 
             var myModel = @Html.Raw(Json.Serialize(Model));
             var reloadNeed = true;
+            onNeedReload()
 
             onClickNewAdd = function() {
                 debugger;
@@ -267,7 +268,9 @@
                     onNeedReload();
             }
 
-            onClickUpdate = function(){
+            onClickUpdate = function(event){
+                event.preventDefault();
+                var modifiedByName = "mvcDefault"
                 var selectedDepartment = $('#deplist2 option:selected').text()
                 var inputtedPosition = $('#inputtedPosition2').val()
                 debugger;
@@ -275,6 +278,7 @@
                             PositionId: currentId,
                             SelectedDepartment: selectedDepartment,
                             NewPosition: inputtedPosition,
+                            modifiedByName: modifiedByName
                         }
 
                 debugger;

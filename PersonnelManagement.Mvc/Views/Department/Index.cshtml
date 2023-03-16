@@ -221,6 +221,7 @@
 
             var myModel = @Html.Raw(Json.Serialize(Model));
             var reloadNeed = true;
+            onNeedReload()
 
             onClickSave = function(){
                 var inputtedDepartment = $('#inputtedDepartment').val()

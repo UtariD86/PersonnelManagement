@@ -262,7 +262,7 @@
 
             var myModel = @Html.Raw(Json.Serialize(Model));
             var reloadNeed = true;
-
+            onNeedReload()
             onDepartmentChange = function(){
                 var selectedDepartment = $('#deplist option:selected').text()
                 var options = "";
