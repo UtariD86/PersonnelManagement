@@ -59,6 +59,29 @@ namespace PersonnelManagement.Data.Concrete.Contexts
                 .HasForeignKey(s => s.ShiftTypeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Shift
+                .HasOne(ss => ss.Shift)
+                .WithMany(s => s.ScheduleShifts)
+                .HasForeignKey(ss => ss.ShiftId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Schedule
+                .HasOne(ss => ss.Schedule)
+                .WithMany(s => s.ScheduleShifts)
+                .HasForeignKey(ss => ss.ScheduleId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Request>() //Request-RequestStatus
+                .HasOne(r => r.RequestStatus)
+                .WithMany(rs => rs.Requests)
+                .HasForeignKey(r => r.RequestStatusId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Request>() //Request-Shift
+               .HasOne(r => r.Shift)
+               .WithMany(rs => rs.Requests)
+               .HasForeignKey(r => r.ShiftId)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

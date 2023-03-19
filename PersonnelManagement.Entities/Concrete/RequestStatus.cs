@@ -13,6 +13,6 @@ namespace PersonnelManagement.Entities.Concrete
         [Key]
         public override int Id { get; set; }
         public string? Name { get; set; }
-        //public virtual ICollection<Request> Requests { get; set; }
+        public virtual ICollection<Request> Requests { get; set; }
     }
 }

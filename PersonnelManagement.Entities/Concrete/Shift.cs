@@ -12,11 +12,13 @@ namespace PersonnelManagement.Entities.Concrete
     {
         [Key]
         public override int Id { get; set; }
+        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; }
+        public int ShiftTypeId { get; set; }
+        public ShiftType ShiftType { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public int EmployeeId { get; set; }
-        public int ShiftTypeId { get; set; }
-        public Employee Employee { get; set; }
-        public ShiftType ShiftType { get; set; }
+        public virtual ICollection<ScheduleShift> ScheduleShifts { get; set; }
+        public virtual ICollection<Request> Requests { get; set; }
     }
 }

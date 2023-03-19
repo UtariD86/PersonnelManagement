@@ -14,6 +14,6 @@ namespace PersonnelManagement.Entities.Concrete
         public override int Id { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        //public virtual ICollection<ScheduleShift> ScheduleShifts { get; set; }
+        public virtual ICollection<ScheduleShift> ScheduleShifts { get; set; }
     }
 }

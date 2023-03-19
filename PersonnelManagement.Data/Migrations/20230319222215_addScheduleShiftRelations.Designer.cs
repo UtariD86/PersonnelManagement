@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonnelManagement.Data.Concrete.Contexts;
 
@@ -11,9 +12,11 @@ using PersonnelManagement.Data.Concrete.Contexts;
 namespace PersonnelManagement.Data.Migrations
 {
     [DbContext(typeof(PersonnelManagerContext))]
-    partial class PersonnelManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20230319222215_addScheduleShiftRelations")]
+    partial class addScheduleShiftRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,10 +207,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RequestStatusId");
-
-                    b.HasIndex("ShiftId");
 
                     b.ToTable("Requests");
                 });
@@ -477,35 +476,16 @@ namespace PersonnelManagement.Data.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Request", b =>
-                {
-                    b.HasOne("PersonnelManagement.Entities.Concrete.RequestStatus", "RequestStatus")
-                        .WithMany("Requests")
-                        .HasForeignKey("RequestStatusId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("PersonnelManagement.Entities.Concrete.Shift", "Shift")
-                        .WithMany("Requests")
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("RequestStatus");
-
-                    b.Navigation("Shift");
-                });
-
             modelBuilder.Entity("PersonnelManagement.Entities.Concrete.ScheduleShift", b =>
                 {
                     b.HasOne("PersonnelManagement.Entities.Concrete.Schedule", "Schedule")
-                        .WithMany("ScheduleShifts")
+                        .WithMany()
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("PersonnelManagement.Entities.Concrete.Shift", "Shift")
-                        .WithMany("ScheduleShifts")
+                        .WithMany()
                         .HasForeignKey("ShiftId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -544,23 +524,6 @@ namespace PersonnelManagement.Data.Migrations
             modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Employee", b =>
                 {
                     b.Navigation("Shifts");
-                });
-
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.RequestStatus", b =>
-                {
-                    b.Navigation("Requests");
-                });
-
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Schedule", b =>
-                {
-                    b.Navigation("ScheduleShifts");
-                });
-
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Shift", b =>
-                {
-                    b.Navigation("Requests");
-
-                    b.Navigation("ScheduleShifts");
                 });
 
             modelBuilder.Entity("PersonnelManagement.Entities.Concrete.ShiftType", b =>

@@ -20,7 +20,7 @@ namespace PersonnelManagement.Entities.Concrete
         public int RequestStatusId { get; set; }
         public string? Note { get; set; }
         //public Employee? Employee { get; set; }
-        //public Shift? Shift { get; set; }
-        //public RequestStatus? RequestStatus { get; set; }
+        public Shift? Shift { get; set; }
+        public RequestStatus? RequestStatus { get; set; }
     }
 }
