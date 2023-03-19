@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonnelManagement.Data.Concrete.Contexts;
 
@@ -11,9 +12,11 @@ using PersonnelManagement.Data.Concrete.Contexts;
 namespace PersonnelManagement.Data.Migrations
 {
     [DbContext(typeof(PersonnelManagerContext))]
-    partial class PersonnelManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20230319171128_dropPositionId1")]
+    partial class dropPositionId1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,6 +174,9 @@ namespace PersonnelManagement.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
@@ -380,10 +386,6 @@ namespace PersonnelManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ShiftTypeId");
-
                     b.ToTable("Shifts");
                 });
 
@@ -463,40 +465,11 @@ namespace PersonnelManagement.Data.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Shift", b =>
-                {
-                    b.HasOne("PersonnelManagement.Entities.Concrete.Employee", "Employee")
-                        .WithMany("Shifts")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("PersonnelManagement.Entities.Concrete.ShiftType", "ShiftType")
-                        .WithMany("Shifts")
-                        .HasForeignKey("ShiftTypeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("ShiftType");
-                });
-
             modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Department", b =>
                 {
                     b.Navigation("Employees");
 
                     b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.Employee", b =>
-                {
-                    b.Navigation("Shifts");
-                });
-
-            modelBuilder.Entity("PersonnelManagement.Entities.Concrete.ShiftType", b =>
-                {
-                    b.Navigation("Shifts");
                 });
 #pragma warning restore 612, 618
         }

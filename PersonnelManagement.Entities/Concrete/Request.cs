@@ -15,7 +15,7 @@ namespace PersonnelManagement.Entities.Concrete
         public DateTime? RequestDate { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public int EmployeeId { get; set; }
+        //public int EmployeeId { get; set; }
         public int ShiftId { get; set; }
         public int RequestStatusId { get; set; }
         public string? Note { get; set; }

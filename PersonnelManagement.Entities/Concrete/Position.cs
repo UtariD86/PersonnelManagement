@@ -15,7 +15,6 @@ namespace PersonnelManagement.Entities.Concrete
         public string? Name { get; set; }
         public int DepartmentId { get; set; }
         public virtual Department? Department { get; set; }
-        public virtual ICollection<Employee> Employees { get; set; }
         //public virtual ICollection<Employee> Employees { get; set; }
         //her pozisyonun çalışanları sıralanabilir repositoryde join yapılarak çözülecek
     }

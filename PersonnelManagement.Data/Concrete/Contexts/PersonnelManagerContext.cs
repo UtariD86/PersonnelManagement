@@ -28,23 +28,37 @@ namespace PersonnelManagement.Data.Concrete.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Employee>()
+            modelBuilder.Entity<Employee>() //Employee-Department
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Employee>()
+            modelBuilder.Entity<Employee>() //Employee-Position
                 .HasOne(e => e.Position)
-                .WithMany()
+                .WithMany()//tekrar bak
                 .HasForeignKey(e => e.PositionId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Department>()
+
+            modelBuilder.Entity<Department>() //Department-Position
                 .HasMany(d => d.Positions)
                 .WithOne(p => p.Department)
                 .HasForeignKey(p => p.DepartmentId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Shift>() //Shift-Employee
+                .HasOne(s => s.Employee)
+                .WithMany(e => e.Shifts)
+                .HasForeignKey(s => s.EmployeeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Shift>() //Shift-ShiftType
+                .HasOne(s => s.ShiftType)
+                .WithMany(st => st.Shifts)
+                .HasForeignKey(s => s.ShiftTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
-    }//sırada ekleme için dropdownları yapmak var 
+    }
 }

@@ -1,6 +1,6 @@
 -Yapýlacaklar-
 >Pop uplar sweetalert ile deðiþtirilecek
->Silme iþlemi sýrasýnda iliþkili bir veri silinirken iliþkili olduðu diper verilerle ilgili uyarý ve deðiþiklik ekraný gelecek.(Örneðin Bir pozisyon silinirken o pozisyona sahip Çalýþanlar listelenip "bu çalýþanlar da pozisyon ile birlikte silinecek çalýþanlarýn pozisyonlarýný deðiþtirmek ister misiniz?" Þeklinde uyaracak)
+>Silme iþlemi sýrasýnda iliþkili bir veri silinirken iliþkili olduðu diðer verilerle ilgili uyarý ve deðiþiklik ekraný gelecek.(Örneðin Bir pozisyon silinirken o pozisyona sahip Çalýþanlar listelenip "bu çalýþanlar da pozisyon ile birlikte silinecek çalýþanlarýn pozisyonlarýný deðiþtirmek ister misiniz?" Þeklinde uyaracak).OnDelete(DeleteBehavior.NoAction);
 >Join yaparken PositionId tekrarý düzeltilecek
 >Alfabetik sýralama yaparken kullanýlan regex noktalý ve noktasýz harfler arasýndaki hiyerarþiyi düzgün yansýtýp doðru sýralanmasý için gözden geçirilip düzeltilecek
 >UnitOfWork Kavranýp projede aktif þekilde kullanýlacak

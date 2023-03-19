@@ -15,6 +15,6 @@ namespace PersonnelManagement.Entities.Concrete
         public string? Name { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        //public virtual ICollection<Shift> Shifts { get; set; }
+        public virtual ICollection<Shift> Shifts { get; set; }
     }
 }

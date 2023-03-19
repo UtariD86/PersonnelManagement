@@ -16,7 +16,7 @@ namespace PersonnelManagement.Entities.Concrete
         public DateTime? EndTime { get; set; }
         public int EmployeeId { get; set; }
         public int ShiftTypeId { get; set; }
-        //public Employee Employee { get; set; }
-        //public ShiftType ShiftType { get; set; }
+        public Employee Employee { get; set; }
+        public ShiftType ShiftType { get; set; }
     }
 }
