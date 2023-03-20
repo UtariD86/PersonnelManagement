@@ -20,7 +20,7 @@ namespace PersonnelManagement.Data.Concrete.Contexts
         public DbSet<Position> Positions { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<RequestStatus> RequestStatuses { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
+        //public DbSet<Schedule> Schedules { get; set; }
         public DbSet<ScheduleShift> ScheduleShifts { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<ShiftType> ShiftTypes { get; set; }
@@ -65,11 +65,11 @@ namespace PersonnelManagement.Data.Concrete.Contexts
                 .HasForeignKey(ss => ss.ShiftId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Schedule
-                .HasOne(ss => ss.Schedule)
-                .WithMany(s => s.ScheduleShifts)
-                .HasForeignKey(ss => ss.ScheduleId)
-                .OnDelete(DeleteBehavior.NoAction);
+            //modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Schedule
+            //    .HasOne(ss => ss.Schedule)
+            //    .WithMany(s => s.ScheduleShifts)
+            //    .HasForeignKey(ss => ss.ScheduleId)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Request>() //Request-RequestStatus
                 .HasOne(r => r.RequestStatus)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonnelManagement.Data.Concrete.Contexts;
 
@@ -11,9 +12,11 @@ using PersonnelManagement.Data.Concrete.Contexts;
 namespace PersonnelManagement.Data.Migrations
 {
     [DbContext(typeof(PersonnelManagerContext))]
-    partial class PersonnelManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20230320125001_dropScheduleEntity")]
+    partial class dropScheduleEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
