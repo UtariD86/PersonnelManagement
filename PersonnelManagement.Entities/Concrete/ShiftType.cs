@@ -13,8 +13,9 @@ namespace PersonnelManagement.Entities.Concrete
         [Key]
         public override int Id { get; set; }
         public string? Name { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public TimeSpan? StartTime { get; set; }//vardiyanın başlangıç ve bitiş saatleri
+        public TimeSpan? EndTime { get; set; }
+        public string Color { get; set; }//vardiyayı temsil eden ve takvimde görünecek renk
         public virtual ICollection<Shift> Shifts { get; set; }
     }
 }

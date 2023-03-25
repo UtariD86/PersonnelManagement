@@ -1,0 +1,38 @@
+﻿@using PersonnelManagement.Entities.Concrete
+@using PersonnelManagement.Entities.DTOs;
+@using PersonnelManagement.Mvc
+@model dynamic
+
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}
+
+</style>
+
+<form id ="newForm" method="post" onsubmit="return false">
+        <input type="text" id="inputtedShiftType" name= = "NewShiftType" placeholder ="Yeni Vardiya Tipi" /> <br />
+        Vardiya Tipi Başlangıç Saati : <input type="time" id="inputtedStartTime"/> <br />
+        Vardiya Tipi Bitiş Saati : <input type="time" id="inputtedEndTime"/> <br />
+        Vardiya Tipi Rengi : <input type="color" id="inputtedColor"/> <br />
+
+        <button id ="newButton" type= "submit" onclick="onClickSave()">Save</button>
+</form>

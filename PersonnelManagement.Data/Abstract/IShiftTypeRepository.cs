@@ -1,4 +1,5 @@
 ﻿using PersonnelManagement.Entities.Concrete;
+using PersonnelManagement.Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,11 @@ namespace PersonnelManagement.Data.Abstract
 {
     public interface IShiftTypeRepository : IEntityRepository<ShiftType>
     {
+        Task<ShiftTypeDetailsDto> GetByName(string shiftTypeName);
+        public Task<ShiftTypeDetailsDto> GetById(int shiftTypeId);
+        List<ShiftTypeDetailsDto> GetAllShiftTypes();
+        public void Add(ShiftTypeDetailsDto shiftTypeDetailsDto);
+        void Delete(int shiftTypeId, string modifiedByName);
+        //void Update(DepartmentUpdateDto departmentUpdateDto);
     }
 }
