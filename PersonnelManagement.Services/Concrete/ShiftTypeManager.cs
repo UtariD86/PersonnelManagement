@@ -61,7 +61,7 @@ namespace PersonnelManagement.Services.Concrete
             {
                 return new DataResult<List<ShiftTypeDetailsDto>>(ResultStatus.Success, shiftTypes);
             }
-            return new DataResult<List<ShiftTypeDetailsDto>>(ResultStatus.Error, "Hiç Departman bulunamadı", null);
+            return new DataResult<List<ShiftTypeDetailsDto>>(ResultStatus.Error, "Hiç vardiya tipi bulunamadı", null);
         }
 
         public async Task<IDataResult<ShiftTypeDetailsDto>> GetByName(string shiftTypeName)
@@ -71,7 +71,7 @@ namespace PersonnelManagement.Services.Concrete
             {
                 return new DataResult<ShiftTypeDetailsDto>(ResultStatus.Success, shifType);
             }
-            return new DataResult<ShiftTypeDetailsDto>(ResultStatus.Error, "Departman bulunamadı", null);
+            return new DataResult<ShiftTypeDetailsDto>(ResultStatus.Error, "Vardiya Tipi bulunamadı", null);
         }
 
         public Task<IResult> Update(ShiftTypeDetailsDto shiftTypeDetailsDto)

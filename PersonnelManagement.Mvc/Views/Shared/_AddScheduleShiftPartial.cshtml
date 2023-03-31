@@ -1,0 +1,143 @@
+﻿@using PersonnelManagement.Entities.Concrete
+@using PersonnelManagement.Entities.DTOs;
+@using PersonnelManagement.Mvc
+@model dynamic
+
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+</style>
+
+<form id ="newForm" method="post" onsubmit="return false">
+    <div id="container" style="position: relative;">
+        
+        <input type="text" id="mySearchBox"  placeholder="Arama..." class="searchBar">
+        <table id="jqGrid" ></table>
+        <div id="jqGridPager" style="width:100%; height:auto; margin: auto;"></div>
+        
+    </div>
+    
+    Vardiya Tipi Seçiniz:
+    
+    <select name="ShiftTypes" id="stlist" onchange="onShiftTypeChange(this)">
+
+            <option disabled hidden selected>Vardiya Tipi</option>
+            
+        @foreach (var item in Model.shiftTypes)
+        {
+                                            <option value="@item.ShiftTypeName" data-id="@item.ShiftTypeId" data-starttime="@item.StartTime" data-endTime="@item.EndTime" style="background-color:@item.Color; color:white">@item.ShiftTypeName</option>  
+        }
+            <option value="Özel Vardiya">Özel Vardiya</option>
+        </select> <br />
+    <div id="SpecialShiftTypeBlock" style="display:none">
+        <hr />
+        Özel Vardiya Tipi: <br />
+        <input type="text" id="inputtedSpecialShiftType" name="NewShiftType" placeholder="Vardiya Tipi Adı" style="display: inline-block; vertical-align: middle;" />
+        <input type="color" id="inputtedSpecialColor" style="display: inline-block; vertical-align: middle;" /> <br />
+        
+    </div>
+    Vardiya Tipi Başlangıç Saati : <input type="time" id="inputtedScheduleShiftStartTime"/> <br />
+        Vardiya Tipi Bitiş Saati : <input type="time" id="inputtedScheduleShiftEndTime"/> <br />
+        <hr />
+        Planlanmış Vardiya Başlangıç Tarihi :<input type="date" id="inputtedStartDate" /> <br />
+        Planlanmış Vardiya Bitiş Tarihi :<input type="date" id="inputtedEndDate" /> <br />
+
+
+        <button id ="newButton" type= "submit" onclick="onClickSave()">Save</button>
+</form>
+
+        <script type="text/javascript">
+        var grid = $("#jqGrid");
+
+        $("#jqGrid").jqGrid({
+                url: '/Employee/GetEmployees',
+                mtype: "POST",
+                datatype: "json",
+                colnames: ["EmployeeId","EmployeeName", "DepartmentName", "PositionName"],
+                colModel: [
+                    { label: 'Id', name: 'EmployeeId', key:true,  width: "3%", search:false },
+                    { label: 'Name', name: 'EmployeeName', width: "30%", sorttype: function(cell, obj) {return turkishToLower(cell);}},
+                    { label: 'Department', name: 'DepartmentName', width: "30%", sorttype: function(cell, obj) {return turkishToLower(cell);} },
+                    { label: 'Position', name: 'PositionName', width: "30%", sorttype: function(cell, obj) {return turkishToLower(cell);} },
+                    {
+                        name: 'Settings',
+                        index: 'Settings',
+                        width: "7%",
+                        align: 'center',
+                        sortable: false,
+                        formatter: function(cellvalue, options, rowObject) {
+                            return '<button class="sel_btn" >Select</button>&nbsp;&nbsp;&nbsp;';
+                        }
+                    }
+
+                ],
+               
+                loadonce: true,
+                navOptions:{reloadGridOptions:{fromServer:true}},
+                multiSort: true,
+                multiSelect: true,
+                viewrecords: true,
+                search: true,
+                width: 800,
+                rowNum: 10,
+                pager: "#jqGridPager",
+
+        });
+            
+        $("#mySearchBox").keyup(function () {
+            var rules = [], i, cm,
+            postData = grid.jqGrid("getGridParam", "postData"),
+            colModel = grid.jqGrid("getGridParam", "colModel"),
+            searchText = $("#mySearchBox").val(),
+            l = colModel.length;
+
+            for (i = 0; i < l; i++) {
+                cm = colModel[i];
+                    if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                        rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                }
+            }
+
+            $.extend (postData, {
+                filters: {
+                    groupOp: "OR",
+                    rules: rules
+                }
+            });
+
+            grid.jqGrid("setGridParam", { search: true, postData: postData });
+            grid.trigger("reloadGrid", [{page: 1, current: true}]);
+            return false;
+        });
+
+        function turkishToLower(str) {
+            return str.replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/İ/g, 'i').replace(/I/g, 'i').toLocaleLowerCase('tr');
+        }
+
+
+
+        </script>

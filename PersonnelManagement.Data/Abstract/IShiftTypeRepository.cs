@@ -14,7 +14,7 @@ namespace PersonnelManagement.Data.Abstract
         Task<ShiftTypeDetailsDto> GetByName(string shiftTypeName);
         public Task<ShiftTypeDetailsDto> GetById(int shiftTypeId);
         List<ShiftTypeDetailsDto> GetAllShiftTypes();
-        public void Add(ShiftTypeDetailsDto shiftTypeDetailsDto);
+        public Task<ShiftType> Add(ShiftTypeDetailsDto shiftTypeDetailsDto);
         void Delete(int shiftTypeId, string modifiedByName);
         //void Update(DepartmentUpdateDto departmentUpdateDto);
     }

@@ -21,6 +21,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
+    <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
     
     <script>
 
@@ -49,81 +50,73 @@
       navLinks: true, // can click day/week names to navigate views
       selectable: true,
       selectMirror: true,
+      eventDisplay: "block",
       select: function(arg) {
-        var title = prompt('Event Title:');
-        if (title) {
-          calendar.addEvent({
-            title: title,
-            start: arg.start,
-            end: arg.end,
-            allDay: arg.allDay
-          })
-        }
+          $.ajax({
+                url: "/Schedule",
+                type: "GET",
+                success: function (result) {
+                    $("#addScheduleShiftModal.modal-content").html(result);
+                    document.getElementById("addScheduleShiftModal").style.display = "block";
+                }
+          });
+          document.getElementById("inputtedStartDate").value = arg.startStr;
+          document.getElementById("inputtedEndDate").value = arg.endStr;
+        //var title = prompt('Event Title:');
+        //if (title) {
+        //  calendar.addEvent({
+        //    title: title,
+        //    start: arg.start,
+        //    end: arg.end,
+        //    allDay: arg.allDay
+        //  })
+        //}
         calendar.unselect()
       },
       eventClick: function(arg) {
-        if (confirm('Are you sure you want to delete this event?')) {
-          arg.event.remove()
-        }
+          var eventId = arg.event.id
+          Swal.fire({
+            title: 'Hangi işlemi Yapmak istersiniz?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Edit',
+            denyButtonText: 'Delete',
+            customClass: {
+                actions: 'my-actions',
+                cancelButton: 'order-1 right-gap',
+                confirmButton: 'order-2',
+                denyButton: 'order-3',
+            }
+          }).then((result) => {
+          if (result.isConfirmed) {
+              Swal.fire('Edited', '', 'success')
+          } else if (result.isDenied) {
+              Swal.fire('Deleted', '', 'success')
+          }
+})
       },
       editable: true,
       dayMaxEvents: true, // allow "more" link when too many events
-      events: [
-        {
-          title: 'All Day Event',
-          start: '2023-01-01'
-        },
-        {
-          title: 'Long Event',
-          start: '2023-01-07',
-          end: '2023-01-10'
-        },
-        {
-          groupId: 999,
-          title: 'Repeating Event',
-          start: '2023-01-09T16:00:00'
-        },
-        {
-          groupId: 999,
-          title: 'Repeating Event',
-          start: '2023-01-16T16:00:00'
-        },
-        {
-          title: 'Conference',
-          start: '2023-01-11',
-          end: '2023-01-13'
-        },
-        {
-          title: 'Meeting',
-          start: '2023-01-12T10:30:00',
-          end: '2023-01-12T12:30:00'
-        },
-        {
-          title: 'Lunch',
-          start: '2023-01-12T12:00:00'
-        },
-        {
-          title: 'Meeting',
-          start: '2023-01-12T14:30:00'
-        },
-        {
-          title: 'Happy Hour',
-          start: '2023-01-12T17:30:00'
-        },
-        {
-          title: 'Dinner',
-          start: '2023-01-12T20:00:00'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2023-01-13T07:00:00'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2023-01-28'
-        }
-      ]
+      eventDidMount: function (info) {
+          var detailTitle = info.event._def.extendedProps.description;
+          var detailOwner = info.event._def.title
+            $(info.el).popover({
+                title: detailTitle,
+                placement: 'top',
+                trigger: 'hover',
+                content: detailOwner,
+                container: 'body'
+            });
+      },
+      eventRender: function(info) {
+      //  var tooltip = new Tooltip(info.el, {
+      //      title: info.event.extendedProps.description,
+      //      placement: 'top',
+      //      trigger: 'click',
+      //      container: 'body'
+      //  });
+      },
+      events: "/Schedule/GetCalendarDatas/"
     });
 
     calendar.render();
@@ -144,6 +137,111 @@
     margin: 0 auto;
   }
 
+  .popper,
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: #FFC107;
+  color: black;
+  width: 150px;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  padding: 10px;
+  text-align: center;
+}
+.style5 .tooltip {
+  background: #1E252B;
+  color: #FFFFFF;
+  max-width: 200px;
+  width: auto;
+  font-size: .8rem;
+  padding: .5em 1em;
+}
+.popper .popper__arrow,
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+}
+
+.tooltip .tooltip-arrow,
+.popper .popper__arrow {
+  border-color: #FFC107;
+}
+.style5 .tooltip .tooltip-arrow {
+  border-color: #1E252B;
+}
+.popper[x-placement^="top"],
+.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+.popper[x-placement^="top"] .popper__arrow,
+.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.popper[x-placement^="bottom"],
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+.tooltip[x-placement^="bottom"] .tooltip-arrow,
+.popper[x-placement^="bottom"] .popper__arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.tooltip[x-placement^="right"],
+.popper[x-placement^="right"] {
+  margin-left: 5px;
+}
+.popper[x-placement^="right"] .popper__arrow,
+.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+.popper[x-placement^="left"],
+.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
+.popper[x-placement^="left"] .popper__arrow,
+.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.my-actions { margin: 0 2em; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+.order-3 { order: 3; }
+
+.right-gap {
+  margin-right: auto;
+}
 </style>
 </head>
 <body>
@@ -154,6 +252,11 @@
         </div>
     </div>
 
+    <div id = "addScheduleShiftModal" class="modal" style="display:none">
+        <div class="modal-content">
+            @Html.Partial("_AddScheduleShiftPartial")
+        </div>
+    </div>
   <div class="container">
       <div id='calendar'></div>
   </div>
@@ -168,9 +271,24 @@
   </table>
   <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
                           <button id ="updateButton" >Update</button>
+
+   
 </body>
 <script type="text/javascript">
+
+    var rowId = -1
+    var selectedStId = -1
+
+    $(document).on('click', '.sel_btn', function () {
+
+            var row = $(this).closest('tr.jqgrow');
+            rowId = row.attr('id');
+            debugger;
+    });
+
     $(document).ready(function() {
+
+        var isSpecial = false;
         onClickNewAdd = function() {
             $.ajax({
                 url: "/Schedule",
@@ -183,38 +301,66 @@
         }
 
         onClickSave = function(){
-                var newShiftType = $('#inputtedShiftType').val()
-                var inputtedStartTime = $('#inputtedStartTime').val()
-                var inputtedEndTime = $('#inputtedEndTime').val()
+                var employeeId = rowId;
+                var inputtedStartDate = $('#inputtedStartDate').val()
+                var inputtedEndDate = $('#inputtedEndDate').val()
 
-                var startTime = moment(inputtedStartTime, 'HH:mm').format('HH:mm:ss');
-                var endTime = moment(inputtedEndTime, 'HH:mm').format('HH:mm:ss');
-                var inputtedColor = $('#inputtedColor').val()
-
-                debugger;
-                        var shiftTypeData = {
-                            InputtedShiftType: newShiftType,
-                            StartTime: startTime,
-                            EndTime: endTime,
-                            Color: inputtedColor,
-                        }
-                    debugger;
+                var scheduleShiftData = {
+                    EmployeeId: employeeId,
+                    IsSpecial: isSpecial,
+                    StartDate: inputtedStartDate,
+                    EndDate: inputtedEndDate,
+                        SpecialShiftType : $('#inputtedSpecialShiftType').text(),
+                        SpecialStartTime : $('#inputtedScheduleShiftStartTime').val(),
+                        SpecialEndTime : $('#inputtedScheduleShiftEndTime').val(),
+                        SpecialColor : $('#inputtedSpecialColor').val(),
+                    ShiftTypeId : selectedStId,
+                    
+                }
                     $.ajax({
                         type: "POST",
-                        url: "/Schedule/AddShiftType",
-                        data: shiftTypeData,
+                        url: "/Schedule/AddScheduleShift",
+                        data: scheduleShiftData,
                         success: function(data) {
 
-                            document.getElementById("addShiftTypeModal").style.display = "none";
-                            $('#inputtedShiftType').val('')
-                            $('#inputtedStartTime').val('')
-                            $('#inputtedEndTime').val('')
+                            document.getElementById("addScheduleShiftModal").style.display = "none";
                         },
                         error: function(error) {
                         console.log(error);
                         }
                     });
-            }
+                        
+                    
+        }
+
+        onShiftTypeChange = function(){
+                var selectedShiftType = $('#stlist option:selected').text()
+                var select = document.getElementById("stlist")
+                var selectedOption = select.options[select.selectedIndex];
+                var selectedStartTime = selectedOption.dataset.starttime;
+                var selectedEndTime = selectedOption.dataset.endtime;
+                selectedStId = selectedOption.dataset.id;
+                if(selectedShiftType == "Özel Vardiya"){
+                    document.getElementById("SpecialShiftTypeBlock").style.display = "block";
+                    isSpecial = true;
+                    $('#inputtedSpecialShiftType').val('')
+                    $('#inputtedSpecialColor').val('#000000')
+                    $('#inputtedScheduleShiftStartTime').val('')
+                    $('#inputtedScheduleShiftEndTime').val('')
+                    document.getElementById("inputtedScheduleShiftStartTime").disabled = false;
+                    document.getElementById("inputtedScheduleShiftEndTime").disabled = false;
+                }else{
+                    document.getElementById("SpecialShiftTypeBlock").style.display = "none";
+                    isSpecial = false;
+                    $('#inputtedScheduleShiftStartTime').val('')
+                    $('#inputtedScheduleShiftEndTime').val('')
+                    document.getElementById("inputtedScheduleShiftStartTime").disabled = true;
+                    document.getElementById("inputtedScheduleShiftEndTime").disabled = true;
+                    $('#inputtedScheduleShiftStartTime').val(selectedStartTime)
+                    $('#inputtedScheduleShiftEndTime').val(selectedEndTime)
+
+                }
+        };
     });
 </script>
 </html>

@@ -19,8 +19,9 @@ namespace PersonnelManagement.Data.Concrete.Repositories
         {
         }
 
-        public void Add(ShiftTypeDetailsDto shiftTypeDetailsDto)
+        public async Task<ShiftType> Add(ShiftTypeDetailsDto shiftTypeDetailsDto)
         {
+            
             using (PersonnelManagerContext context = new PersonnelManagerContext())
             {
                 var shiftType = new ShiftType();
@@ -36,7 +37,10 @@ namespace PersonnelManagement.Data.Concrete.Repositories
 
                 context.ShiftTypes.Add(shiftType);
                 context.SaveChanges();
+                return shiftType;
+
             }
+            
         }
 
         public async void Delete(int shiftTypeId, string modifiedByName)
@@ -82,7 +86,12 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     .Where(st => st.Id == shiftTypeId)
                     .Select(st => new ShiftTypeDetailsDto
                     {
-                        ShiftTypeId = st.Id
+                        ShiftTypeId = st.Id,
+                        ShiftTypeName = st.Name,
+                        StartTime = st.StartTime,
+                        EndTime = st.EndTime,
+                        Color = st.Color,
+
                     })
                     .FirstOrDefaultAsync();
 

@@ -13,24 +13,42 @@ namespace PersonnelManagement.Mvc.Controllers
     public class ScheduleController : Controller
     {
         ShiftTypeManager stm;
+        ScheduleShiftManager ssm;
 
         public ScheduleController()
         {
-            IShiftTypeRepository shiftTypeRepository = new EfShiftTypeRepository(new PersonnelManagerContext());
+            PersonnelManagerContext context = new PersonnelManagerContext();
+            IShiftTypeRepository shiftTypeRepository = new EfShiftTypeRepository(context);
+            IShiftRepository shiftRepository = new EfShiftRepository(context);
+            IEmployeeRepository employeeRepository = new EfEmployeeRepository(context);
+            IScheduleShiftRepository scheduleShiftRepository = new EfScheduleShiftRepository(context);
             stm = new ShiftTypeManager(shiftTypeRepository);
+            ssm = new ScheduleShiftManager(scheduleShiftRepository, shiftRepository, employeeRepository, shiftTypeRepository);
         }
         public IActionResult Index()
         {
             var result = stm.GetAll().Result;
+            
             if (result.ResultStatus == ResultStatus.Success)
             {
                 dynamic mymodel = new ExpandoObject();
                 mymodel.shiftTypes = stm.GetAll().Result.Data;
-
                 return View(mymodel);
 
             }
             return NotFound();
+        }
+
+        public JsonResult GetShiftTypes()
+        {
+            var data = stm.GetAll().Result.Data;
+            return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
+        }
+
+        public JsonResult GetCalendarDatas()
+        {
+            var data = ssm.GetAll().Result.Data;
+            return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
         [HttpPost]
@@ -47,6 +65,32 @@ namespace PersonnelManagement.Mvc.Controllers
 
 
             stm.Add(newSt);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult AddScheduleShift(AddScheduleShiftModel ssModel)
+        {
+            var newSs = new ScheduleShiftDetailsDto();
+            newSs.EmployeeId = ssModel.EmployeeId;
+            newSs.StartDate = ssModel.StartDate;
+            newSs.EndDate = ssModel.EndDate;
+            newSs.IsSpecial = ssModel.IsSpecial;
+            if(ssModel.IsSpecial == true)
+            {
+                newSs.SpecialShiftType = ssModel.SpecialShiftType;
+                newSs.SpecialStartTime = ssModel.SpecialStartTime;
+                newSs.SpecialEndTime = ssModel.SpecialEndTime;
+                newSs.SpecialColor = ssModel.SpecialColor;
+            }
+            else
+            {
+                newSs.ShiftTypeId = ssModel.ShiftTypeId;
+            }
+            newSs.ModifiedByName = "mvcSend";
+
+
+            var entity = ssm.Add(newSs);
 
             return RedirectToAction("Index");
         }
