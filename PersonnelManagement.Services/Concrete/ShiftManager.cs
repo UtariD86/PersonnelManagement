@@ -15,38 +15,40 @@ namespace PersonnelManagement.Services.Concrete
 {
     public class ShiftManager : IShiftService
     {
-        IShiftRepository _shiftRepository;
-        IEmployeeRepository _employeeRepository;
-        IShiftTypeRepository _shiftTypeRepository;
-        public ShiftManager(IShiftRepository shiftRepository, IEmployeeRepository employeeRepository, IShiftTypeRepository shiftTypeRepository)
+        //IShiftRepository _shiftRepository;
+        //IEmployeeRepository _employeeRepository;
+        //IShiftTypeRepository _shiftTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        public ShiftManager(/*IShiftRepository shiftRepository, IEmployeeRepository employeeRepository, IShiftTypeRepository shiftTypeRepository,*/ IUnitOfWork unitOfWork)
         {
-            _shiftRepository = shiftRepository;
-            _employeeRepository = employeeRepository;
-            _shiftTypeRepository = shiftTypeRepository;
+            //_shiftRepository = shiftRepository;
+            //_employeeRepository = employeeRepository;
+            //_shiftTypeRepository = shiftTypeRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IDataResult<ShiftDetailsDto>> Add(ShiftDetailsDto shiftDetailsDto)
         {
-            var employee = await _employeeRepository.GetById(shiftDetailsDto.EmployeeId);
+            var employee = await _unitOfWork.Employees.GetById(shiftDetailsDto.EmployeeId);
             var newShift = new ShiftDetailsDto()
             {
                 EmployeeId = shiftDetailsDto.EmployeeId,
                 ShiftTypeId = shiftDetailsDto.ShiftTypeId,
             };
 
-            _shiftRepository.Add(newShift);
+            _unitOfWork.Shifts.Add(newShift);
 
             return new DataResult<ShiftDetailsDto>(ResultStatus.Success, employee.Name + "için vardiya Başarıyla Eklendi", newShift);
         }
 
         public async Task<IResult> Delete(ShiftDetailsDto shiftDetailsDto)
         {
-            var shift = await _shiftRepository.GetById(shiftDetailsDto.ShiftId);
+            var shift = await _unitOfWork.Shifts.GetById(shiftDetailsDto.ShiftId);
 
 
             if (shift != null)
             {
-                _shiftRepository.Delete(shiftDetailsDto.ShiftId, shiftDetailsDto.ModifiedByName);
+                _unitOfWork.Shifts.Delete(shiftDetailsDto.ShiftId, shiftDetailsDto.ModifiedByName);
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili vardiya bulunamadı");
@@ -54,7 +56,7 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IDataResult<List<ShiftDetailsDto>>> GetAll()
         {
-            var shifts = _shiftRepository.GetAllShifts();
+            var shifts = _unitOfWork.Shifts.GetAllShifts();
             if (shifts.Count > -1)
             {
                 return new DataResult<List<ShiftDetailsDto>>(ResultStatus.Success, shifts);
@@ -64,10 +66,10 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IResult> Update(ShiftDetailsDto shiftDetailsDto)
         {
-            var shiftType = _shiftTypeRepository.GetById(shiftDetailsDto.ShiftTypeId);
-            var employee = _employeeRepository.GetById(shiftDetailsDto.EmployeeId);
+            var shiftType = _unitOfWork.ShiftTypes.GetById(shiftDetailsDto.ShiftTypeId);
+            var employee = _unitOfWork.Employees.GetById(shiftDetailsDto.EmployeeId);
 
-            var shift = _shiftRepository.GetById(shiftDetailsDto.ShiftId);
+            var shift = _unitOfWork.Shifts.GetById(shiftDetailsDto.ShiftId);
 
             if (shift != null)
             {
@@ -79,7 +81,7 @@ namespace PersonnelManagement.Services.Concrete
                 newShift.EmployeeId= employee.Id;
                 newShift.ModifiedByName = shiftDetailsDto.ModifiedByName;
 
-                //_shiftRepository.Update(newShift);
+                _unitOfWork.Shifts.Update(newShift);
                 return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
             }
             return new Result(ResultStatus.Error, "Seçili vardiya güncellenemedi");

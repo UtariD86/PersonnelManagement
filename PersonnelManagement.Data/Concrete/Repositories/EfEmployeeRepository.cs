@@ -14,14 +14,17 @@ namespace PersonnelManagement.Data.Concrete.Repositories
 {
     public class EfEmployeeRepository : EfEntityRepositoryBase<Employee>, IEmployeeRepository
     {
-        public EfEmployeeRepository(DbContext context) : base(context)
+        private readonly PersonnelManagerContext context;
+
+        public EfEmployeeRepository(PersonnelManagerContext _context) : base(_context)
         {
+            context = _context;
         }
 
         public void Add(EmployeeDetailsDto employeeDetailsDto)
         {
-            using(PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using(PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var employee = new Employee();
                 var department = context.Departments.FirstOrDefault(d => d.Name == employeeDetailsDto.DepartmentName);
                 var position = context.Positions.FirstOrDefault(p => p.Name == employeeDetailsDto.PositionName);
@@ -38,13 +41,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Employees.Add(employee);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         public List<EmployeeDetailsDto> GetAllEmployees()
         {
-            using(PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using(PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var employees = from emp in context.Employees
                                 join d in context.Departments on emp.DepartmentId equals d.Id
                                 join p in context.Positions on emp.PositionId equals p.Id
@@ -57,13 +60,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                     PositionName = p.Name
                                 };
                 return employees.ToList();
-            }
+            //}
         }
 
         public async void Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto)
         {
-            using(PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using(PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var employee = await context.Employees.FindAsync(employeeDetailsDto.EmployeeId);
                 if (employee != null)
                 {
@@ -74,14 +77,14 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Employees.Update(employee);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         public async Task<EmployeeUpdateDto> GetById(int employeeId)
         {
             
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var employee = await context.Employees
                     .Where(e => e.Id == employeeId)
                     .Select(e => new EmployeeUpdateDto
@@ -94,13 +97,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     .FirstOrDefaultAsync();
 
                 return employee;
-            }
+            //}
         }
 
         public async void Update(EmployeeUpdateDto employeeUpdateDto)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var employee = await context.Employees.FindAsync(employeeUpdateDto.Id);
                 if (employee != null)
                 {
@@ -119,7 +122,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Employees.Update(employee);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
     }
 }

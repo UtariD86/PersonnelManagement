@@ -19,22 +19,23 @@ namespace PersonnelManagement.Services.Concrete
 {
     public class EmployeeManager : IEmployeeService
     {
-        IEmployeeRepository _employeeRepository;
-        IDepartmentRepository _departmentRepository;
-        IPositionRepository _positionRepository;
-
-        public EmployeeManager(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository, IPositionRepository positionRepository)
+        //IEmployeeRepository _employeeRepository;
+        //IDepartmentRepository _departmentRepository;
+        //IPositionRepository _positionRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        public EmployeeManager(IUnitOfWork unitOfWork/*IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository, IPositionRepository positionRepository*/)
         {
-            _employeeRepository = employeeRepository;
-            _departmentRepository = departmentRepository;
-            _positionRepository = positionRepository;
+            //_employeeRepository = employeeRepository;
+            //_departmentRepository = departmentRepository;
+            //_positionRepository = positionRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IDataResult<EmployeeDetailsDto>> Add(EmployeeDetailsDto employeeDetailsDto)
         {
             //isme göre departman ve pozisyon getir fonksiyona dtodan gelen departman ve pozisyon adını gönder ama önce getbyname yazmalsıın her biri için
-            var department = await _departmentRepository.GetByName(employeeDetailsDto?.DepartmentName);
-            var position = await _positionRepository.GetByName(employeeDetailsDto?.PositionName);
+            var department = await _unitOfWork.Departments.GetByName(employeeDetailsDto?.DepartmentName);
+            var position = await _unitOfWork.Position.GetByName(employeeDetailsDto?.PositionName);
 
             if (department == null)
             {
@@ -53,7 +54,7 @@ namespace PersonnelManagement.Services.Concrete
                 PositionName = position.PositionName
             };
 
-            _employeeRepository.Add(employee);
+            _unitOfWork.Employees.Add(employee);
 
             return new DataResult<EmployeeDetailsDto>(ResultStatus.Success, employee.EmployeeName + "Başarıyla Eklendi", employee);
             //her biri için null ise hata döndür değilse isim idler ve createdbyname i eşitle ve ekleme fonksiyonunu çağır. succes döndür
@@ -62,12 +63,12 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IResult> Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto)
         {
-            var employee = _employeeRepository.GetById(employeeDetailsDto.EmployeeId);
+            var employee = _unitOfWork.Employees.GetById(employeeDetailsDto.EmployeeId);
 
             
             if (employee != null)
             {
-                _employeeRepository.Delete(employeeDetailsDto);
+                _unitOfWork.Employees.Delete(employeeDetailsDto);
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
@@ -75,7 +76,7 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IDataResult<List<EmployeeDetailsDto>>> GetAll()
         {
-            var employees = _employeeRepository.GetAllEmployees();
+            var employees = _unitOfWork.Employees.GetAllEmployees();
             if (employees.Count > -1)
             {
                 return new DataResult<List<EmployeeDetailsDto>>(ResultStatus.Success, employees);
@@ -86,10 +87,10 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IResult> Update(EmployeeDetailsDto employeeDetailsDto)
         {
-            var department = await _departmentRepository.GetByName(employeeDetailsDto?.DepartmentName);
-            var position = await _positionRepository.GetByName(employeeDetailsDto?.PositionName);
+            var department = await _unitOfWork.Departments.GetByName(employeeDetailsDto?.DepartmentName);
+            var position = await _unitOfWork.Position.GetByName(employeeDetailsDto?.PositionName);
 
-            var employee = _employeeRepository.GetById(employeeDetailsDto.EmployeeId);
+            var employee = _unitOfWork.Employees.GetById(employeeDetailsDto.EmployeeId);
 
             if (employeeDetailsDto.EmployeeName == null) 
             {
@@ -123,7 +124,7 @@ namespace PersonnelManagement.Services.Concrete
                 }
                 newEmployee.ModifiedByName = employeeDetailsDto.ModifiedByName;
 
-                _employeeRepository.Update(newEmployee);
+                _unitOfWork.Employees.Update(newEmployee);
                 return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan güncellenemedi");

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using PersonnelManagement.Data.Concrete.Mappings;
 using PersonnelManagement.Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -8,12 +10,25 @@ using System.Threading.Tasks;
 
 namespace PersonnelManagement.Data.Concrete.Contexts
 {
-    public class PersonnelManagerContext : DbContext
+    public class PersonnelManagerContext : IdentityDbContext<User,Role,int,UserClaim,UserRole,UserLogin,RoleClaim,UserToken>
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+        public PersonnelManagerContext(DbContextOptions<PersonnelManagerContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=PersonnelManager;Integrated Security=true");
         }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=PersonnelManager;Integrated Security=true");
+        //    }
+        //}
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    //optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=PersonnelManager;Integrated Security=true");
+        //}
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -82,6 +97,15 @@ namespace PersonnelManagement.Data.Concrete.Contexts
                .WithMany(rs => rs.Requests)
                .HasForeignKey(r => r.ShiftId)
                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.ApplyConfiguration(new RoleMap());
+            modelBuilder.ApplyConfiguration(new UserMap());
+            modelBuilder.ApplyConfiguration(new RoleClaimMap());
+            modelBuilder.ApplyConfiguration(new UserClaimMap());
+            modelBuilder.ApplyConfiguration(new UserLoginMap());
+            modelBuilder.ApplyConfiguration(new UserRoleMap());
+            modelBuilder.ApplyConfiguration(new UserTokenMap());
+
         }
     }
 }

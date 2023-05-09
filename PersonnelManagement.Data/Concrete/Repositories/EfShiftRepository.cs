@@ -8,16 +8,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using zurafworks.Shared.Data.Concrete.EntityFramework;
 
 namespace PersonnelManagement.Data.Concrete.Repositories
 {
-    public class EfShiftRepository : IShiftRepository
+    public class EfShiftRepository : EfEntityRepositoryBase<Shift>, IShiftRepository
     {
-        private readonly PersonnelManagerContext _db;
+        private readonly PersonnelManagerContext context;
 
-        public EfShiftRepository(PersonnelManagerContext db)
+        public EfShiftRepository(PersonnelManagerContext _context) : base(_context)
         {
-            _db = db;
+            context = _context;
         }
 
         public async Task<Shift> Add(ShiftDetailsDto shiftDetailsDto)
@@ -32,7 +33,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                 shift.ModifiedDate = DateTime.Now;
 
                 //context.Shifts.Add(shift);
-                _db.Set<Shift>().Add(shift);
+                context.Set<Shift>().Add(shift);
 
                 return shift;
 
@@ -40,8 +41,8 @@ namespace PersonnelManagement.Data.Concrete.Repositories
 
         public async void Delete(int shiftId, string modifiedByName)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var shift = await context.Shifts.FindAsync(shiftId);
                 if (shift != null)
                 {
@@ -52,13 +53,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Shifts.Update(shift);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         public List<ShiftDetailsDto> GetAllShifts()
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var shifts = from s in context.Shifts
                                 join e in context.Employees on s.EmployeeId equals e.Id
                                 join st in context.ShiftTypes on s.ShiftTypeId equals st.Id
@@ -79,13 +80,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                     PositionName = p.Name,
                                 };
                 return shifts.ToList();
-            }
+            //}
         }
 
         public async Task<ShiftDetailsDto> GetById(int shiftId)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var shift = await context.Shifts
                     .Where(s => s.Id == shiftId)
                     .Select(s => new Shift
@@ -104,13 +105,33 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                 };
 
                 return shiftDetails;
-            }
+            //}
         }
 
         public async Task<int> SaveAsync()
         {
-            return await _db.SaveChangesAsync();
+            return await context.SaveChangesAsync();
          
+        }
+
+        public async void Update(ShiftDetailsDto shiftDetailsDto)
+        {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
+                var shift = await context.Shifts.FindAsync(shiftDetailsDto.ShiftId);
+                if (shift != null)
+                {
+                    shift.EmployeeId = shiftDetailsDto.EmployeeId;
+                    shift.ShiftTypeId = shiftDetailsDto.ShiftTypeId;
+                    shift.CreatedByName = "try";
+                    shift.ModifiedByName = "try";
+                    shift.CreatedDate = DateTime.Now;
+                    shift.ModifiedDate = DateTime.Now;
+
+                    context.Shifts.Update(shift);
+                    context.SaveChanges();
+                }
+            //}
         }
     }
 }

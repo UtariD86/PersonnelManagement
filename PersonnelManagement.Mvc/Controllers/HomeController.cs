@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonnelManagement.Mvc.Models;
 using System.Diagnostics;
 
@@ -12,7 +13,7 @@ namespace PersonnelManagement.Mvc.Controllers
         {
             _logger = logger;
         }
-
+        [Authorize(Roles = "Admin,User")]
         public IActionResult Index()
         {
             return View();

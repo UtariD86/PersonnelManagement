@@ -14,6 +14,6 @@ namespace PersonnelManagement.Services.Abstract
         Task<IDataResult<List<CalendarDto>>> GetAll();
         Task<IDataResult<ScheduleShiftDetailsDto>> Add(ScheduleShiftDetailsDto scheduleShiftDetailsDto);
         Task<IResult> Delete(int scheduleShiftId, string modifiedByName);
-        //Task<IResult> Update(ScheduleShiftDetailsDto scheduleShiftDetailsDto);
+        Task<IResult> Update(ScheduleShiftDetailsDto scheduleShiftDetailsDto);
     }
 }

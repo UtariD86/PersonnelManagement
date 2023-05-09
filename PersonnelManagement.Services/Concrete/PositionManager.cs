@@ -16,19 +16,20 @@ namespace PersonnelManagement.Services.Concrete
 {
     public class PositionManager : IPositionService
     {
-        private readonly IPositionRepository _positionRepository;
-        private readonly IDepartmentRepository _departmentRepository;
-
-        public PositionManager(IPositionRepository positionRepository, IDepartmentRepository departmentRepository)
+        //private readonly IPositionRepository _positionRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        public PositionManager(/*IPositionRepository positionRepository, IDepartmentRepository departmentRepository*/ IUnitOfWork unitOfWork)
         {
-            _positionRepository = positionRepository;
-            _departmentRepository = departmentRepository;
+            //_positionRepository = positionRepository;
+            //_departmentRepository = departmentRepository;
+            _unitOfWork= unitOfWork;
         }
 
         public async Task<IDataResult<PositionDetailsDto>> Add(PositionDetailsDto positionDetailsDto)
         {
-            var department = await _departmentRepository.GetByName(positionDetailsDto?.DepartmentName);
-            var position = await _positionRepository.GetByName(positionDetailsDto?.PositionName);
+            var department = await _unitOfWork.Departments.GetByName(positionDetailsDto?.DepartmentName);
+            var position = await _unitOfWork.Position.GetByName(positionDetailsDto?.PositionName);
 
             if (department == null)
             {
@@ -46,7 +47,7 @@ namespace PersonnelManagement.Services.Concrete
                 PositionName = positionDetailsDto.PositionName
             };
 
-            _positionRepository.Add(newPosition);
+            _unitOfWork.Position.Add(newPosition);
 
             return new DataResult<PositionDetailsDto>(ResultStatus.Success, newPosition.PositionName + "Başarıyla Eklendi", newPosition);
 
@@ -54,12 +55,12 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IResult> Delete(int positionId, string modifiedByName)
         {
-            var position = _positionRepository.GetById(positionId);
+            var position = _unitOfWork.Position.GetById(positionId);
 
 
             if (position != null)
             {
-                _positionRepository.Delete(positionId, modifiedByName);
+                _unitOfWork.Position.Delete(positionId, modifiedByName);
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
@@ -67,7 +68,7 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IDataResult<List<PositionDetailsDto>>> GetAll()
         {
-            var positions = _positionRepository.GetAllPositions();
+            var positions = _unitOfWork.Position.GetAllPositions();
             if (positions.Count > -1)
             {
                 return new DataResult<List<PositionDetailsDto>>(ResultStatus.Success, positions);
@@ -77,9 +78,9 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IResult> Update(PositionDetailsDto positionDetailsDto)
         {
-            var department = await _departmentRepository.GetByName(positionDetailsDto?.DepartmentName);
+            var department = await _unitOfWork.Departments.GetByName(positionDetailsDto?.DepartmentName);
 
-            var position = _positionRepository.GetById(positionDetailsDto.PositionId);
+            var position = _unitOfWork.Position.GetById(positionDetailsDto.PositionId);
 
             if (positionDetailsDto.PositionName == null)
             {
@@ -104,7 +105,7 @@ namespace PersonnelManagement.Services.Concrete
              
                 newPosition.ModifiedByName = positionDetailsDto.ModifiedByName;
 
-                _positionRepository.Update(newPosition);
+                _unitOfWork.Position.Update(newPosition);
                 return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
             }
             return new Result(ResultStatus.Error, "Seçili pozisyon güncellenemedi");

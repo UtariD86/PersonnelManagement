@@ -1,8 +1,7 @@
 -Yapýlacaklar-
->Pop uplar sweetalert ile deðiþtirilecek
 >Silme iþlemi sýrasýnda iliþkili bir veri silinirken iliþkili olduðu diðer verilerle ilgili uyarý ve deðiþiklik ekraný gelecek.(Örneðin Bir pozisyon silinirken o pozisyona sahip Çalýþanlar listelenip "bu çalýþanlar da pozisyon ile birlikte silinecek çalýþanlarýn pozisyonlarýný deðiþtirmek ister misiniz?" Þeklinde uyaracak).OnDelete(DeleteBehavior.NoAction);
->Join yaparken PositionId tekrarý düzeltilecek
+>Join yaparken PositionId tekrarý düzeltilecek/fluent map-mapperlar ayrý bir yerde baþtan yazýlacak
 >Alfabetik sýralama yaparken kullanýlan regex noktalý ve noktasýz harfler arasýndaki hiyerarþiyi düzgün yansýtýp doðru sýralanmasý için gözden geçirilip düzeltilecek
->UnitOfWork Kavranýp projede aktif þekilde kullanýlacak
->Request,Schedule,Shift Entityleri ile genel bir program mantýðý kurulup projeye dahil edilecek. Proje tam olarak þekillenmeye baþlayacak
->Genel mantýk tamamlandýktan sonra Authantication ve Authorize araþtýrýlýp projeye uygulanacak
+>UnitOfWork projede aktif þekilde kullanýldý fakat kaydetme ile ilgili problemler var düzeltilecek
+>Request mantýðý kurulup projeye dahil edilecek. 
+>Authantication ve Authorize kurallarý deðiþtirilecek

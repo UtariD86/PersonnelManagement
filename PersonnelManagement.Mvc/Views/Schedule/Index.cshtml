@@ -14,6 +14,43 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+
+    <style>
+
+#jqGrid2 .ui-jqgrid tr.jqgrow {
+    
+    border-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid td {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow:hover {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow td {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow.ui-state-highlight {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow.ui-state-highlight:hover {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-widget-content,
+       #jqGrid2 #grid tr:hover{  
+            background:none;
+            border:none;
+            color:white;
+             text-shadow: 2px 2px 5px black;
+        }
+    </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -22,7 +59,24 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
-    
+     <script>
+    $(function() {
+      var allGrids = $("table[id^='jqGrid']");
+
+      allGrids.each(function() {
+        var grid = $(this);
+        grid.on("gridComplete", function() {
+          var rows = grid.jqGrid('getDataIDs');
+          for (var i = 0; i < rows.length; i++) {
+            var rowData = grid.jqGrid('getRowData', rows[i]);
+            var color = rowData.Color;
+            $('#' + rows[i]).css('background-color', color);
+          }
+        });
+      });
+    });
+  </script>
+
     <script>
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -75,11 +129,12 @@
       },
       eventClick: function(arg) {
           var eventId = arg.event.id
+          var modifiedByName = "clicker"
           Swal.fire({
             title: 'Hangi işlemi Yapmak istersiniz?',
             showDenyButton: true,
             showCancelButton: true,
-            confirmButtonText: 'Edit',
+            confirmButtonText: 'Show Details',
             denyButtonText: 'Delete',
             customClass: {
                 actions: 'my-actions',
@@ -88,10 +143,73 @@
                 denyButton: 'order-3',
             }
           }).then((result) => {
-          if (result.isConfirmed) {
-              Swal.fire('Edited', '', 'success')
-          } else if (result.isDenied) {
-              Swal.fire('Deleted', '', 'success')
+          if (result.isConfirmed) {///////////////////////////////////////////////////Update
+              var detailTitle = arg.event._def.extendedProps.description;
+              var detailOwner = arg.event._def.title;
+              var detailStart = moment(arg.event.start).format('DD/MM/yyyy');
+              var detailEnd = moment(arg.event.end).format('DD/MM/yyyy');
+              debugger;
+              Swal.fire({
+                title: '<strong style="font-size: 25px;">'+ detailOwner +'</strong>',
+                icon: 'question',
+                html:
+                '<b>Start Date: </b> ' + detailStart +
+                '<br/><b>End Date: </b> ' + detailEnd +
+                '<br/><b>Hours: </b>' + detailTitle,
+                showCloseButton: false,
+                showCancelButton: false,
+                focusConfirm: false,
+                confirmButtonText:
+                '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+                cancelButtonText:
+                '<i class="fa fa-thumbs-down"></i>',
+                cancelButtonAriaLabel: 'Thumbs down'
+              })
+          } else if (result.isDenied) {//////////////////////////////////////////////Delete
+              var DeleteScheduleShiftData = {
+                    ScheduleShiftId : eventId,
+                    ModifiedByName: modifiedByName
+
+              }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Schedule/DeleteScheduleShift",
+                            data: DeleteScheduleShiftData,
+                            success: function(data) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                                )
+                                onNeedReload();
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+
+
+
+                    }
+                })
+              //Swal.fire('Deleted', '', 'success')
           }
 })
       },
@@ -243,12 +361,24 @@
   margin-right: auto;
 }
 </style>
+
+<style>
+        .ui-jqgrid {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 <body>
     
     <div id = "addShiftTypeModal" class="modal" style="display:none">
         <div class="modal-content">
             @Html.Partial("_AddShiftTypePartial")
+        </div>
+    </div>
+
+    <div id = "updateShiftTypeModal" class="modal" style="display:none">
+        <div class="modal-content">
+            @Html.Partial("_UpdateShiftTypePartial")
         </div>
     </div>
 
@@ -260,7 +390,7 @@
   <div class="container">
       <div id='calendar'></div>
   </div>
-  <table>
+@*  <table>
       <tr>
           <th>Vardiya Tipleri</th>
       </tr>
@@ -269,23 +399,164 @@
                                         <tr><td style="background-color:@item.Color; color:white"><span>&#8594;</span> @item.StartTime.ToString("hh\\:mm") - @item.EndTime.ToString("hh\\:mm") ~ @item.ShiftTypeName </td></tr>
         }
   </table>
-  <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
-                          <button id ="updateButton" >Update</button>
+ *@
 
-   
+    <table id="jqGrid2" ></table>
+        <div id="jqGridPager" style="width:100%; height:auto; margin: auto;"></div>    <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
+                          
 </body>
 <script type="text/javascript">
 
-    var rowId = -1
-    var selectedStId = -1
+    var grid2 = $("#jqGrid2");
+    var selectedStRowId = -1;
+    var row;
+    var rowId;
+    var rowName;
+    var rowSTime;
+    var rowETime;
+    var rowColor;
 
-    $(document).on('click', '.sel_btn', function () {
+    function onNeedReload(){
+                debugger;
+                grid2.setGridParam({ datatype: 'json' });
+                debugger;
+                var pageCount = grid2.getGridParam("lastpage");
+                for (let i = 0; i < pageCount; i++) {
+                        grid2.trigger("reloadGrid", [{page: i, current: true}]);
+                }
 
-            var row = $(this).closest('tr.jqgrow');
-            rowId = row.attr('id');
-            debugger;
+
+        }
+
+    $(document).ready(function () {
+        debugger;
+    grid2.jqGrid({
+        url: "Schedule/GetShiftTypes",
+        datatype: "json",
+        colModel: [
+            { label: "Id", name: "ShiftTypeId", key: true, width:25},
+            { label: "Vardiya Adı", name: "ShiftTypeName", width: 80 },
+            { label: "Başlangıç Saati", name: "StartTime", width: 50 },
+            { label: "Bitiş Saati", name: "EndTime", width: 50 },
+            { label: "Renk Kodu", name: "Color", width:30},
+            {
+                        name: 'Settings',
+                        index: 'Settings',
+                        width: "40%",
+                        align: 'center',
+                        sortable: false,
+                        formatter: function(cellvalue, options, rowObject) {
+                            return '<button class="StEdit_btn" >Edit</button>&nbsp;&nbsp;&nbsp;' + 
+                                    '<button href="#" class="StDel_btn" >Delete</button>';
+                        }
+                    }
+        ],
+        width: '800',
+        height:'auto',
+        rowNum: 20,
+        pager: false,//"#jqGridPager",
+        loadonce:true,
+        gridComplete: function() {
+            var rows = grid2.jqGrid('getDataIDs');
+            for (var i = 0; i < rows.length; i++) {
+                var rowData = grid2.jqGrid('getRowData', rows[i]);
+                var color = rowData.Color;
+                 $('#gbox_' + grid2.attr('id') + ' #' + rows[i]).css('background-color', color);
+            }
+        }
     });
+});
 
+
+
+       $(document).on('click', '.StEdit_btn', function () {
+
+                    var row = $(this).closest('tr.jqgrow');
+                    selectedStRowId = row.attr('id');
+                    var rowId = selectedStRowId
+                    var rowName = row.find('td:eq(1)').text();
+                    var rowSTime = row.find('td:eq(2)').text();
+                    var rowETime = row.find('td:eq(3)').text();
+                    var rowColor = row.find('td:eq(4)').text();
+                    debugger;
+                    if(selectedStRowId != -1){
+                debugger;
+                $.ajax({
+                url: "/Schedule",
+                type: "GET",
+                success: function (result) {
+                    var myModel = @Html.Raw(Json.Serialize(Model));
+                    debugger;
+                    currentId = rowId;
+                    var modifiedByName = "mvcDefault"; //şimdilik
+
+                    document.getElementById("updatedShiftType").value = rowName;
+                    document.getElementById("updatedStartTime").value = rowSTime;
+                    document.getElementById("updatedEndTime").value = rowETime;
+                    document.getElementById("updatedColor").value = rowColor;
+                    debugger;
+                    $("#updateShiftTypeModal.modal-content").html(result);
+                    document.getElementById("updateShiftTypeModal").style.display = "block";
+                }
+            });
+            }
+       });
+
+       $(document).on('click', '.StDel_btn', function () {
+                debugger;
+                var row = $(this).closest('tr.jqgrow');
+                var rowId = row.attr('id');
+                
+                debugger;
+
+                var modifiedByName = "mvcDefault" //şimdilik
+
+                
+                var DeleteShiftData = {
+                    ShiftTypeId : rowId,
+                    ModifiedByName: modifiedByName
+
+                }
+                document.getElementById("updateShiftTypeModal").style.display = "none";
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Schedule/DeleteShiftType",
+                            data: DeleteShiftData,
+                            success: function(data) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                                )
+                                onNeedReload();
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+
+
+
+                    }
+                })
+                debugger;
+        });
     $(document).ready(function() {
 
         var isSpecial = false;
@@ -301,66 +572,90 @@
         }
 
         onClickSave = function(){
-                var employeeId = rowId;
-                var inputtedStartDate = $('#inputtedStartDate').val()
-                var inputtedEndDate = $('#inputtedEndDate').val()
+            debugger;
+                var inputtedShiftType = $('#inputtedShiftType').val()
+                var newStartTime = $('#inputtedStartTime').val()
+                var newEndTime = $('#inputtedEndTime').val()
+                var newColor =  $('#inputtedColor').val()
+                debugger;
+                var NewShiftData = {
+                        InputtedShiftType : inputtedShiftType,
+                        StartTime : newStartTime,
+                        EndTime : newEndTime,
+                        Color : newColor,
 
-                var scheduleShiftData = {
-                    EmployeeId: employeeId,
-                    IsSpecial: isSpecial,
-                    StartDate: inputtedStartDate,
-                    EndDate: inputtedEndDate,
-                        SpecialShiftType : $('#inputtedSpecialShiftType').text(),
-                        SpecialStartTime : $('#inputtedScheduleShiftStartTime').val(),
-                        SpecialEndTime : $('#inputtedScheduleShiftEndTime').val(),
-                        SpecialColor : $('#inputtedSpecialColor').val(),
-                    ShiftTypeId : selectedStId,
-                    
                 }
+                debugger;
                     $.ajax({
                         type: "POST",
-                        url: "/Schedule/AddScheduleShift",
-                        data: scheduleShiftData,
+                        url: "/Schedule/AddShiftType",
+                        data: NewShiftData,
                         success: function(data) {
-
-                            document.getElementById("addScheduleShiftModal").style.display = "none";
+                            onNeedReload();
+                            document.getElementById("addShiftTypeModal").style.display = "none";
                         },
                         error: function(error) {
                         console.log(error);
                         }
                     });
-                        
-                    
+
+                    debugger;
         }
 
-        onShiftTypeChange = function(){
-                var selectedShiftType = $('#stlist option:selected').text()
-                var select = document.getElementById("stlist")
-                var selectedOption = select.options[select.selectedIndex];
-                var selectedStartTime = selectedOption.dataset.starttime;
-                var selectedEndTime = selectedOption.dataset.endtime;
-                selectedStId = selectedOption.dataset.id;
-                if(selectedShiftType == "Özel Vardiya"){
-                    document.getElementById("SpecialShiftTypeBlock").style.display = "block";
-                    isSpecial = true;
-                    $('#inputtedSpecialShiftType').val('')
-                    $('#inputtedSpecialColor').val('#000000')
-                    $('#inputtedScheduleShiftStartTime').val('')
-                    $('#inputtedScheduleShiftEndTime').val('')
-                    document.getElementById("inputtedScheduleShiftStartTime").disabled = false;
-                    document.getElementById("inputtedScheduleShiftEndTime").disabled = false;
-                }else{
-                    document.getElementById("SpecialShiftTypeBlock").style.display = "none";
-                    isSpecial = false;
-                    $('#inputtedScheduleShiftStartTime').val('')
-                    $('#inputtedScheduleShiftEndTime').val('')
-                    document.getElementById("inputtedScheduleShiftStartTime").disabled = true;
-                    document.getElementById("inputtedScheduleShiftEndTime").disabled = true;
-                    $('#inputtedScheduleShiftStartTime').val(selectedStartTime)
-                    $('#inputtedScheduleShiftEndTime').val(selectedEndTime)
+
+
+        onClickUpdate = function(){
+            debugger;
+                var inputtedShiftType = $('#updatedShiftType').val()
+                var newStartTime = $('#updatedStartTime').val()
+                var newEndTime = $('#updatedEndTime').val()
+                var newColor =  $('#updatedColor').val()
+                debugger;
+                var UpdatedShiftData = {
+                    ShiftTypeId : selectedStRowId,
+                    InputtedShiftType : inputtedShiftType,
+                    StartTime : newStartTime,
+                    EndTime : newEndTime,
+                    Color : newColor,
 
                 }
-        };
+                document.getElementById("updateShiftTypeModal").style.display = "none";
+
+                Swal.fire({
+                    title: 'Are you sure about that?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if (result.isConfirmed){
+                        $.ajax({
+                        type: "POST",
+                        url: "/Schedule/UpdateShiftType",
+                        data: UpdatedShiftData,
+                        success: function(data) {
+                            Swal.fire(
+                                    'Updated!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                            )
+                            onNeedReload();
+
+                        },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+                    }
+                });
+        }
+        
     });
 </script>
 </html>

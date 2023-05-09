@@ -4,6 +4,7 @@ using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Data.Concrete.Repositories;
 using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Mvc.Models;
+using PersonnelManagement.Services.Abstract;
 using PersonnelManagement.Services.Concrete;
 using System.Dynamic;
 using zurafworks.Shared.Utilities.Results.ComplexTypes;
@@ -12,15 +13,18 @@ namespace PersonnelManagement.Mvc.Controllers
 {
     public class PositionController : Controller
     {
-        PositionManager pm;
-        DepartmentManager dm;
-        public PositionController()
+        //PositionManager pm;
+        //DepartmentManager dm;
+        private readonly IPositionService pm;
+        private readonly IDepartmentService dm;
+        public PositionController(IPositionService _pm, IDepartmentService _dm)
         {
-            IPositionRepository positionRepository = new EfPositionRepository(new PersonnelManagerContext());
-            IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
-            pm = new PositionManager(positionRepository, departmentRepository);
-            dm = new DepartmentManager(departmentRepository);
-
+            //IPositionRepository positionRepository = new EfPositionRepository(new PersonnelManagerContext());
+            //IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
+            //pm = new PositionManager(positionRepository, departmentRepository);
+            //dm = new DepartmentManager(departmentRepository);
+            pm= _pm;
+            dm= _dm;
         }
 
 

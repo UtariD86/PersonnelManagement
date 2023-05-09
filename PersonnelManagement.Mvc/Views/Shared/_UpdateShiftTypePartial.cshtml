@@ -1,0 +1,53 @@
+﻿@using PersonnelManagement.Entities.Concrete
+@using PersonnelManagement.Entities.DTOs;
+@using PersonnelManagement.Mvc
+@model dynamic
+
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}
+
+</style>
+
+<form id ="newForm" method="post" onsubmit="return false">
+        <input type="text" id="updatedShiftType" name= = "SelectedShiftType" placeholder ="Düzenlenecek Vardiya Tipi" /> <br />
+        Vardiya Tipi Başlangıç Saati : <input type="time" id="updatedStartTime"/> <br />
+        Vardiya Tipi Bitiş Saati : <input type="time" id="updatedEndTime"/> <br />
+        Vardiya Tipi Rengi : <input type="color" id="updatedColor"/> <br />
+
+        <button id ="newButton" type= "submit" onclick="onClickUpdate()">Update</button>
+</form>
+
+
+        <script type="text/javascript">
+
+
+        
+
+
+        function turkishToLower(str) {
+            return str.replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/İ/g, 'i').replace(/I/g, 'i').toLocaleLowerCase('tr');
+        }
+
+
+
+        </script>

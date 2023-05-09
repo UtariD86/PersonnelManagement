@@ -32,7 +32,7 @@
     <div id="container" style="position: relative;">
         
         <input type="text" id="mySearchBox"  placeholder="Arama..." class="searchBar">
-        <table id="jqGrid" ></table>
+        <table id="jqGridAddSS" ></table>
         <div id="jqGridPager" style="width:100%; height:auto; margin: auto;"></div>
         
     </div>
@@ -63,13 +63,24 @@
         Planlanmış Vardiya Bitiş Tarihi :<input type="date" id="inputtedEndDate" /> <br />
 
 
-        <button id ="newButton" type= "submit" onclick="onClickSave()">Save</button>
+        <button id ="newButton" type= "submit" onclick="onClickSave2()">Save</button>
 </form>
 
         <script type="text/javascript">
-        var grid = $("#jqGrid");
 
-        $("#jqGrid").jqGrid({
+            var rowId = -1
+            var selectedStId = -1
+
+            $(document).on('click', '.sel_btn', function () {
+
+                    var row = $(this).closest('tr.jqgrow');
+                    rowId = row.attr('id');
+                    debugger;
+            });
+
+        var grid = $("#jqGridAddSS");
+        debugger;
+        $("#jqGridAddSS").jqGrid({
                 url: '/Employee/GetEmployees',
                 mtype: "POST",
                 datatype: "json",
@@ -133,6 +144,75 @@
             grid.trigger("reloadGrid", [{page: 1, current: true}]);
             return false;
         });
+
+        onClickSave2 = function(){
+            debugger;
+                var employeeId = rowId;
+                var inputtedStartDate = $('#inputtedStartDate').val()
+                var inputtedEndDate = $('#inputtedEndDate').val()
+                var inputtedSpecialShiftTypeName = $('#inputtedSpecialShiftType').val()
+                var specialStartTime = $('#inputtedScheduleShiftStartTime').val()
+                var specialEndTime = $('#inputtedScheduleShiftEndTime').val()
+                var specialColor =  $('#inputtedSpecialColor').val()
+                debugger;
+                var scheduleShiftData = {
+                    EmployeeId: employeeId,
+                    IsSpecial: isSpecial,
+                    StartDate: inputtedStartDate,
+                    EndDate: inputtedEndDate,
+                        SpecialShiftType : inputtedSpecialShiftTypeName,
+                        SpecialStartTime : specialStartTime,
+                        SpecialEndTime : specialEndTime,
+                        SpecialColor : specialColor,
+                    ShiftTypeId : selectedStId,
+
+                }
+                debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "/Schedule/AddScheduleShift",
+                        data: scheduleShiftData,
+                        success: function(data) {
+
+                            document.getElementById("addScheduleShiftModal").style.display = "none";
+                        },
+                        error: function(error) {
+                        console.log(error);
+                        }
+                    });
+
+                    debugger;
+        }
+
+        onShiftTypeChange = function(){
+                var selectedShiftType = $('#stlist option:selected').text()
+                var select = document.getElementById("stlist")
+                var selectedOption = select.options[select.selectedIndex];
+                var selectedStartTime = selectedOption.dataset.starttime;
+                var selectedEndTime = selectedOption.dataset.endtime;
+                selectedStId = selectedOption.dataset.id;
+                if(selectedShiftType == "Özel Vardiya"){
+                    document.getElementById("SpecialShiftTypeBlock").style.display = "block";
+                    isSpecial = true;
+                    $('#inputtedSpecialShiftType').val('')
+                    $('#inputtedSpecialColor').val('#000000')
+                    $('#inputtedScheduleShiftStartTime').val('')
+                    $('#inputtedScheduleShiftEndTime').val('')
+                    document.getElementById("inputtedScheduleShiftStartTime").disabled = false;
+                    document.getElementById("inputtedScheduleShiftEndTime").disabled = false;
+                }else{
+                    document.getElementById("SpecialShiftTypeBlock").style.display = "none";
+                    isSpecial = false;
+                    $('#inputtedScheduleShiftStartTime').val('')
+                    $('#inputtedScheduleShiftEndTime').val('')
+                    document.getElementById("inputtedScheduleShiftStartTime").disabled = true;
+                    document.getElementById("inputtedScheduleShiftEndTime").disabled = true;
+                    $('#inputtedScheduleShiftStartTime').val(selectedStartTime)
+                    $('#inputtedScheduleShiftEndTime').val(selectedEndTime)
+
+                }
+        };
+
 
         function turkishToLower(str) {
             return str.replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/İ/g, 'i').replace(/I/g, 'i').toLocaleLowerCase('tr');

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Data.Concrete.Repositories;
 using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Mvc.Models;
+using PersonnelManagement.Services.Abstract;
 using PersonnelManagement.Services.Concrete;
 using System.Dynamic;
 using zurafworks.Shared.Utilities.Results.ComplexTypes;
@@ -12,12 +14,13 @@ namespace PersonnelManagement.Mvc.Controllers
 {
     public class DepartmentController : Controller
     {
-        DepartmentManager dm;
-        public DepartmentController()
+        //DepartmentManager dm;
+        private readonly IDepartmentService dm;
+        public DepartmentController(IDepartmentService _dm)
         {
-            IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
-            dm = new DepartmentManager(departmentRepository);
-
+            //IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
+            //dm = new DepartmentManager(departmentRepository);
+            dm = _dm;
         }
 
 
@@ -42,6 +45,7 @@ namespace PersonnelManagement.Mvc.Controllers
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         public IActionResult AddDepartment(AddDepartmentModel depModel)
         {

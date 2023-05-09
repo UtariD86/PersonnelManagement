@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "Giriş Yap";
+    Layout = null;
+}
+<style>
+    body{
+        background:#3b3b3b;
+    }
+</style>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="/css/login.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <form asp-controller="User" asp-action="Login" method="post">
+        @*<img class="mootable-image" src="~/img/mootable_logo_1.png" alt="Mootable logo" />*@
+        <input @*asp-for="Email"*@ type="email" name="email" placeholder="E-Posta" />
+        <span @*asp-validation-for="Email"*@ class="validation-text-message"></span>
+        <input  @*asp-for="Password"*@ type="password" name="password" placeholder="Şifre" />
+        <span @*asp-validation-for="Password"*@ class="validation-text-message"></span>
+        <div class="rememberme">
+            <label @*asp-for="RememberMe"*@></label>
+            <input @*asp-for="RememberMe"*@ type="checkbox" name="rememberme" />
+        </div>
+        <div class="rememberme">
+            <input type="submit" value="Giriş Yap" />
+            <input type="submit" value="Kayıt Ol" />
+        </div>
+
+    </form>
+</body>

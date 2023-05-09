@@ -12,17 +12,20 @@ using zurafworks.Shared.Data.Concrete.EntityFramework;
 
 namespace PersonnelManagement.Data.Concrete.Repositories
 {
-    public class EfDepatmentRepository : EfEntityRepositoryBase<Department>, IDepartmentRepository
+    public class EfDepartmentRepository : EfEntityRepositoryBase<Department>, IDepartmentRepository
     {
-        public EfDepatmentRepository(DbContext context) : base(context)
-        {
+        private readonly PersonnelManagerContext context;
 
+        public EfDepartmentRepository(PersonnelManagerContext _context) : base(_context)
+        {
+            context = _context;
         }
+
 
         public void Add(DepartmentDetailsDto departmentDetailsDto)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (context/*PersonnelManagerContext context = new PersonnelManagerContext()*/)
+            //{
                 var department = new Department();
                 
                 department.Name = departmentDetailsDto.DepartmentName;
@@ -33,13 +36,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
 
                 context.Departments.Add(department);
                 context.SaveChanges();
-            }
+            //}
         }
 
         public async void Delete(int departmentId, string modifiedByName)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var department = await context.Departments.FindAsync(departmentId);
                 if (department != null)
                 {
@@ -50,13 +53,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Departments.Update(department);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         public List<DepartmentDetailsDto> GetAllDepartments()
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var departments = from dep in context.Departments
                                   where (dep.IsDeleted == false)
                                   select new DepartmentDetailsDto
@@ -65,14 +68,14 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                       DepartmentName = dep.Name,
                                       Positions = dep.Positions
                                   };
-                return departments.ToList();
-            }
+            return departments.ToList();
+            //}
         }
 
         public async Task<DepartmentDetailsDto> GetById(int departmentId)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var department = await context.Departments
                     .Where(e => e.Id == departmentId)
                     .Select(e => new DepartmentDetailsDto
@@ -82,13 +85,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     .FirstOrDefaultAsync();
 
                 return department;
-            }
+            //}
         }
 
         public async void Update(DepartmentUpdateDto departmentUpdateDto)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var department = await context.Departments.FindAsync(departmentUpdateDto.Id);
                 if (department != null)
                 {
@@ -99,13 +102,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Departments.Update(department);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         async Task<DepartmentDetailsDto> IDepartmentRepository.GetByName(string departmentName)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var department = await context.Departments
                     .Where(d => d.Name == departmentName)
                     .Select(d => new DepartmentDetailsDto
@@ -117,7 +120,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     .FirstOrDefaultAsync();
 
                 return department;
-            }
+            //}
         }
     }
 }

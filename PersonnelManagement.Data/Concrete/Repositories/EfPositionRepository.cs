@@ -14,14 +14,17 @@ namespace PersonnelManagement.Data.Concrete.Repositories
 {
     public class EfPositionRepository : EfEntityRepositoryBase<Position>, IPositionRepository
     {
-        public EfPositionRepository(DbContext context) : base(context)
+        private readonly PersonnelManagerContext context;
+
+        public EfPositionRepository(PersonnelManagerContext _context) : base(_context)
         {
+            context = _context;
         }
 
         public void Add(PositionDetailsDto positionDetailsDto)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var position = new Position();
                 var department = context.Departments.FirstOrDefault(d => d.Name == positionDetailsDto.DepartmentName);
                 if (department != null)
@@ -36,13 +39,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Positions.Add(position);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         public async void Delete(int positionId, string modifiedByName)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var position = await context.Positions.FindAsync(positionId);
                 if (position != null)
                 {
@@ -53,13 +56,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Positions.Update(position);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         public async Task<PositionDetailsDto> GetById(int positionId)
         {
-            using(PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using(PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var position = await context.Positions
                     .Where(p => p.Id == positionId)
                     .Select(p => new PositionDetailsDto
@@ -69,13 +72,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     .FirstOrDefaultAsync();
 
                 return position;
-            }
+            //}
         }
 
         public async Task<PositionDetailsDto> GetByName(string positionName)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var position = await context.Positions
                     .Where(p => p.Name == positionName)
                     .Select(p => new PositionDetailsDto
@@ -87,13 +90,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     .FirstOrDefaultAsync();
 
                 return position;
-            }
+            //}
         }
 
         public async void Update(PositionUpdateDto positionUpdateDto)
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var position = await context.Positions.FindAsync(positionUpdateDto.Id);
                 if (position != null)
                 {
@@ -109,13 +112,13 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     context.Positions.Update(position);
                     context.SaveChanges();
                 }
-            }
+            //}
         }
 
         List<PositionDetailsDto> IPositionRepository.GetAllPositions()
         {
-            using (PersonnelManagerContext context = new PersonnelManagerContext())
-            {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
                 var positions = from pos in context.Positions
                                   join d in context.Departments on pos.DepartmentId equals d.Id
                                 where (pos.IsDeleted == false && d.IsDeleted == false)
@@ -126,7 +129,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                       DepartmentName = d.Name
                                   };
                 return positions.ToList();
-            }
+            //}
         }
     }
 }

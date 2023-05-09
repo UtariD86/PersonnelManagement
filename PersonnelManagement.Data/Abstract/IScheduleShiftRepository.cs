@@ -14,6 +14,6 @@ namespace PersonnelManagement.Data.Abstract
         public Task<ScheduleShiftDetailsDto> GetById(int scheduleShiftId);
         void Delete(int scheduleShiftId, string modifiedByName);
         public Task<int> SaveAsync();
-        //void Update(PositionUpdateDto positionUpdateDto);
+        void Update(ScheduleShiftDetailsDto scheduleShiftDetailsDto);
     }
 }

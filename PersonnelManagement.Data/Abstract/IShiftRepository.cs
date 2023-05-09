@@ -15,6 +15,6 @@ namespace PersonnelManagement.Data.Abstract
         public Task<Shift> Add(ShiftDetailsDto shiftDetailsDto);
         void Delete(int shiftId, string modifiedByName);
         public Task<int> SaveAsync();
-        //void Update(DepartmentUpdateDto departmentUpdateDto);
+        void Update(ShiftDetailsDto shiftDetailsDto);
     }
 }

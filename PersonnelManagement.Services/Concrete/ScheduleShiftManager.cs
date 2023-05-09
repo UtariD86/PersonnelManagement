@@ -17,20 +17,22 @@ namespace PersonnelManagement.Services.Concrete
 {
     public class ScheduleShiftManager : IScheduleShiftService
     {
-        IScheduleShiftRepository _scheduleShiftRepository;
-        IShiftRepository _shiftRepository;
-        IShiftTypeRepository _shiftTypeRepository;
-        IEmployeeRepository _employeeRepository;
-        public ScheduleShiftManager(IScheduleShiftRepository scheduleShiftRepository, IShiftRepository shiftRepository, IEmployeeRepository employeeRepository, IShiftTypeRepository shiftTypeRepository)
+        //IScheduleShiftRepository _scheduleShiftRepository;
+        //IShiftRepository _shiftRepository;
+        //IShiftTypeRepository _shiftTypeRepository;
+        //IEmployeeRepository _employeeRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        public ScheduleShiftManager(/*IScheduleShiftRepository scheduleShiftRepository, IShiftRepository shiftRepository, IEmployeeRepository employeeRepository, IShiftTypeRepository shiftTypeRepository,*/ IUnitOfWork unitOfWork)
         {
-            _scheduleShiftRepository = scheduleShiftRepository;
-            _shiftRepository = shiftRepository;
-            _employeeRepository = employeeRepository;
-            _shiftTypeRepository= shiftTypeRepository;
+            //_scheduleShiftRepository = scheduleShiftRepository;
+            //_shiftRepository = shiftRepository;
+            //_employeeRepository = employeeRepository;
+            //_shiftTypeRepository = shiftTypeRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<IDataResult<ScheduleShiftDetailsDto>> Add(ScheduleShiftDetailsDto scheduleShiftDetailsDto)
         {
-            var employee = _employeeRepository.GetById(scheduleShiftDetailsDto.EmployeeId).Result;
+            var employee = _unitOfWork.Employees.GetById(scheduleShiftDetailsDto.EmployeeId).Result;
             var shiftTypeId = -1;
             if(scheduleShiftDetailsDto.IsSpecial == true)
             {
@@ -41,7 +43,7 @@ namespace PersonnelManagement.Services.Concrete
                 newSpecialShiftType.Color = scheduleShiftDetailsDto.SpecialColor;
                 newSpecialShiftType.ModifiedByName = scheduleShiftDetailsDto.ModifiedByName;
 
-                var shiftType = _shiftTypeRepository.Add(newSpecialShiftType).Result;
+                var shiftType = _unitOfWork.ShiftTypes.Add(newSpecialShiftType).Result;
 
                 shiftTypeId = shiftType.Id;
 
@@ -57,16 +59,16 @@ namespace PersonnelManagement.Services.Concrete
                 newShift.ShiftTypeId = shiftTypeId;
                 newShift.EmployeeId= scheduleShiftDetailsDto.EmployeeId;
 
-                var shift = _shiftRepository.Add(newShift).Result;
-                await _shiftRepository.SaveAsync();
+                var shift = _unitOfWork.Shifts.Add(newShift).Result;
+                await _unitOfWork.Shifts.SaveAsync();
 
                 var newScheduleShift = new ScheduleShiftDetailsDto();
                 newScheduleShift.ShiftId = shift.Id;
                 newScheduleShift.StartDate = scheduleShiftDetailsDto.StartDate;
                 newScheduleShift.EndDate= scheduleShiftDetailsDto.EndDate;
 
-                _scheduleShiftRepository.Add(newScheduleShift);
-                _scheduleShiftRepository.SaveAsync();
+                _unitOfWork.ScheduleShifts.Add(newScheduleShift);
+                _unitOfWork.ScheduleShifts.SaveAsync();
                 return new DataResult<ScheduleShiftDetailsDto>(ResultStatus.Success, "Planlanmış Vardiya Başarıyla Eklendi", newScheduleShift);
             }
             else
@@ -77,12 +79,12 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IResult> Delete(int scheduleShiftId, string modifiedByName)
         {
-            var scheduleShift = _scheduleShiftRepository.GetById(scheduleShiftId);
+            var scheduleShift = _unitOfWork.ScheduleShifts.GetById(scheduleShiftId);
 
 
             if (scheduleShift != null)
             {
-                _scheduleShiftRepository.Delete(scheduleShiftId, modifiedByName);
+                _unitOfWork.ScheduleShifts.Delete(scheduleShiftId, modifiedByName);
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
@@ -90,13 +92,13 @@ namespace PersonnelManagement.Services.Concrete
 
         public async Task<IDataResult<List<CalendarDto>>> GetAll()
         {
-            var scheduleShifts = _scheduleShiftRepository.GetAllScheduleShifts();
+            var scheduleShifts = _unitOfWork.ScheduleShifts.GetAllScheduleShifts();
             if (scheduleShifts.Count > -1)
             {
                 var CalendarDatas = new List<CalendarDto>();
                 for (int i = 0; i < scheduleShifts.Count; i++){
-                    var currentEmp = _employeeRepository.GetById(scheduleShifts[i].EmployeeId).Result;
-                    var currentSt =  _shiftTypeRepository.GetById(scheduleShifts[i].ShiftTypeId).Result;
+                    var currentEmp = _unitOfWork.Employees.GetById(scheduleShifts[i].EmployeeId).Result;
+                    var currentSt =  _unitOfWork.ShiftTypes.GetById(scheduleShifts[i].ShiftTypeId).Result;
                     var calendarDesc = currentSt.StartTime.Value.ToString(@"hh\:mm") + " - " + currentSt.EndTime.Value.ToString(@"hh\:mm");
                     var newCalendar = new CalendarDto();
                     newCalendar.id = scheduleShifts[i].ScheduleShiftId.ToString();
@@ -111,6 +113,19 @@ namespace PersonnelManagement.Services.Concrete
                 return new DataResult<List<CalendarDto>>(ResultStatus.Success, CalendarDatas);
             }
             return new DataResult<List<CalendarDto>>(ResultStatus.Error, "Hiç çalışan bulunamadı", null);
+        }
+
+        public async Task<IResult> Update(ScheduleShiftDetailsDto scheduleShiftDetailsDto)
+        {
+            var scheduleShift = _unitOfWork.ScheduleShifts.GetById(scheduleShiftDetailsDto.ScheduleShiftId);
+
+
+            if (scheduleShift != null)
+            {
+                //_scheduleShiftRepository.Delete(scheduleShiftId, modifiedByName);
+                return new Result(ResultStatus.Success, "Başarıyla Silindi");
+            }
+            return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
         }
     }
 }

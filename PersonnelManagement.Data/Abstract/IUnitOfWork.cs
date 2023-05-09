@@ -10,6 +10,10 @@ namespace PersonnelManagement.Data.Abstract
     {
         IShiftTypeRepository ShiftTypes { get; }
         IEmployeeRepository Employees { get; }
-        Task<int> SaveAsync();
+        IDepartmentRepository Departments { get; }
+        IPositionRepository Position { get; }
+        IScheduleShiftRepository ScheduleShifts { get; }
+        IShiftRepository Shifts { get; }
+        Task<int> SaveNewsAsync();
     }
 }
