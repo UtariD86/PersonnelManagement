@@ -1,4 +1,6 @@
-﻿using PersonnelManagement.Data.Abstract;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Data.Concrete.Repositories;
 using System;
@@ -11,6 +13,7 @@ namespace PersonnelManagement.Data.Concrete
 {
     public class UnitOfWork : IUnitOfWork
     {
+        //private readonly IDbContextFactory<PersonnelManagerContext> _contextFactory;
         private readonly PersonnelManagerContext _context;
         private EfShiftTypeRepository? _shiftTypeRepository;
         private EfEmployeeRepository? _employeeRepository;
@@ -18,16 +21,17 @@ namespace PersonnelManagement.Data.Concrete
         private EfPositionRepository? _positionRepository;
         private EfScheduleShiftRepository? _scheduleShiftRepository;
         private EfShiftRepository? _shiftRepository;
-        public UnitOfWork(PersonnelManagerContext context)
+        public UnitOfWork(PersonnelManagerContext context /*IDbContextFactory<PersonnelManagerContext> contextFactory*/)
         {
             _context = context;
+            //_contextFactory = contextFactory;
         }
 
         public IShiftTypeRepository ShiftTypes => _shiftTypeRepository ?? new EfShiftTypeRepository(_context);
 
         public IEmployeeRepository Employees => _employeeRepository?? new EfEmployeeRepository(_context);
 
-        public IDepartmentRepository Departments => _departmentRepository ?? new EfDepartmentRepository(_context);
+        public IDepartmentRepository Departments => _departmentRepository ?? new EfDepartmentRepository(_context, this);
 
         public IPositionRepository Position => _positionRepository?? new EfPositionRepository(_context);
 
@@ -40,9 +44,17 @@ namespace PersonnelManagement.Data.Concrete
             await _context.DisposeAsync();
         }
 
-        public async Task<int> SaveNewsAsync()
+        public void Dispose()
         {
-            return await _context.SaveChangesAsync();
+            _context?.Dispose();
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            //using (var context = _contextFactory.CreateDbContext())
+            //{
+                return await _context.SaveChangesAsync();
+            //}
         }
     }
 }

@@ -6,6 +6,7 @@ using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Services.Abstract;
 using PersonnelManagement.Services.Concrete;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,13 @@ builder.Services.AddScoped<IShiftService,ShiftManager>();
 
 builder.Services.AddDbContext<PersonnelManagerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PersonnelManager")));
+
+builder.Services.AddScoped<PersonnelManagerContext>(provider =>
+{
+    var optionsBuilder = new DbContextOptionsBuilder<PersonnelManagerContext>();
+    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("PersonnelManager"));
+    return new PersonnelManagerContext(optionsBuilder.Options);
+});
 
 
 builder.Services.AddIdentity<User, Role>(options =>

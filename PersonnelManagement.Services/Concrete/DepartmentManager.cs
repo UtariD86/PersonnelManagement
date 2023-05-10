@@ -32,14 +32,17 @@ namespace PersonnelManagement.Services.Concrete
             {
                 return new DataResult<DepartmentDetailsDto>(ResultStatus.Error, "Departman Halihazırda Mevcut", null);
             }
-            var newDepartment = new DepartmentDetailsDto()
-            {
-                DepartmentName = departmentDetailsDto.DepartmentName
-            };
+            var newDepartment = new Department();
 
-            _unitOfWork.Departments.Add(newDepartment);
+            newDepartment.Name = departmentDetailsDto.DepartmentName;
+            newDepartment.IsDeleted = false;
+            newDepartment.CreatedByName = "default";//şimdilik
+            newDepartment.ModifiedByName = "default";
+            newDepartment.CreatedDate = DateTime.Now;
 
-            return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, newDepartment.DepartmentName + "Başarıyla Eklendi",newDepartment);
+            await _unitOfWork.Departments.AddAsync(newDepartment);
+            await _unitOfWork.SaveChangesAsync();
+            return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, newDepartment.Name + "Başarıyla Eklendi",departmentDetailsDto);
 
         }
 

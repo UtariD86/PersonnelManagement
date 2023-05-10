@@ -14,6 +14,6 @@ namespace PersonnelManagement.Data.Abstract
         IPositionRepository Position { get; }
         IScheduleShiftRepository ScheduleShifts { get; }
         IShiftRepository Shifts { get; }
-        Task<int> SaveNewsAsync();
+        Task<int> SaveChangesAsync();
     }
 }
