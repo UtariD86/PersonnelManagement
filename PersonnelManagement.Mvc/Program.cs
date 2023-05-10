@@ -14,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+builder.Services.AddDbContext<PersonnelManagerContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PersonnelManager")));
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDepartmentService, DepartmentManager>();
 builder.Services.AddScoped<IScheduleShiftService, ScheduleShiftManager>();
@@ -26,15 +29,14 @@ builder.Services.AddScoped<IShiftService,ShiftManager>();
 //builder.Services.AddDbContext<PersonnelManagerContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString(@"Server=(localdb)\mssqllocaldb;Database=PersonnelManager;Integrated Security=true")));
 
-builder.Services.AddDbContext<PersonnelManagerContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PersonnelManager")));
 
-builder.Services.AddScoped<PersonnelManagerContext>(provider =>
-{
-    var optionsBuilder = new DbContextOptionsBuilder<PersonnelManagerContext>();
-    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("PersonnelManager"));
-    return new PersonnelManagerContext(optionsBuilder.Options);
-});
+
+//builder.Services.AddScoped<PersonnelManagerContext>(provider =>
+//{
+//    var optionsBuilder = new DbContextOptionsBuilder<PersonnelManagerContext>();
+//    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("PersonnelManager"));
+//    return new PersonnelManagerContext(optionsBuilder.Options);
+//});
 
 
 builder.Services.AddIdentity<User, Role>(options =>

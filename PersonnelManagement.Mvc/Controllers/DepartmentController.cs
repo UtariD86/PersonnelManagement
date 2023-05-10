@@ -45,28 +45,31 @@ namespace PersonnelManagement.Mvc.Controllers
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult AddDepartment(AddDepartmentModel depModel)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddDepartment(AddDepartmentModel depModel)
         {
             var newDep = new DepartmentDetailsDto();
 
 
             newDep.DepartmentName = depModel.NewDepartment;
 
-            dm.Add(newDep);
+            await dm.Add(newDep);
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult DeleteDepartments(DeleteDepartmentModel depModel)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteDepartments(DeleteDepartmentModel depModel)
         {
-            dm.Delete(depModel.DepartmentId, depModel.ModifiedByName);
+            await dm.Delete(depModel.DepartmentId, depModel.ModifiedByName);
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult UpdateDepartments(UpdateDepartmentModel depModel)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateDepartments(UpdateDepartmentModel depModel)
         {
             var newDep = new DepartmentDetailsDto();
 
@@ -74,7 +77,7 @@ namespace PersonnelManagement.Mvc.Controllers
             newDep.DepartmentName = depModel.NewDepartment;
             newDep.ModifiedByName = depModel.ModifiedByName;
 
-            dm.Update(newDep);
+            await dm.Update(newDep);
 
             return RedirectToAction("Index");
         }

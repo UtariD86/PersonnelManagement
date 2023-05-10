@@ -50,28 +50,61 @@ namespace PersonnelManagement.Services.Concrete
         {
             var department = _unitOfWork.Departments.GetById(departmentId);
 
+            var deletedDep = new Department();
+
+            deletedDep.Id = departmentId;
+            deletedDep.IsDeleted = true;
+            deletedDep.ModifiedByName = modifiedByName;
 
             if (department != null)
             {
-                _unitOfWork.Departments.Delete(departmentId, modifiedByName);
+                //_unitOfWork.Departments.Delete(departmentId, modifiedByName);
+                await _unitOfWork.Departments.UpdateAsync(deletedDep);
+                await _unitOfWork.SaveChangesAsync();
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
         }
 
-        public async Task<IDataResult<List<DepartmentDetailsDto>>> GetAll()
+        public async Task<IDataResult<IList<DepartmentDetailsDto>>> GetAll()
         {
-            var departments = _unitOfWork.Departments.GetAllDepartments();
-            if (departments.Count >- 1)
+            var departments = await _unitOfWork.Departments.GetAllAsync(d => d.IsDeleted == false);
+            var depList = new List<DepartmentDetailsDto>();
+            for (int i = 0; i < departments.Count; i++)
             {
-                return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Success, departments);
+                var department = new DepartmentDetailsDto();
+                department.DepartmentId = departments[i].Id;
+                department.DepartmentName = departments[i].Name;
+                depList.Add(department);
             }
-            return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Error, "Hiç Departman bulunamadı", null);
+                //}
 
-            
-        }
 
-        public async Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName)
+                //if (departments.Count > -1)
+                //{
+                //    return new DataResult<DepartmentListDto>(ResultStatus.Success, new DepartmentListDto
+                //    {
+                //        Departments = departments,
+                //        ResultStatus = ResultStatus.Success
+
+                //    });
+                //}
+                //return new DataResult<DepartmentListDto>(ResultStatus.Error, "başarılı", new DepartmentListDto
+                //{
+                //    Departments = null,
+                //    ResultStatus = ResultStatus.Error
+                //});
+                //var departments = _unitOfWork.Departments.GetAllAsync().Result;
+                if (departments.Count > -1)
+                {
+                    return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Success, depList);
+                }
+                return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Error, "Hiç Departman bulunamadı", null);
+
+
+            }
+
+            public async Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName)
         {
             var department = await _unitOfWork.Departments.GetByName(departmentName);
             if (department != null)
@@ -97,13 +130,14 @@ namespace PersonnelManagement.Services.Concrete
             if (department != null)
             {
 
-                var newDepartment = new DepartmentUpdateDto();
+                var newDepartment = new Department();
 
                 newDepartment.Id = departmentDetailsDto.DepartmentId;
                 newDepartment.Name = departmentDetailsDto.DepartmentName;
                 newDepartment.ModifiedByName = departmentDetailsDto.ModifiedByName;
 
-                _unitOfWork.Departments.Update(newDepartment);
+                await _unitOfWork.Departments.UpdateAsync(newDepartment);
+                await _unitOfWork.SaveChangesAsync();
                 return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
             }
             return new Result(ResultStatus.Error, "Seçili Departman güncellenemedi");

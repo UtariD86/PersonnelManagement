@@ -77,6 +77,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                       DepartmentName = dep.Name,
                                       Positions = dep.Positions
                                   };
+            
             return departments.ToList();
             //}
         }

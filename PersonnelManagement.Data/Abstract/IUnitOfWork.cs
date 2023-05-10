@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PersonnelManagement.Data.Abstract
 {
-    public interface IUnitOfWork : IAsyncDisposable
+    public interface IUnitOfWork //: //IAsyncDisposable
     {
         IShiftTypeRepository ShiftTypes { get; }
         IEmployeeRepository Employees { get; }

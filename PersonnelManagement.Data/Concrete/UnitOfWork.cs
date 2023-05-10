@@ -39,10 +39,10 @@ namespace PersonnelManagement.Data.Concrete
 
         public IShiftRepository Shifts => _shiftRepository?? new EfShiftRepository(_context);
 
-        public async ValueTask DisposeAsync()
-        {
-            await _context.DisposeAsync();
-        }
+        //public async ValueTask DisposeAsync()
+        //{
+        //    await _context.DisposeAsync();
+        //}
 
         public void Dispose()
         {

@@ -10,7 +10,7 @@ namespace PersonnelManagement.Services.Abstract
 {
     public interface IDepartmentService
     {
-        Task<IDataResult<List<DepartmentDetailsDto>>> GetAll();
+        Task<IDataResult<IList<DepartmentDetailsDto>>> GetAll();
         Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName);
         Task<IDataResult<DepartmentDetailsDto>> Add(DepartmentDetailsDto DepartmentDetailsDto);
         Task<IResult> Delete(int departmentId, string modifiedByName);

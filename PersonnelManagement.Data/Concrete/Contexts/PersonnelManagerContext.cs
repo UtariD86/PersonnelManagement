@@ -43,60 +43,65 @@ namespace PersonnelManagement.Data.Concrete.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Employee>() //Employee-Department
-                .HasOne(e => e.Department)
-                .WithMany(d => d.Employees)
-                .HasForeignKey(e => e.DepartmentId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Employee>() //Employee-Position
-                .HasOne(e => e.Position)
-                .WithMany()//tekrar bak
-                .HasForeignKey(e => e.PositionId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-
-            modelBuilder.Entity<Department>() //Department-Position
-                .HasMany(d => d.Positions)
-                .WithOne(p => p.Department)
-                .HasForeignKey(p => p.DepartmentId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Shift>() //Shift-Employee
-                .HasOne(s => s.Employee)
-                .WithMany(e => e.Shifts)
-                .HasForeignKey(s => s.EmployeeId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Shift>() //Shift-ShiftType
-                .HasOne(s => s.ShiftType)
-                .WithMany(st => st.Shifts)
-                .HasForeignKey(s => s.ShiftTypeId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Shift
-                .HasOne(ss => ss.Shift)
-                .WithMany(s => s.ScheduleShifts)
-                .HasForeignKey(ss => ss.ShiftId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            //modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Schedule
-            //    .HasOne(ss => ss.Schedule)
-            //    .WithMany(s => s.ScheduleShifts)
-            //    .HasForeignKey(ss => ss.ScheduleId)
+            //modelBuilder.Entity<Employee>() //Employee-Department
+            //    .HasOne(e => e.Department)
+            //    .WithMany(d => d.Employees)
+            //    .HasForeignKey(e => e.DepartmentId)
             //    .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Request>() //Request-RequestStatus
-                .HasOne(r => r.RequestStatus)
-                .WithMany(rs => rs.Requests)
-                .HasForeignKey(r => r.RequestStatusId)
-                .OnDelete(DeleteBehavior.NoAction);
+            //modelBuilder.Entity<Employee>() //Employee-Position
+            //    .HasOne(e => e.Position)
+            //    .WithMany()//tekrar bak
+            //    .HasForeignKey(e => e.PositionId)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Request>() //Request-Shift
-               .HasOne(r => r.Shift)
-               .WithMany(rs => rs.Requests)
-               .HasForeignKey(r => r.ShiftId)
-               .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<Department>() //Department-Position
+            //    .HasMany(d => d.Positions)
+            //    .WithOne(p => p.Department)
+            //    .HasForeignKey(p => p.DepartmentId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<Shift>() //Shift-Employee
+            //    .HasOne(s => s.Employee)
+            //    .WithMany(e => e.Shifts)
+            //    .HasForeignKey(s => s.EmployeeId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<Shift>() //Shift-ShiftType
+            //    .HasOne(s => s.ShiftType)
+            //    .WithMany(st => st.Shifts)
+            //    .HasForeignKey(s => s.ShiftTypeId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Shift
+            //    .HasOne(ss => ss.Shift)
+            //    .WithMany(s => s.ScheduleShifts)
+            //    .HasForeignKey(ss => ss.ShiftId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            ////modelBuilder.Entity<ScheduleShift>() //ScheduleShift-Schedule
+            ////    .HasOne(ss => ss.Schedule)
+            ////    .WithMany(s => s.ScheduleShifts)
+            ////    .HasForeignKey(ss => ss.ScheduleId)
+            ////    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<Request>() //Request-RequestStatus
+            //    .HasOne(r => r.RequestStatus)
+            //    .WithMany(rs => rs.Requests)
+            //    .HasForeignKey(r => r.RequestStatusId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<Request>() //Request-Shift
+            //   .HasOne(r => r.Shift)
+            //   .WithMany(rs => rs.Requests)
+            //   .HasForeignKey(r => r.ShiftId)
+            //   .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.ApplyConfiguration(new EmployeeMap());
+            modelBuilder.ApplyConfiguration(new DepartmentMap());
+            modelBuilder.ApplyConfiguration(new ShiftMap());
+            modelBuilder.ApplyConfiguration(new ScheduleShiftMap());
 
             modelBuilder.ApplyConfiguration(new RoleMap());
             modelBuilder.ApplyConfiguration(new UserMap());
