@@ -24,5 +24,7 @@ namespace PersonnelManagement.Entities.DTOs
         public TimeSpan? SpecialStartTime { get; set; }
         public TimeSpan? SpecialEndTime { get; set;}
         public string SpecialColor { get; set; }
+        public DateTime? Enter { get; set; }
+        public DateTime? Exit { get; set; }
     }
 }

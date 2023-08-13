@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Entities.DTOs;
+using PersonnelManagement.Mvc.Areas.Admin.Models;
 using PersonnelManagement.Mvc.Models;
 
 namespace PersonnelManagement.Mvc.Controllers
@@ -47,33 +48,38 @@ namespace PersonnelManagement.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(dto.Email);
-                if (user != null)
+                if (user != null && user.IsDeleted == false)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(user, dto.Password,
-                        dto.RememberMe, false);
+                    var result = await _signInManager.PasswordSignInAsync(user, dto.Password, dto.RememberMe, false);
                     if (result.Succeeded)
                     {
-                        
-                        return RedirectToAction("Index", "Home");
+                        return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
                     }
                     else
                     {
-                        
-                        ModelState.AddModelError("", "E-Posta adresiniz veya şifreniz yanlıştır.");
-                        return View("UserLogin");
+                        return Json(new { success = false, message = "E-Posta adresiniz veya şifreniz yanlış." });
                     }
                 }
                 else
                 {
-                    
-                    ModelState.AddModelError("", "E-Posta adresiniz veya şifreniz yanlıştır.");
-                    return View("UserLogin");
+                    if (user.IsDeleted == true)
+                    {
+                        return Json(new { success = false, message = "Bu E-posta adresine ait hesap askıda veya silinmiş. Lütfen yöneticiniz ile iletişime geçin." });
+                    }
+                    return Json(new { success = false, message = "E-Posta adresiniz veya şifreniz yanlış." });
                 }
             }
             else
             {
-                return View("UserLogin");
+                return Json(new { success = false, message = "Formu eksiksiz doldurunuz." });
             }
+        }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home", new { Area = "" });
         }
     }
 }

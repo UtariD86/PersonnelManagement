@@ -72,9 +72,75 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                                     ShiftTypeId = s.ShiftTypeId,
                                     StartDate = ss.StartDate,
                                     EndDate = ss.EndDate,
+                                    Enter = s.Enter,
+                                    Exit = s.Exit,
                                 };
                 return scheduleShifts.ToList();
             //}
+        }
+        
+        public List<ScheduleShiftDetailsDto> GetAllScheduleShiftsById(int id)
+        {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
+                var scheduleShifts = from ss in context.ScheduleShifts
+                                join s in context.Shifts on ss.ShiftId equals s.Id
+                                join st in context.ShiftTypes on s.ShiftTypeId equals st.Id
+                                join e in context.Employees on s.EmployeeId equals e.Id
+                                where (ss.IsDeleted == false && st.IsDeleted == false && s.IsDeleted == false && e.IsDeleted == false && s.EmployeeId == id)
+                                select new ScheduleShiftDetailsDto
+                                {
+                                    ScheduleShiftId = ss.Id,
+                                    ShiftId = ss.ShiftId,
+                                    EmployeeId = s.EmployeeId,
+                                    ShiftTypeId = s.ShiftTypeId,
+                                    StartDate = ss.StartDate,
+                                    EndDate = ss.EndDate,
+                                    Enter= s.Enter,
+                                    Exit= s.Exit,
+                                };
+                return scheduleShifts.ToList();
+            //}
+        }
+        
+        public ScheduleShiftDetailsDto GetNextScheduleShift(int id)
+        {
+            //using (PersonnelManagerContext context = new PersonnelManagerContext())
+            //{
+            var time = DateTime.Now.TimeOfDay;
+            var date = DateTime.Now.Date;
+            var scheduleShifts = from ss in context.ScheduleShifts
+                                 join s in context.Shifts on ss.ShiftId equals s.Id
+                                 join st in context.ShiftTypes on s.ShiftTypeId equals st.Id
+                                 join e in context.Employees on s.EmployeeId equals e.Id
+                                 where (ss.IsDeleted == false && st.IsDeleted == false && s.IsDeleted == false && e.IsDeleted == false
+                                        && ((ss.EndDate > date) || (ss.EndDate == date && st.EndTime > time))
+                                        && s.EmployeeId == id)
+                                 orderby ss.EndDate, st.EndTime
+                                 select new ScheduleShiftDetailsDto
+                                 {
+                                     ScheduleShiftId = ss.Id,
+                                     ShiftId = ss.ShiftId,
+                                     EmployeeId = s.EmployeeId,
+                                     ShiftTypeId = s.ShiftTypeId,
+                                     StartDate = ss.StartDate,
+                                     EndDate = ss.EndDate,
+                                     Enter = s.Enter,
+                                     Exit = s.Exit
+                                 };
+            var orderedShifts = scheduleShifts.ToList();
+            if (orderedShifts.Count > 0)
+            {
+                return orderedShifts[0];
+            }
+            else
+            {
+                // Liste boş, bu yüzden özel bir durum döndürüyoruz
+                var notFound = new ScheduleShiftDetailsDto();
+                notFound.SpecialShiftType = "Yaklaşan vardiya yok!";
+                notFound.IsSpecial = true; //özel durum bulunamadı!
+                return notFound;
+            }
         }
 
         public async Task<ScheduleShiftDetailsDto> GetById(int scheduleShiftId)

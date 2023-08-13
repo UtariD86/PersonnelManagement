@@ -17,7 +17,7 @@ namespace PersonnelManagement.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -54,7 +54,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -70,6 +69,15 @@ namespace PersonnelManagement.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Adress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("BloodTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CreatedByName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -78,6 +86,28 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndOfWork")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EndReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("GenderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("GrossSalary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("InsuranceStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("InsuranceTypeId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -94,14 +124,24 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NetSalary")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PositionId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartOfWork")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -147,7 +187,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -244,7 +283,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -285,14 +323,14 @@ namespace PersonnelManagement.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "915cf3d3-215a-4152-bedf-8a63c130b2ae",
+                            ConcurrencyStamp = "524002fc-16b0-43bb-a910-6520b900d099",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "6de1c525-fa5f-4901-9b1e-dd30a4985a36",
+                            ConcurrencyStamp = "ac3d9548-e240-4be2-b482-1dd7ba806455",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -354,7 +392,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ShiftId")
@@ -388,6 +425,12 @@ namespace PersonnelManagement.Data.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("Enter")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Exit")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -402,7 +445,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ShiftTypeId")
@@ -456,7 +498,6 @@ namespace PersonnelManagement.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<TimeSpan?>("StartTime")
@@ -489,6 +530,12 @@ namespace PersonnelManagement.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -516,6 +563,11 @@ namespace PersonnelManagement.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Picture")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -549,17 +601,19 @@ namespace PersonnelManagement.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "89c3a447-34b8-402b-b45f-bb255d003961",
+                            ConcurrencyStamp = "4671012b-21a1-4bb8-9575-f4d0ba1b08df",
                             Email = "adminuser@gmail.com",
                             EmailConfirmed = true,
+                            IsDeleted = false,
                             LockoutEnabled = false,
                             Name = "big",
                             NormalizedEmail = "ADMINUSER@GMAIL.COM",
                             NormalizedUserName = "ADMINUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEzlY+gmkxCyOgLJpvYknpus2j+Cb6iCn4Csgr8FERG7mMTnBqMhbzAl5+zX+GALiQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELgvDaMSSZCQI3iNr52p1OWNVBn4suarSSWpBGIk+RpoUGx90SAaFejWHVotvxaxzQ==",
                             PhoneNumber = "+905555555555",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "90e07917-674d-407a-b4bd-89d1518e7dc2",
+                            Picture = "default.jpg",
+                            SecurityStamp = "6741e6ce-e5db-48d2-b12c-1beb9251bebf",
                             Surname = "boss",
                             TwoFactorEnabled = false,
                             UserName = "adminuser"
@@ -568,17 +622,19 @@ namespace PersonnelManagement.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9b3c9e3f-47b5-424f-a25a-0ed303b3f10f",
+                            ConcurrencyStamp = "14b92765-481e-4904-bb86-0aad6f01e067",
                             Email = "littleslave@zurafworks.com",
                             EmailConfirmed = true,
+                            IsDeleted = false,
                             LockoutEnabled = false,
                             Name = "little",
                             NormalizedEmail = "LITTLESLAVE@ZURAFWORKS.COM",
                             NormalizedUserName = "LITTLESLAVE",
-                            PasswordHash = "AQAAAAIAAYagAAAAECz05lJEWLPBylkQMNcFoNQ1e/5/zdlVOHfvNiIAJVJvZ/IJZYVKOYV+oqMoxzDORQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEdScId+4gEkYMOpDIkShK/3kEuGVTMb30/2qykb1rMeVmlwJPBVvjQ9KV3Lu2QsUA==",
                             PhoneNumber = "+905555555555",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "e0c783fb-bfc2-4810-9599-3001b61dbe6c",
+                            Picture = "default.jpg",
+                            SecurityStamp = "95938b8d-7ea3-413c-a633-137019d3a410",
                             Surname = "slave",
                             TwoFactorEnabled = false,
                             UserName = "littleslave"
@@ -715,13 +771,13 @@ namespace PersonnelManagement.Data.Migrations
                     b.HasOne("PersonnelManagement.Entities.Concrete.RequestStatus", "RequestStatus")
                         .WithMany("Requests")
                         .HasForeignKey("RequestStatusId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PersonnelManagement.Entities.Concrete.Shift", "Shift")
                         .WithMany("Requests")
                         .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("RequestStatus");

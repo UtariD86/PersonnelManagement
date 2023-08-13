@@ -1,16 +1,12 @@
 ﻿using PersonnelManagement.Data.Abstract;
-using PersonnelManagement.Data.Concrete.Repositories;
 using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Services.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using zurafworks.Shared.Utilities.Results.Abstract;
-using zurafworks.Shared.Utilities.Results.Concrete;
-using zurafworks.Shared.Utilities.Results.ComplexTypes;
 using PersonnelManagement.Entities.Concrete;
+using zurafworks.Shared.Results.Abstract;
+using zurafworks.Shared.Results.Concrete;
+using zurafworks.Shared.Results.ComplexTypes;
+using zurafworks.Shared.Entities.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace PersonnelManagement.Services.Concrete
 {
@@ -24,123 +20,71 @@ namespace PersonnelManagement.Services.Concrete
             //_departmentRepository = departmentRepository;
         }
 
-        public async Task<IDataResult<DepartmentDetailsDto>> Add(DepartmentDetailsDto departmentDetailsDto)
+        public async Task<IDataResult<Department>> Add(Department department)
         {
-            var checkDepartment = await _unitOfWork.Departments.GetByName(departmentDetailsDto?.DepartmentName);
+            var checkDepartment = await _unitOfWork.Departments.GetAsync(d => d.Name == department.Name);
 
             if (checkDepartment != null)
             {
-                return new DataResult<DepartmentDetailsDto>(ResultStatus.Error, "Departman Halihazırda Mevcut", null);
+                return new DataResult<Department>(ResultStatus.Error, "Departman Halihazırda Mevcut", null);
             }
-            var newDepartment = new Department();
 
-            newDepartment.Name = departmentDetailsDto.DepartmentName;
-            newDepartment.IsDeleted = false;
-            newDepartment.CreatedByName = "default";//şimdilik
-            newDepartment.ModifiedByName = "default";
-            newDepartment.CreatedDate = DateTime.Now;
-
-            await _unitOfWork.Departments.AddAsync(newDepartment);
+            await _unitOfWork.Departments.AddAsync(department);
             await _unitOfWork.SaveChangesAsync();
-            return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, newDepartment.Name + "Başarıyla Eklendi",departmentDetailsDto);
+            return new DataResult<Department>(ResultStatus.Success, department.Name + "Başarıyla Eklendi",department);
 
         }
 
-        public async Task<IResult> Delete(int departmentId, string modifiedByName)
+        public async Task<IResult> Delete(Department department)
         {
-            var department = _unitOfWork.Departments.GetById(departmentId);
+            var _department = _unitOfWork.Departments.Get(department.Id);
 
-            var deletedDep = new Department();
+            
 
-            deletedDep.Id = departmentId;
-            deletedDep.IsDeleted = true;
-            deletedDep.ModifiedByName = modifiedByName;
-
-            if (department != null)
+            if (_department != null)
             {
+                _department.IsDeleted = true;
+                _department.ModifiedByName = department.ModifiedByName;
+                _department.ModifiedDate = DateTime.Now;
                 //_unitOfWork.Departments.Delete(departmentId, modifiedByName);
-                await _unitOfWork.Departments.UpdateAsync(deletedDep);
+                await _unitOfWork.Departments.UpdateAsync(_department);
                 await _unitOfWork.SaveChangesAsync();
-                return new Result(ResultStatus.Success, "Başarıyla Silindi");
+                return new Result(ResultStatus.Success, $"{department.Name} Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili çalışan bulunamadı");
         }
 
-        public async Task<IDataResult<IList<DepartmentDetailsDto>>> GetAll()
+        public async Task<IDataResult<IList<Department>>> GetAll()
         {
             var departments = await _unitOfWork.Departments.GetAllAsync(d => d.IsDeleted == false);
-            var depList = new List<DepartmentDetailsDto>();
-            for (int i = 0; i < departments.Count; i++)
+
+            if (departments.Count > -1)
             {
-                var department = new DepartmentDetailsDto();
-                department.DepartmentId = departments[i].Id;
-                department.DepartmentName = departments[i].Name;
-                depList.Add(department);
+                return new DataResult<IList<Department>>(ResultStatus.Success, departments);
             }
-                //}
-
-
-                //if (departments.Count > -1)
-                //{
-                //    return new DataResult<DepartmentListDto>(ResultStatus.Success, new DepartmentListDto
-                //    {
-                //        Departments = departments,
-                //        ResultStatus = ResultStatus.Success
-
-                //    });
-                //}
-                //return new DataResult<DepartmentListDto>(ResultStatus.Error, "başarılı", new DepartmentListDto
-                //{
-                //    Departments = null,
-                //    ResultStatus = ResultStatus.Error
-                //});
-                //var departments = _unitOfWork.Departments.GetAllAsync().Result;
-                if (departments.Count > -1)
-                {
-                    return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Success, depList);
-                }
-                return new DataResult<List<DepartmentDetailsDto>>(ResultStatus.Error, "Hiç Departman bulunamadı", null);
-
-
-            }
-
-            public async Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName)
-        {
-            var department = await _unitOfWork.Departments.GetByName(departmentName);
-            if (department != null)
-            {
-                return new DataResult<DepartmentDetailsDto>(ResultStatus.Success, department);
-            }
-            return new DataResult<DepartmentDetailsDto>(ResultStatus.Error, "Departman bulunamadı", null);
-
+            return new DataResult<IList<Department>>(ResultStatus.Error, "Hiç Departman bulunamadı", null);
         }
 
-        public async Task<IResult> Update(DepartmentDetailsDto departmentDetailsDto)
+        public async Task<IDataResult<Department>> GetById(int id)
         {
-
-            var department = _unitOfWork.Departments.GetById(departmentDetailsDto.DepartmentId);
-
-            if (departmentDetailsDto.DepartmentName == null)
-            {
-                departmentDetailsDto.DepartmentName = department.Result.DepartmentName;
-            }
-
-
+            var department = _unitOfWork.Departments.Get(id);
 
             if (department != null)
             {
-
-                var newDepartment = new Department();
-
-                newDepartment.Id = departmentDetailsDto.DepartmentId;
-                newDepartment.Name = departmentDetailsDto.DepartmentName;
-                newDepartment.ModifiedByName = departmentDetailsDto.ModifiedByName;
-
-                await _unitOfWork.Departments.UpdateAsync(newDepartment);
-                await _unitOfWork.SaveChangesAsync();
-                return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
+                return new DataResult<Department>(ResultStatus.Success, department);//dto to entity yüzünden hata çıktı
             }
-            return new Result(ResultStatus.Error, "Seçili Departman güncellenemedi");
+            return new DataResult<Department>(ResultStatus.Error, "Departman bulunamadı", null);
+        }
+
+        public async Task<IResult> Update(Department department)
+        {
+            if (department != null && department.Id != 0)
+            {
+                await _unitOfWork.Departments.UpdateAsync(department);
+                await _unitOfWork.SaveChangesAsync();
+                return new Result(ResultStatus.Success, $"{department.Name} isimli departman başarıyla güncellendi.");
+            }
+            return new Result(ResultStatus.Error, $"Malesef bir sorun oluştu...", new ArgumentNullException());
         }
     }
 }

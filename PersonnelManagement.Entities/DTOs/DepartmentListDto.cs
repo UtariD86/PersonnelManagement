@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using zurafworks.Shared.Utilities.Results.Abstract;
+using zurafworks.Shared.Results.Abstract;
 
 namespace PersonnelManagement.Entities.DTOs
 {

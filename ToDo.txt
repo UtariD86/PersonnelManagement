@@ -1,7 +1,36 @@
 -Yapýlacaklar-
->Silme iþlemi sýrasýnda iliþkili bir veri silinirken iliþkili olduðu diðer verilerle ilgili uyarý ve deðiþiklik ekraný gelecek.(Örneðin Bir pozisyon silinirken o pozisyona sahip Çalýþanlar listelenip "bu çalýþanlar da pozisyon ile birlikte silinecek çalýþanlarýn pozisyonlarýný deðiþtirmek ister misiniz?" Þeklinde uyaracak).OnDelete(DeleteBehavior.NoAction);
->Join yaparken PositionId tekrarý düzeltilecek/fluent map-mapperlar ayrý bir yerde baþtan yazýlacak
->Alfabetik sýralama yaparken kullanýlan regex noktalý ve noktasýz harfler arasýndaki hiyerarþiyi düzgün yansýtýp doðru sýralanmasý için gözden geçirilip düzeltilecek
->UnitOfWork projede aktif þekilde kullanýldý fakat kaydetme ile ilgili problemler var düzeltilecek
->Request mantýðý kurulup projeye dahil edilecek. 
->Authantication ve Authorize kurallarý deðiþtirilecek
+>Silme iþlemi sýrasýnda iliþkili bir veri silinirken iliþkili olduðu diðer verilerle ilgili uyarý ve deðiþiklik ekraný gelecek.
+	(Örneðin Bir pozisyon silinirken o pozisyona sahip Çalýþanlar listelenip 
+	"bu çalýþanlar da pozisyon ile birlikte silinecek çalýþanlarýn pozisyonlarýný 
+	deðiþtirmek ister misiniz?" Þeklinde uyaracak
+	).OnDelete(DeleteBehavior.NoAction); bulk insert toplu silme
+
+>Alfabetik sýralama yaparken kullanýlan regex noktalý ve noktasýz harfler arasýndaki hiyerarþiyi düzgün yansýtýp doðru sýralanmasý 
+için gözden geçirilip düzeltilecek
+
+>Authantication ve Authorize kurallarý düzeltilecek
+
+>not found yetkisiz eriþim sayflarý eklenecek
+
+>Excel Import Yapýlacak
+
+>profil sayfasý ve þifre deðiþtirme (kendi)
+
+>ScheduleShift popup'ýnýn draggable özelliði düzeltilecek.
+>AddOrUpdateScheduleShift ve ShiftTypes pop uplarý responsive deðil düzeltilecek
+
+>Dispose hatasýnýn çözümü için Task<IActionResult>
+
+>Rol- yetki araþtýr
+>vardiya giriþ çýkýþ takibinde buton düzeltilecek kontroller düzeltilecek örneðin vardiya vakti gelmedne baþlanýp bitirilemez.
+>searchbox yerine dropdown
+
+Öðrenilecek listesinde henüz yapýlmayanlar:
+-Application, Session, Cookie, viewbag, viewdata nedir ne için kullanýlýr. Farklarý
+-Validation’lar (hem prop kýsmýnda hemde js ile uygulamak)
+-Jqgrid üzerinde veriyi düzenleyebilmek, çift týklayýp düzenleme modunu aktif etmek, tümünü düzenle tümünü kaydet gibi iþlemler
+-Veri tabanýnda ki char varchar nvarchar veri tiplerinin farký
+-Veri tabanýný baþka bilgisayara aktarma (attach)
+-Veri tabanýnda index iþleme nedir, ne iþe yarar, nasýl yapýlýr.
+-Projede Entity Framework ile store procedure’ e nasýl eriþilir nasýl parametre gönderilir.
+-Ülke il ilçeyi vb. veriler tek bir tablodan nasýl yönetilir.

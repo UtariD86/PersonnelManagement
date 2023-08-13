@@ -1,0 +1,80 @@
+﻿
+<div class="container" style="border:none; color:transparent; ">
+﻿<div class="custom-model-inner">
+    
+    <div class="custom-model-wrap" style="width:994px; cursor:move; z-index:9999999;">
+        <div class="close-btn" onclick="closeModal()" style="margin-right:10px">×</div>
+        <div class="pop-up-content-wrap">
+
+            <!-- ======= Operations Section ======= -->
+            <section id="portfolio-details" class="portfolio-details">
+                <div class="container">
+
+                   <table id="jqGrid2" ></table>
+                    <div id="jqGridPager" style="width:100%; height:auto; margin: auto;"></div>    <button id ="addNewButton" class="button" onclick="onClickNewAdd()">Add New</button>
+
+
+                </div>
+            </section><!-- End Operations Section -->
+        </div>
+    </div>  
+</div>  </div>
+@*<div class="bg-overlay"></div>*@
+
+<link href="~/css/popUp.css" rel="stylesheet">
+
+<script>
+    var container = document.querySelector('.custom-model-wrap');
+
+container.addEventListener('mousedown', function(event) {
+  event.preventDefault();
+
+  var initialX = event.clientX;
+  var initialY = event.clientY;
+
+  function handleMouseMove(event) {
+    var dx = event.clientX - initialX;
+    var dy = event.clientY - initialY;
+
+    container.style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
+  }
+
+  function handleMouseUp(event) {
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  }
+
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseUp);
+});
+
+function closeModal(){
+    document.getElementById("shiftTypePartial").style.display = "none";
+    document.getElementById("stButton").style.display= "block";
+}
+</script>
+
+<style>
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  /*background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);*/
+}
+
+/*.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}*/
+
+</style>

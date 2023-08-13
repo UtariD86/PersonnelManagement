@@ -14,6 +14,9 @@ namespace PersonnelManagement.Data.Concrete.Mappings
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.Property(u => u.Picture).IsRequired();
+            builder.Property(u => u.Picture).HasMaxLength(250);
+
             builder.Property(u => u.Name).IsRequired();
             builder.Property(u => u.Name).HasMaxLength(250);
 
@@ -66,6 +69,7 @@ namespace PersonnelManagement.Data.Concrete.Mappings
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                Picture = "default.jpg",
             };
             adminUser.PasswordHash = CreatePasswordHash(adminUser, "adminuser");
 
@@ -82,6 +86,7 @@ namespace PersonnelManagement.Data.Concrete.Mappings
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                Picture = "default.jpg",
             };
             userUser.PasswordHash = CreatePasswordHash(userUser, "personeltakip");
             builder.HasData(adminUser, userUser);

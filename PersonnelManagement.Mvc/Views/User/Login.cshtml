@@ -14,22 +14,74 @@
     <link rel="stylesheet" type="text/css" href="/css/login.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+    <!--||||||||||||||||||||||||||||||||||||||||||JQGRID VE JQUERY KAYNAKLARI||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>var $ = jQuery.noConflict(false);</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    <!-- Gritter.js script -->
+        <script src="https://cdn.jsdelivr.net/npm/gritter@1.7.4/js/jquery.gritter.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/gritter@1.7.4/css/jquery.gritter.min.css" rel="stylesheet">
+    
+
 </head>
 <body>
-    <form asp-controller="User" asp-action="Login" method="post">
-        @*<img class="mootable-image" src="~/img/mootable_logo_1.png" alt="Mootable logo" />*@
+    <form asp-controller="User" asp-action="Login" method="post" style="margin-left:40%; margin-top:15%;">
         <input @*asp-for="Email"*@ type="email" name="email" placeholder="E-Posta" />
         <span @*asp-validation-for="Email"*@ class="validation-text-message"></span>
         <input  @*asp-for="Password"*@ type="password" name="password" placeholder="Şifre" />
         <span @*asp-validation-for="Password"*@ class="validation-text-message"></span>
         <div class="rememberme">
-            <label @*asp-for="RememberMe"*@></label>
-            <input @*asp-for="RememberMe"*@ type="checkbox" name="rememberme" />
-        </div>
-        <div class="rememberme">
             <input type="submit" value="Giriş Yap" />
-            <input type="submit" value="Kayıt Ol" />
         </div>
-
     </form>
 </body>
+<script>
+    $('form').submit(function (event) {
+        event.preventDefault();
+        var form = $(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    // If login is successful, redirect to the specified URL
+                    window.location.href = response.redirectUrl;
+                } else {
+                    // Show Gritter notification with error message
+                    $.gritter.add({
+                        title: 'Hata',
+                        text: response.message,
+                        class_name: 'gritter-error',
+                        sticky: false,
+                        time: 5000
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                // Show Gritter notification for general error (optional)
+                $.gritter.add({
+                    title: 'Hata',
+                    text: 'İşleminiz gerçekleştirilirken bir hata oluştu.',
+                    class_name: 'gritter-error',
+                    sticky: false,
+                    time: 5000
+                });
+            }
+        });
+    });
+</script>

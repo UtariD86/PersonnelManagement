@@ -3,7 +3,9 @@
 @using PersonnelManagement.Mvc
 @using PersonnelManagement.Mvc.Models
 @model dynamic
-
+@{
+    string sweetAlertTheme = "https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css";
+}
 <!DOCTYPE html>
 <html lang='en'>
   <head>
@@ -12,53 +14,271 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Your page title</title>
 
+    <!--||||||||||||||||||||||||||||||||||||||||||JQGRID VE JQUERY KAYNAKLARI||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
-
-    <style>
-
-#jqGrid2 .ui-jqgrid tr.jqgrow {
-    
-    border-color: transparent !important;
-}
-
-#jqGrid2 .ui-jqgrid td {
-    background-color: transparent !important;
-}
-
-#jqGrid2 .ui-jqgrid tr.jqgrow:hover {
-    background-color: transparent !important;
-}
-
-#jqGrid2 .ui-jqgrid tr.jqgrow td {
-    background-color: transparent !important;
-}
-
-#jqGrid2 .ui-jqgrid tr.jqgrow.ui-state-highlight {
-    background-color: transparent !important;
-    border-color: transparent !important;
-}
-
-#jqGrid2 .ui-jqgrid tr.jqgrow.ui-state-highlight:hover {
-    background-color: transparent !important;
-}
-
-#jqGrid2 .ui-widget-content,
-       #jqGrid2 #grid tr:hover{  
-            background:none;
-            border:none;
-            color:white;
-             text-shadow: 2px 2px 5px black;
-        }
-    </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>var $ = jQuery.noConflict(false);</script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    @*  <link rel="stylesheet" href=@sweetAlertTheme />*@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+
+
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <style>
+
+/* Middle Banner Text (month, day, year */
+
+h2.fc-toolbar-title{
+
+color: #A6A7A8;
+
+font-size: 20px;
+
+}
+
+/* calendar day numbers */
+
+a.fc-daygrid-day-number{
+
+font-size: 20px;
+
+color: #A6A7A8;
+
+}
+
+/* Days of the week (mon, the, wed) */
+
+a.fc-col-header-cell-cushion{
+
+font-size: 20px;
+
+color: #78BEEB;
+
+}
+
+/* Event Text */
+
+div.fc-event-title.fc-sticky{
+
+font-size: 15px;
+
+}
+
+/* selected / active state */
+
+button.fc-dayGridMonth-button.fc-button.fc-button-primary.fc-button-active{
+
+background-color: pink;
+
+/*border: 2px solid #FFFFFF;*/
+
+padding: 10px 24px;
+
+background-color: #559cca;
+
+text-transform: uppercase;
+
+box-shadow: 0;
+
+}
+
+button.fc-timeGridWeek-button.fc-button.fc-button-primary.fc-button-active{
+
+background-color: pink;
+
+/*border: 2px solid #FFFFFF;*/
+
+padding: 10px 24px;
+
+background-color: #559cca;
+
+text-transform: uppercase;
+
+box-shadow: 0;
+
+}
+
+button.fc-timeGridDay-button.fc-button.fc-button-primary.fc-button-active{
+
+background-color: pink;
+
+/*border: 2px solid #FFFFFF;*/
+
+padding: 10px 24px;
+
+background-color: #559cca;
+
+text-transform: uppercase;
+
+box-shadow: 0;
+
+}
+
+/* Hover state */
+
+button.fc-dayGridMonth-button.fc-button.fc-button-primary:hover{
+
+background-color: #559cca;
+
+/*border: 2px solid #FFFFFF;*/
+
+}
+
+button.fc-timeGridWeek-button.fc-button.fc-button-primary:hover{
+
+background-color: #559cca;
+
+/*border: 2px solid #FFFFFF;*/
+
+}
+
+button.fc-timeGridDay-button.fc-button.fc-button-primary:hover{
+
+background-color: #559cca;
+
+/*border: 2px solid #FFFFFF;*/
+
+}
+
+/* default color when button is not selected */
+
+button.fc-dayGridMonth-button.fc-button{
+
+/*border: 2px solid #FFFFFF;*/
+
+padding: 10px 24px;
+
+background-color: #78BEEB;
+
+text-transform: uppercase;
+
+}
+
+button.fc-timeGridWeek-button.fc-button{
+
+/*border: 2px solid #FFFFFF;*/
+
+padding: 10px 24px;
+
+background-color: #78BEEB;
+
+text-transform: uppercase;
+
+}
+
+button.fc-timeGridDay-button.fc-button{
+
+/*border: 2px solid #FFFFFF;*/
+
+padding: 10px 24px;
+
+background-color: #78BEEB;
+
+text-transform: uppercase;
+
+}
+
+/* Arrows (previous month, next month and today button */
+
+button.fc-prev-button.fc-button.fc-button-primary{
+
+/*border: 2px solid #FFFFFF;*/
+
+background-color: #78BEEB;
+
+}
+
+button.fc-next-button.fc-button.fc-button-primary{
+
+/*border: 2px solid #FFFFFF;*/
+
+background-color: #78BEEB;
+
+{
+
+button.fc-today-button.fc-button.fc-button-primary{
+
+/*border: 2px solid #FFFFFF;*/
+
+background-color: #78BEEB;
+
+{
+
+</style>
+    <style>
+body {
+    background-color: #2a2b2f;
+    /*display: flex;*/
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.container {
+    max-width: 90%;
+    margin-top:5% auto;
+    margin-right: 8% auto;
+    margin-left: 8% auto;
+    margin-bottom: 8% auto;
+    padding: 2%;
+    border: 2px solid #559cca;
+    text-align: center;
+}
+
+.searchBoxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.searchBar {
+    flex: 1;
+    padding: 5px;
+    background-color: #4c4b49;
+    color: white;
+    border: 2px solid #559cca;
+    outline: none;
+}
+
+.button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+.edit_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+.del_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+</style>
      <script>
     $(function() {
       var allGrids = $("table[id^='jqGrid']");
@@ -100,22 +320,16 @@
       },
       initialDate: formattedDate,
       locale: "tr",
-      themeSystem: "bootstrap",
+      themeSystem: "jquery-ui",
       navLinks: true, // can click day/week names to navigate views
       selectable: true,
       selectMirror: true,
       eventDisplay: "block",
       select: function(arg) {
-          $.ajax({
-                url: "/Schedule",
-                type: "GET",
-                success: function (result) {
-                    $("#addScheduleShiftModal.modal-content").html(result);
-                    document.getElementById("addScheduleShiftModal").style.display = "block";
-                }
-          });
-          document.getElementById("inputtedStartDate").value = arg.startStr;
-          document.getElementById("inputtedEndDate").value = arg.endStr;
+          var date = arg.startStr;
+          document.getElementById("partialZoneSs").style.display = "block";
+          $("#partialZoneContentSs").load("/Schedule/AddOrUpdateScheduleShift?date="+date);
+          debugger;
         //var title = prompt('Event Title:');
         //if (title) {
         //  calendar.addEvent({
@@ -168,9 +382,7 @@
               })
           } else if (result.isDenied) {//////////////////////////////////////////////Delete
               var DeleteScheduleShiftData = {
-                    ScheduleShiftId : eventId,
-                    ModifiedByName: modifiedByName
-
+                    Id : eventId
               }
 
                 Swal.fire({
@@ -258,7 +470,7 @@
   .popper,
 .tooltip {
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   background: #FFC107;
   color: black;
   width: 150px;
@@ -369,8 +581,8 @@
     </style>
 </head>
 <body>
-    
-    <div id = "addShiftTypeModal" class="modal" style="display:none">
+
+    @*<div id = "addShiftTypeModal" class="modal" style="display:none">
         <div class="modal-content">
             @Html.Partial("_AddShiftTypePartial")
         </div>
@@ -386,11 +598,11 @@
         <div class="modal-content">
             @Html.Partial("_AddScheduleShiftPartial")
         </div>
-    </div>
+    </div>*@
   <div class="container">
-      <div id='calendar'></div>
+      <div id='calendar' style="position: relative; z-index: 0;"></div>
   </div>
-@*  <table>
+    @*  <table>
       <tr>
           <th>Vardiya Tipleri</th>
       </tr>
@@ -400,16 +612,23 @@
         }
   </table>
  *@
+    
 
-    <table id="jqGrid2" ></table>
-        <div id="jqGridPager" style="width:100%; height:auto; margin: auto;"></div>    <button id ="addNewButton" onclick="onClickNewAdd()">Add New</button>
-                          
+    <div id="partialZoneSt" @*class="modal"*@ style="display:none">
+        <div id="partialZoneContent" @*class="modal-content"*@></div>
+    </div>
+    <div id="partialZoneSs" class="modal" style="display:none">
+        <div id="partialZoneContentSs"></div>
+    </div>
+    <button id="stButton" class="button" style=" position: fixed; bottom: 20px; right: 20px;" onclick="openShiftType()">Vardiyalara göz at</button>
+
 </body>
 <script type="text/javascript">
 
-    var grid2 = $("#jqGrid2");
+    //var grid2 = $("#jqGrid2");
     var selectedStRowId = -1;
     var row;
+    //var calendar = $('#calendar');
     var rowId;
     var rowName;
     var rowSTime;
@@ -424,47 +643,48 @@
                 for (let i = 0; i < pageCount; i++) {
                         grid2.trigger("reloadGrid", [{page: i, current: true}]);
                 }
+                //calendar.fullCalendar('refetchEvents');
 
 
         }
 
     $(document).ready(function () {
         debugger;
-    grid2.jqGrid({
-        url: "Schedule/GetShiftTypes",
-        datatype: "json",
-        colModel: [
-            { label: "Id", name: "ShiftTypeId", key: true, width:25},
-            { label: "Vardiya Adı", name: "ShiftTypeName", width: 80 },
-            { label: "Başlangıç Saati", name: "StartTime", width: 50 },
-            { label: "Bitiş Saati", name: "EndTime", width: 50 },
-            { label: "Renk Kodu", name: "Color", width:30},
-            {
-                        name: 'Settings',
-                        index: 'Settings',
-                        width: "40%",
-                        align: 'center',
-                        sortable: false,
-                        formatter: function(cellvalue, options, rowObject) {
-                            return '<button class="StEdit_btn" >Edit</button>&nbsp;&nbsp;&nbsp;' + 
-                                    '<button href="#" class="StDel_btn" >Delete</button>';
-                        }
-                    }
-        ],
-        width: '800',
-        height:'auto',
-        rowNum: 20,
-        pager: false,//"#jqGridPager",
-        loadonce:true,
-        gridComplete: function() {
-            var rows = grid2.jqGrid('getDataIDs');
-            for (var i = 0; i < rows.length; i++) {
-                var rowData = grid2.jqGrid('getRowData', rows[i]);
-                var color = rowData.Color;
-                 $('#gbox_' + grid2.attr('id') + ' #' + rows[i]).css('background-color', color);
-            }
-        }
-    });
+    //grid2.jqGrid({
+    //    url: "Schedule/GetShiftTypes",
+    //    datatype: "json",
+    //    colModel: [
+    //        { label: "Id", name: "ShiftTypeId", key: true, width:25},
+    //        { label: "Vardiya Adı", name: "ShiftTypeName", width: 80 },
+    //        { label: "Başlangıç Saati", name: "StartTime", width: 50 },
+    //        { label: "Bitiş Saati", name: "EndTime", width: 50 },
+    //        { label: "Renk Kodu", name: "Color", width:30},
+    //        {
+    //                    name: 'Settings',
+    //                    index: 'Settings',
+    //                    width: "40%",
+    //                    align: 'center',
+    //                    sortable: false,
+    //                    formatter: function(cellvalue, options, rowObject) {
+    //                        return '<button class="StEdit_btn" >Edit</button>&nbsp;&nbsp;&nbsp;' + 
+    //                                '<button href="#" class="StDel_btn" >Delete</button>';
+    //                    }
+    //                }
+    //    ],
+    //    width: '800',
+    //    height:'auto',
+    //    rowNum: 20,
+    //    pager: false,//"#jqGridPager",
+    //    loadonce:true,
+    //    gridComplete: function() {
+    //        var rows = grid2.jqGrid('getDataIDs');
+    //        for (var i = 0; i < rows.length; i++) {
+    //            var rowData = grid2.jqGrid('getRowData', rows[i]);
+    //            var color = rowData.Color;
+    //             $('#gbox_' + grid2.attr('id') + ' #' + rows[i]).css('background-color', color);
+    //        }
+    //    }
+    //});
 });
 
 
@@ -506,12 +726,12 @@
                 debugger;
                 var row = $(this).closest('tr.jqgrow');
                 var rowId = row.attr('id');
-                
+
                 debugger;
 
                 var modifiedByName = "mvcDefault" //şimdilik
 
-                
+
                 var DeleteShiftData = {
                     ShiftTypeId : rowId,
                     ModifiedByName: modifiedByName
@@ -569,6 +789,20 @@
                     document.getElementById("addShiftTypeModal").style.display = "block";
                 }
             });
+        } 
+        openShiftType = function() {
+            //$.ajax({
+            //    url: "/Schedule",
+            //    type: "GET",
+            //    success: function (result) {
+            //        $("#shiftTypePartial.modal-content").html(result);
+            //        document.getElementById("shiftTypePartial").style.display = "block";
+            //        document.getElementById("stButton").style.display= "none";
+            //    }
+            //});
+            document.getElementById("partialZoneSt").style.display = "block";
+                $("#partialZoneContent").load("Schedule/ShiftTypes");
+                document.getElementById("stButton").style.display = "none";
         }
 
         onClickSave = function(){
@@ -655,7 +889,7 @@
                     }
                 });
         }
-        
+
     });
 </script>
 </html>

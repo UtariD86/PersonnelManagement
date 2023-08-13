@@ -1,19 +1,20 @@
-﻿using PersonnelManagement.Entities.DTOs;
+﻿using PersonnelManagement.Entities.Concrete;
+using PersonnelManagement.Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using zurafworks.Shared.Utilities.Results.Abstract;
+using zurafworks.Shared.Results.Abstract;
 
 namespace PersonnelManagement.Services.Abstract
 {
     public interface IDepartmentService
     {
-        Task<IDataResult<IList<DepartmentDetailsDto>>> GetAll();
-        Task<IDataResult<DepartmentDetailsDto>> GetByName(string departmentName);
-        Task<IDataResult<DepartmentDetailsDto>> Add(DepartmentDetailsDto DepartmentDetailsDto);
-        Task<IResult> Delete(int departmentId, string modifiedByName);
-        Task<IResult> Update(DepartmentDetailsDto DepartmentDetailsDto);
+        Task<IDataResult<IList<Department>>> GetAll();
+        Task<IDataResult<Department>> Add(Department department);
+        Task<IResult> Delete(Department department);
+        Task<IResult> Update(Department department);
+        Task<IDataResult<Department>> GetById(int id);
     }
 }

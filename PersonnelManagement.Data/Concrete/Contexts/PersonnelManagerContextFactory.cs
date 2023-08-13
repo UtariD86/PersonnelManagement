@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore.Design;
             public PersonnelManagerContext CreateDbContext(string[] args)
             {
                 var optionsBuilder = new DbContextOptionsBuilder<PersonnelManagerContext>();
-                optionsBuilder.UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=PersonnelManagementDb;Integrated Security=true");
+                optionsBuilder.UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=PersonnelManager;Integrated Security=true");
 
                 return new PersonnelManagerContext(optionsBuilder.Options);
             }

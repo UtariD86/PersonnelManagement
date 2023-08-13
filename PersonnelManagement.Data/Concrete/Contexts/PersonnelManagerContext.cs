@@ -111,6 +111,7 @@ namespace PersonnelManagement.Data.Concrete.Contexts
             modelBuilder.ApplyConfiguration(new UserRoleMap());
             modelBuilder.ApplyConfiguration(new UserTokenMap());
 
+
         }
     }
 }

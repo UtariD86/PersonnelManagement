@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using PersonnelManagement.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,21 @@ namespace PersonnelManagement.Entities.Concrete
     {
         [Key]
         public override int Id { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string IdentityNumber { get; set; }
+        public int? GenderId { get; set; }
+        public int? InsuranceTypeId { get; set; }
+        //şubeid
+        public DateTime? BirthDate { get; set; }
+        public DateTime? StartOfWork { get; set; }
+        public DateTime? EndOfWork { get; set; }
+        public string? EndReason { get; set; }
+        public DateTime? InsuranceStart { get; set; }
+        public string? NetSalary { get; set; }
+        public string? GrossSalary { get; set; }
+        public string? Adress { get; set; }
+        public int? BloodTypeId { get; set; }
         public int DepartmentId { get; set; }
         public int PositionId { get; set; }
         public virtual Department? Department { get; set; }

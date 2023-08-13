@@ -1,0 +1,116 @@
+﻿@model PersonnelManagement.Mvc.Models.PositionModel
+@*@model (PositionModel model, IEnumerable<Department> departments)*@
+@*@model dynamic*@
+@{
+    //var position = Model.Positions;
+    //var department = Model.Departments;
+}
+
+<div class="container" style="border:none">
+﻿<div class="custom-model-inner">
+    <div class="close-btn" onclick="closeModal()">×</div>
+    <div class="custom-model-wrap">
+        <div class="pop-up-content-wrap">
+
+            <!-- ======= Operations Section ======= -->
+            <section id="portfolio-details" class="portfolio-details">
+                <div class="container">
+
+                    <form id ="posForm" method="post" onsubmit="return false" asp-controller="Position" asp-action="AddOrUpdatePosition">
+                            @Html.HiddenFor(p => p.Id)
+                            @Html.DropDownListFor(p => p.DepartmentId, new SelectList(Model.Departments, "Id", "Name", Model.DepartmentId), "Departmanı Seçin", new { @id = "deplist", @onchange = "onDepartmentChange(this)", @class = "textBox", @placeholder = "Departmanı Seçin" })
+
+                            @Html.TextBoxFor(p => p.Name, new { @class = "textBox", @placeholder = "Pozisyon Giriniz.", @length = "20",@oninput = "this.value = this.value.replace(/[^a-zA-Z\\sçÇğĞıİöÖşŞüÜ]/g, '')"  })
+                            @Html.ValidationMessageFor(p=>p.Name)
+
+                    <br />
+                    <button id ="saveBtn" class="button" style="margin-top:10px; width:60%;" type= "submit" onclick="savePosition()">Save</button>
+                    </form>
+
+                </div>
+            </section><!-- End Operations Section -->
+        </div>
+    </div>  
+</div>  </div>
+
+<link href="~/css/popUp.css" rel="stylesheet">
+
+<script>
+    
+    debugger;
+    function savePosition() {
+        debugger;
+    var form = document.getElementById("posForm");
+    var formData = new FormData(form);
+    var opType = "@TempData["OperationType"]";
+    var itemName = "@Model.Name";
+
+    //
+    Swal.fire({
+        title: 'Emin misiniz?',
+        text: itemName + ' adlı pozisyonu' + opType + 'işlemi yapmak istediğinizden emin misiniz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Kabul Et',
+        cancelButtonText: 'Vazgeç'
+    }).then((result) => {
+        if (result.isConfirmed){
+            $.ajax({
+                type: "POST",
+                url: "/Position/SavePosition",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(data) {
+                    Swal.fire(
+                        opType + 'İşlemi Başarılı!',
+                        data.message,
+                        'success'
+                    )
+                    onNeedReload();
+                },
+                error: function(error) {
+                    Swal.fire(
+                        'Hata!',
+                        error.message,
+                        'error'
+                    )
+                }
+            });
+        }
+
+    });
+    document.getElementById("partialZone").style.display = "none";
+}
+    function closeModal(){
+        document.getElementById("partialZone").style.display = "none";
+    }
+</script>
+
+<style>
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+/*.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}*/
+
+</style>

@@ -58,7 +58,7 @@ namespace PersonnelManagement.Data.Concrete.Repositories
                     shiftType.ModifiedDate = DateTime.Now;
 
                     context.ShiftTypes.Update(shiftType);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             //}
         }

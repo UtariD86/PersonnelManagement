@@ -11,10 +11,6 @@ namespace PersonnelManagement.Data.Abstract
 {
     public interface IEmployeeRepository : IEntityRepository<Employee>
     {
-        void Add(EmployeeDetailsDto employeeDetailsDto);
         List<EmployeeDetailsDto> GetAllEmployees();
-        void Delete(/*int employeeId, string modifiedByName*/EmployeeDetailsDto employeeDetailsDto);
-        public Task<EmployeeUpdateDto> GetById(int employeeId);
-        void Update(EmployeeUpdateDto employeeUpdateDto);
     }
 }

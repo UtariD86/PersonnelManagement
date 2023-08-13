@@ -4,6 +4,8 @@ using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete;
 using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Entities.Concrete;
+using PersonnelManagement.Mvc.Helpers.Abstract;
+using PersonnelManagement.Mvc.Helpers.Concrete;
 using PersonnelManagement.Services.Abstract;
 using PersonnelManagement.Services.Concrete;
 using System.Configuration;
@@ -24,6 +26,10 @@ builder.Services.AddScoped<IEmployeeService, EmployeeManager>();
 builder.Services.AddScoped<IPositionService, PositionManager>();
 builder.Services.AddScoped<IShiftTypeService, ShiftTypeManager>();
 builder.Services.AddScoped<IShiftService,ShiftManager>();
+builder.Services.AddScoped<IPhoneCodesHelper, PhoneCodesHelper>();
+builder.Services.AddScoped<IEnumHelper, EnumHelper>();
+//builder.Services.AddScoped<IThemeColorHelper, ThemeColorHelper>();
+
 
 
 //builder.Services.AddDbContext<PersonnelManagerContext>(options =>
@@ -90,5 +96,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            
+
 
 app.Run();

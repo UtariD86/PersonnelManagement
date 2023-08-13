@@ -33,7 +33,7 @@ namespace PersonnelManagement.Data.Concrete
 
         public IDepartmentRepository Departments => _departmentRepository ?? new EfDepartmentRepository(_context, this);
 
-        public IPositionRepository Position => _positionRepository?? new EfPositionRepository(_context);
+        public IPositionRepository Positions => _positionRepository?? new EfPositionRepository(_context);
 
         public IScheduleShiftRepository ScheduleShifts => _scheduleShiftRepository?? new EfScheduleShiftRepository(_context);
 
@@ -51,10 +51,16 @@ namespace PersonnelManagement.Data.Concrete
 
         public async Task<int> SaveChangesAsync()
         {
-            //using (var context = _contextFactory.CreateDbContext())
-            //{
+            try
+            {
                 return await _context.SaveChangesAsync();
-            //}
+            }
+            catch (Exception ex)
+            {
+                // Hata işleme kodlarını buraya ekleyin
+                // ex hatası üzerinde çalışabilirsiniz veya loglama yapabilirsiniz
+                throw; // İstisnayı yeniden fırlatmak veya alternatif bir işlem yapmak isterseniz throw ile fırlatabilirsiniz.
+            }
         }
     }
 }

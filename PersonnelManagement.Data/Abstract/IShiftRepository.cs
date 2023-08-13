@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using zurafworks.Shared.Data.Abstract;
 
 namespace PersonnelManagement.Data.Abstract
 {
-    public interface IShiftRepository
+    public interface IShiftRepository : IEntityRepository<Shift>
     {
         public Task<ShiftDetailsDto> GetById(int shiftId);
         List<ShiftDetailsDto> GetAllShifts();

@@ -1,5 +1,6 @@
 ﻿using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete.Repositories;
+using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Services.Abstract;
 using System;
@@ -7,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using zurafworks.Shared.Utilities.Results.Abstract;
-using zurafworks.Shared.Utilities.Results.ComplexTypes;
-using zurafworks.Shared.Utilities.Results.Concrete;
+using zurafworks.Shared.Results.Abstract;
+using zurafworks.Shared.Results.ComplexTypes;
+using zurafworks.Shared.Results.Concrete;
 
 namespace PersonnelManagement.Services.Concrete
 {
@@ -27,64 +28,74 @@ namespace PersonnelManagement.Services.Concrete
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IDataResult<ShiftDetailsDto>> Add(ShiftDetailsDto shiftDetailsDto)
+        public async Task<IDataResult<Shift>> Add(Shift shift)
         {
-            var employee = await _unitOfWork.Employees.GetById(shiftDetailsDto.EmployeeId);
-            var newShift = new ShiftDetailsDto()
+            var employee = await _unitOfWork.Employees.GetAsync( e=> e.Id == shift.EmployeeId);
+            var newShift = new Shift()
             {
-                EmployeeId = shiftDetailsDto.EmployeeId,
-                ShiftTypeId = shiftDetailsDto.ShiftTypeId,
+                EmployeeId = shift.EmployeeId,
+                ShiftTypeId = shift.ShiftTypeId,
             };
 
-            _unitOfWork.Shifts.Add(newShift);
+            var addedShift = await _unitOfWork.Shifts.AddAsync(newShift);
+            await _unitOfWork.SaveChangesAsync();
 
-            return new DataResult<ShiftDetailsDto>(ResultStatus.Success, employee.Name + "için vardiya Başarıyla Eklendi", newShift);
+            return new DataResult<Shift>(ResultStatus.Success, employee.Name + "için vardiya Başarıyla Eklendi", addedShift);
         }
 
-        public async Task<IResult> Delete(ShiftDetailsDto shiftDetailsDto)
+        public async Task<IResult> Delete(Shift shift)
         {
-            var shift = await _unitOfWork.Shifts.GetById(shiftDetailsDto.ShiftId);
+            var _shift = await _unitOfWork.Shifts.GetAsync(s=>s.Id == shift.Id);
 
 
-            if (shift != null)
+            if (_shift != null)
             {
-                _unitOfWork.Shifts.Delete(shiftDetailsDto.ShiftId, shiftDetailsDto.ModifiedByName);
+                _shift.IsDeleted= true;
+                _shift.ModifiedByName = shift.ModifiedByName;
+                _shift.ModifiedDate = DateTime.Now;
+                await _unitOfWork.Shifts.UpdateAsync(_shift);
+                await _unitOfWork.SaveChangesAsync();
+                //_unitOfWork.Shifts.Delete(shiftDetailsDto.ShiftId, shiftDetailsDto.ModifiedByName);
                 return new Result(ResultStatus.Success, "Başarıyla Silindi");
             }
             return new Result(ResultStatus.Error, "Seçili vardiya bulunamadı");
         }
 
-        public async Task<IDataResult<List<ShiftDetailsDto>>> GetAll()
+        public async Task<IDataResult<IList<Shift>>> GetAll()
         {
-            var shifts = _unitOfWork.Shifts.GetAllShifts();
+            var shifts = await _unitOfWork.Shifts.GetAllAsync(s => s.IsDeleted == false);
             if (shifts.Count > -1)
             {
-                return new DataResult<List<ShiftDetailsDto>>(ResultStatus.Success, shifts);
+                return new DataResult<IList<Shift>>(ResultStatus.Success, shifts);
             }
-            return new DataResult<List<ShiftDetailsDto>>(ResultStatus.Error, "Hiç vardiya bulunamadı", null);
+            return new DataResult<IList<Shift>>(ResultStatus.Error, "Hiç vardiya bulunamadı", null);
         }
 
-        public async Task<IResult> Update(ShiftDetailsDto shiftDetailsDto)
+        public async Task<IResult> Update(Shift shift)
         {
-            var shiftType = _unitOfWork.ShiftTypes.GetById(shiftDetailsDto.ShiftTypeId);
-            var employee = _unitOfWork.Employees.GetById(shiftDetailsDto.EmployeeId);
+            var shiftType = await _unitOfWork.ShiftTypes.GetAsync(st => st.Id == shift.ShiftTypeId );
+            var employee = await _unitOfWork.Employees.GetAsync(e => e.Id == shift.EmployeeId);
 
-            var shift = _unitOfWork.Shifts.GetById(shiftDetailsDto.ShiftId);
+            var _shift = _unitOfWork.Shifts.GetAsync(st => st.Id == shift.Id);
 
-            if (shift != null)
+            if (_shift != null && shiftType != null && employee != null)
             {
-
-                var newShift = new ShiftDetailsDto();
-
-                newShift.ShiftId = shiftDetailsDto.ShiftId;
-                newShift.ShiftTypeId = shiftType.Id;
-                newShift.EmployeeId= employee.Id;
-                newShift.ModifiedByName = shiftDetailsDto.ModifiedByName;
-
-                _unitOfWork.Shifts.Update(newShift);
+                await _unitOfWork.Shifts.UpdateAsync(shift);
+                await _unitOfWork.SaveChangesAsync();
                 return new Result(ResultStatus.Success, "Başarıyla Güncellendi");
             }
             return new Result(ResultStatus.Error, "Seçili vardiya güncellenemedi");
+        }
+
+        public async Task<IDataResult<Shift>> GetById(int id)
+        {
+            var shift = _unitOfWork.Shifts.Get(id);
+
+            if (shift != null)
+            {
+                return new DataResult<Shift>(ResultStatus.Success, shift);//dto to entity yüzünden hata çıktı
+            }
+            return new DataResult<Shift>(ResultStatus.Error, "Departman bulunamadı", null);
         }
     }
 }

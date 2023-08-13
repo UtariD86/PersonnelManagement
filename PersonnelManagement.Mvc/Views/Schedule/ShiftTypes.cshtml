@@ -1,0 +1,510 @@
+﻿
+@{
+    string sweetAlertTheme = "https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css";
+}
+<head>
+
+   <!--||||||||||||||||||||||||||||||||||||||||||JQGRID VE JQUERY KAYNAKLARI||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>*@
+    <script>var $ = jQuery.noConflict(false);</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    <link rel="stylesheet" href=@sweetAlertTheme />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+    <!-- Gritter.js script -->
+        <script src="https://cdn.jsdelivr.net/npm/gritter@1.7.4/js/jquery.gritter.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/gritter@1.7.4/css/jquery.gritter.min.css" rel="stylesheet">
+   <style>
+body {
+    background-color: #2a2b2f;
+    /*display: flex;*/
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.container {
+    max-width: 90%;
+    margin-top:5% auto;
+    margin-right: 8% auto;
+    margin-left: 8% auto;
+    margin-bottom: 8% auto;
+    padding: 2%;
+    border: 2px solid #559cca;
+    text-align: center;
+}
+
+.searchBoxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.searchBar {
+    flex: 1;
+    padding: 5px;
+    background-color: #4c4b49;
+    color: white;
+    border: 2px solid #559cca;
+    outline: none;
+}
+
+.button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+.edit_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+.del_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+</style>
+
+
+    <style>
+
+#jqGrid2 .ui-jqgrid tr.jqgrow {
+
+    border-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid td {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow:hover {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow td {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow.ui-state-highlight {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+#jqGrid2 .ui-jqgrid tr.jqgrow.ui-state-highlight:hover {
+    background-color: transparent !important;
+}
+
+#jqGrid2 .ui-widget-content,
+       #jqGrid2 #grid tr:hover{  
+            background:none;
+            border:none;
+            color:white;
+             text-shadow: 2px 2px 5px black;
+        }
+
+
+#myModal {
+  overflow-y: hidden;
+}
+.modal-header {
+  cursor: move;
+}
+    </style>
+
+        <style>
+body {
+    background-color: #2a2b2f;
+    /*display: flex;*/
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.container {
+    max-width: 90%;
+    margin-top:5% auto;
+    margin-right: 8% auto;
+    margin-left: 8% auto;
+    margin-bottom: 8% auto;
+    padding: 2%;
+    border: 2px solid #559cca;
+    text-align: center;
+}
+
+.searchBoxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.searchBar {
+    flex: 1;
+    padding: 5px;
+    background-color: #4c4b49;
+    color: white;
+    border: 2px solid #559cca;
+    outline: none;
+}
+
+.button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+.edit_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+.del_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+</style>
+</head>
+@*
+
+
+<form id ="depForm" method="post" onsubmit="return false" asp-controller="Department" asp-action="AddOrUpdateDepartment">
+    @Html.HiddenFor(d => d.Id)
+    @Html.TextBoxFor(d=>d.Name, new{@placeholder="Departman Giriniz.",@length="20"})
+    @Html.ValidationMessageFor(d=>d.Name)
+
+        <br />
+        <button id ="saveBtn" type= "submit" onclick="saveDepartment()">Save</button>
+</form>*@
+<div class="container" style="border:none">
+﻿<div class="custom-model-inner">
+    
+    <div class="custom-model-wrap" style="width: 975px; position:fixed; cursor:grab">
+        <div class="close-btn" onclick="closeModal()" style="margin-right:10px; margin-top:5px;">×</div>
+        <div class="pop-up-content-wrap">
+
+<div id="partialZone2" @*class="modal"*@ style="display:none">
+        <div id="partialZoneContent2" @*class="modal-content"*@></div>
+</div>
+            <!-- ======= Operations Section ======= -->
+            <section id="portfolio-details" class="portfolio-details">
+                <div class="container">
+                     <div class="searchBoxContainer">
+                        <input type="text" id="mySearchBox" placeholder="Arama..." class="searchBar">
+                        <button id="Ekle" class="button" onclick="openPartialForm()">+</button>
+                        <button id="downloadTemplate" class="button" onclick="downloadExcelTemplate()">Şema İndir <i class="fas fa-download"></i></button>
+                        <form enctype="multipart/form-data"><input type="file" name="excelStream" id="excelFileInput" style="display: none;" accept=".xls,.xlsx"></form>
+                        <button id="uploadTemplate" class="button" onclick="uploadExcelTemplate()">Şema Gönder <i class="fas fa-upload"></i></button>
+                    </div>
+                    <table id="jqGrid2" ></table>
+                    @*<div id="jqGridPager" style="width:100%; height:auto; margin: auto;"></div>    <button id ="addNewButton" class="button" onclick="onClickNewAdd()">Add New</button>*@
+
+                </div>
+            </section><!-- End Operations Section -->
+        </div>
+    </div>  
+</div>  </div>
+@*<div class="bg-overlay"></div>*@
+
+
+<link href="~/css/popUp.css" rel="stylesheet">
+
+<script>
+    function downloadExcelTemplate() {
+            window.location.href = "/Schedule/GetTemplate";
+    }
+
+    function uploadExcelTemplate() {
+        let fileInput = document.getElementById('excelFileInput');
+
+        // Dosya seçim kutusunu aç
+        fileInput.click();
+
+        fileInput.onchange = function() {
+            if (fileInput.files.length > 0) {
+                // FormData nesnesi oluştur
+                let formData = new FormData();
+
+                // Seçilen dosyayı FormData'ya ekle
+                formData.append('excelStream', fileInput.files[0]);
+                debugger;
+                // Sunucuya dosyayı gönder
+                fetch('/Schedule/SetTemplate', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        $.gritter.add({
+                        title: 'Başarılı',
+                        text: data.message,
+                        class_name: 'gritter-error',
+                        sticky: false,
+                        time: 5000
+                    });
+                    onNeedReload();
+                    } else {
+                        $.gritter.add({
+                        title: 'Hata',
+                        text: data.message,
+                        class_name: 'gritter-error',
+                        sticky: false,
+                        time: 5000
+                    });
+                    }
+                });
+            }
+        };
+    }
+
+
+    function closeModal(){
+        document.getElementById("partialZoneSt").style.display = "none";
+        document.getElementById("stButton").style.display = "block";
+    }
+</script>
+<script type="text/javascript">
+
+    var grid2 = $("#jqGrid2");
+    var selectedStRowId = -1;
+    var row;
+    var rowId;
+    var rowName;
+    var rowSTime;
+    var rowETime;
+    var rowColor;
+    var popupPosition;
+
+    function onNeedReload(){
+                debugger;
+                grid2.setGridParam({ datatype: 'json' });
+                debugger;
+                var pageCount = grid2.getGridParam("lastpage");
+                for (let i = 0; i < pageCount; i++) {
+                        grid2.trigger("reloadGrid", [{page: i, current: true}]);
+                }
+
+
+        }
+
+
+    openPartialForm = function() {
+                console.log("clicked");
+                document.getElementById("partialZone2").style.display = "block";
+                $("#partialZoneContent2").load("Schedule/AddOrUpdateShiftType");
+        };
+    $(document).ready(function () {
+
+        
+        grid2.jqGrid({
+            url: "Schedule/GetShiftTypes",
+            datatype: "json",
+            colModel: [
+                { label: "Id", name: "Id", key: true, width:25, hidden:true},
+                { label: "Vardiya Adı", name: "Name", width: 80, sorttype: function(cell, obj) {return turkishToLower(cell);} },
+                { label: "Başlangıç Saati", name: "StartTime", width: 50 },
+                { label: "Bitiş Saati", name: "EndTime", width: 50 },
+                { label: "Renk Kodu", name: "Color", width:30},
+                {
+                            name: 'Settings',
+                            index: 'Settings',
+                            width: "40%",
+                            align: 'center',
+                            sortable: false,
+                            formatter: function(cellvalue, options, rowObject) {
+                                return '<button class="StEdit_btn" >Edit</button>&nbsp;&nbsp;&nbsp;' + 
+                                        '<button href="#" class="StDel_btn" >Delete</button>';
+                            }
+                        }
+            ],
+            width: '800',
+            height:'auto',
+            rowNum: 50,
+            pager: false,//"#jqGridPager",
+            loadonce:true,
+            gridComplete: function() {
+                var rows = grid2.jqGrid('getDataIDs');
+                for (var i = 0; i < rows.length; i++) {
+                    var rowData = grid2.jqGrid('getRowData', rows[i]);
+                    var color = rowData.Color;
+                     $('#gbox_' + grid2.attr('id') + ' #' + rows[i]).css('background-color', color);
+                }
+            }
+        });
+
+        $("#mySearchBox").keyup(function () {
+            debugger;
+            var rules = [], i, cm,
+            postData = grid2.jqGrid("getGridParam", "postData"),
+            colModel = grid2.jqGrid("getGridParam", "colModel"),
+            searchText = $("#mySearchBox").val(),
+            l = colModel.length;
+
+            for (i = 0; i < l; i++) {
+                cm = colModel[i];
+                    if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                        rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                }
+            }
+
+            $.extend (postData, {
+                filters: {
+                    groupOp: "OR",
+                    rules: rules
+                }
+            });
+
+            grid2.jqGrid("setGridParam", { search: true, postData: postData });
+            grid2.trigger("reloadGrid", [{page: 1, current: true}]);
+            return false;
+        });
+    });
+
+
+
+       $(document).on('click', '.StEdit_btn', function () {
+
+            var row = $(this).closest('tr.jqgrow');
+            var rowId = row.attr('id');
+
+
+            document.getElementById("partialZone2").style.display = "block";
+                $("#partialZoneContent2").load("Schedule/AddOrUpdateShiftType?id=" + rowId);
+
+       });
+
+       $(document).on('click', '.StDel_btn', function () {
+                debugger;
+            var row = $(this).closest('tr.jqgrow');
+            var rowId = row.attr('id');
+
+            var choosedShiftType = {
+               Id: rowId,
+            };
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed){
+                    $.ajax({
+                        type: "POST",
+                        url: "/Schedule/DeleteShiftTypes",
+                        data: choosedShiftType,
+                        success: function(data) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your choose has been deleted.',
+                                'success'
+                            )
+                            onNeedReload();
+                        },
+                        error: function(error) {
+                            Swal.fire(
+                                'Error!',
+                                'Deleting failed.',
+                                'error'
+                            )
+                        }
+
+                    });
+                }
+            });
+        });
+    $(document).ready(function() {
+
+        var isSpecial = false;
+        
+
+        $(function(){ 
+            $('.custom-model-wrap').draggable({
+                  start: function(event, ui) {
+                      scroll: false,
+                    // Sürükleme işlemine başladığınızda mevcut konumu saklayın
+                    popupPosition = ui.position;
+                  },
+                  stop: function(event, ui) {
+                    // Sürükleme işlemi tamamlandığında konumu güncelleyin
+                    popupPosition = ui.position;
+                  }
+            }); 
+        });
+
+        $(".custom-model-wrap").on("dragstop", function(event, ui) {
+            popupPosition = ui.position;
+        });
+
+
+    });
+
+
+        function turkishToLower(str) {
+            return str.replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/İ/g, 'i').replace(/I/g, 'i').toLocaleLowerCase('tr');
+        }
+</script>
+<style>
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.custom-model-wrap {
+  bottom: auto !important;
+  right: auto !important;
+}
+
+/*.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}*/
+
+</style>

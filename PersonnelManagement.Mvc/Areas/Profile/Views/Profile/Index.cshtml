@@ -1,0 +1,793 @@
+﻿@model PersonnelManagement.Mvc.Areas.Admin.Models.UserModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string sweetAlertTheme = "https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css";
+}
+<head>
+
+    <!--||||||||||||||||||||||||||||||||||||||||||JQGRID VE JQUERY KAYNAKLARI||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>var $ = jQuery.noConflict(false);</script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
+    <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    <link rel="stylesheet" href=@sweetAlertTheme />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+    <style> /* Middle Banner Text (month, day, year */ h2.fc-toolbar-title{ color: #A6A7A8; font-size: 20px; } /* calendar day numbers */ a.fc-daygrid-day-number{ font-size: 20px; color: #A6A7A8; } /* Days of the week (mon, the, wed) */ a.fc-col-header-cell-cushion{ font-size: 20px; color: #78BEEB; } /* Event Text */ div.fc-event-title.fc-sticky{ font-size: 15px; } /* selected / active state */ button.fc-dayGridMonth-button.fc-button.fc-button-primary.fc-button-active{ background-color: pink; /*border: 2px solid #FFFFFF;*/ padding: 10px 24px; background-color: #559cca; text-transform: uppercase; box-shadow: 0; } button.fc-timeGridWeek-button.fc-button.fc-button-primary.fc-button-active{ background-color: pink; /*border: 2px solid #FFFFFF;*/ padding: 10px 24px; background-color: #559cca; text-transform: uppercase; box-shadow: 0; } button.fc-timeGridDay-button.fc-button.fc-button-primary.fc-button-active{ background-color: pink; /*border: 2px solid #FFFFFF;*/ padding: 10px 24px; background-color: #559cca; text-transform: uppercase; box-shadow: 0; } /* Hover state */ button.fc-dayGridMonth-button.fc-button.fc-button-primary:hover{ background-color: #559cca; /*border: 2px solid #FFFFFF;*/ } button.fc-timeGridWeek-button.fc-button.fc-button-primary:hover{ background-color: #559cca; /*border: 2px solid #FFFFFF;*/ } button.fc-timeGridDay-button.fc-button.fc-button-primary:hover{ background-color: #559cca; /*border: 2px solid #FFFFFF;*/ } /* default color when button is not selected */ button.fc-dayGridMonth-button.fc-button{ /*border: 2px solid #FFFFFF;*/ padding: 10px 24px; background-color: #78BEEB; text-transform: uppercase; } button.fc-timeGridWeek-button.fc-button{ /*border: 2px solid #FFFFFF;*/ padding: 10px 24px; background-color: #78BEEB; text-transform: uppercase; } button.fc-timeGridDay-button.fc-button{ /*border: 2px solid #FFFFFF;*/ padding: 10px 24px; background-color: #78BEEB; text-transform: uppercase; } /* Arrows (previous month, next month and today button */ button.fc-prev-button.fc-button.fc-button-primary{ /*border: 2px solid #FFFFFF;*/ background-color: #78BEEB; } button.fc-next-button.fc-button.fc-button-primary{ /*border: 2px solid #FFFFFF;*/ background-color: #78BEEB; { button.fc-today-button.fc-button.fc-button-primary{ /*border: 2px solid #FFFFFF;*/ background-color: #78BEEB; { </style>
+    <style> body { margin: 40px 10px; padding: 0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 14px; } #calendar { max-width: 1100px; margin: 0 auto; } .popper, .tooltip { position: absolute; z-index: 999; background: #FFC107; color: black; width: 150px; border-radius: 3px; box-shadow: 0 0 2px rgba(0,0,0,0.5); padding: 10px; text-align: center; } .style5 .tooltip { background: #1E252B; color: #FFFFFF; max-width: 200px; width: auto; font-size: .8rem; padding: .5em 1em; } .popper .popper__arrow, .tooltip .tooltip-arrow { width: 0; height: 0; border-style: solid; position: absolute; margin: 5px; } .tooltip .tooltip-arrow, .popper .popper__arrow { border-color: #FFC107; } .style5 .tooltip .tooltip-arrow { border-color: #1E252B; } .popper[x-placement^="top"], .tooltip[x-placement^="top"] { margin-bottom: 5px; } .popper[x-placement^="top"] .popper__arrow, .tooltip[x-placement^="top"] .tooltip-arrow { border-width: 5px 5px 0 5px; border-left-color: transparent; border-right-color: transparent; border-bottom-color: transparent; bottom: -5px; left: calc(50% - 5px); margin-top: 0; margin-bottom: 0; } .popper[x-placement^="bottom"], .tooltip[x-placement^="bottom"] { margin-top: 5px; } .tooltip[x-placement^="bottom"] .tooltip-arrow, .popper[x-placement^="bottom"] .popper__arrow { border-width: 0 5px 5px 5px; border-left-color: transparent; border-right-color: transparent; border-top-color: transparent; top: -5px; left: calc(50% - 5px); margin-top: 0; margin-bottom: 0; } .tooltip[x-placement^="right"], .popper[x-placement^="right"] { margin-left: 5px; } .popper[x-placement^="right"] .popper__arrow, .tooltip[x-placement^="right"] .tooltip-arrow { border-width: 5px 5px 5px 0; border-left-color: transparent; border-top-color: transparent; border-bottom-color: transparent; left: -5px; top: calc(50% - 5px); margin-left: 0; margin-right: 0; } .popper[x-placement^="left"], .tooltip[x-placement^="left"] { margin-right: 5px; } .popper[x-placement^="left"] .popper__arrow, .tooltip[x-placement^="left"] .tooltip-arrow { border-width: 5px 0 5px 5px; border-top-color: transparent; border-right-color: transparent; border-bottom-color: transparent; right: -5px; top: calc(50% - 5px); margin-left: 0; margin-right: 0; } .my-actions { margin: 0 2em; } .order-1 { order: 1; } .order-2 { order: 2; } .order-3 { order: 3; } .right-gap { margin-right: auto; } </style> <style> .ui-jqgrid { background-color: transparent !important; } </style>
+    <style> body { background-color: #2a2b2f; /*display: flex;*/ align-items: center; justify-content: center; min-height: 100vh; } .container { max-width: 90%; max-height: 90%; margin-top:5% auto; margin-right: 8% auto; margin-left: 8% auto; margin-bottom: 8% auto; padding: 2%; border: 2px solid #559cca; text-align: center; } .searchBoxContainer { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 10px; } .searchBar { flex: 1; padding: 5px; background-color: #4c4b49; color: white; border: 2px solid #559cca; outline: none; } .button { padding: 5px 10px; margin-left: 10px; background-color: #4c4b49; color: #559cca; border: 2px solid #559cca; cursor: pointer; } .edit_btn { padding: 5px 10px; margin-left: 10px; background-color: #4c4b49; color: #559cca; border: 2px solid #559cca; cursor: pointer; } .del_btn { padding: 5px 10px; margin-left: 10px; background-color: #4c4b49; color: #559cca; border: 2px solid #559cca; cursor: pointer; } </style> <style>.switch { position: relative; display: inline-block; width: 60px; height: 34px; margin-top:10px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; } .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; } input:checked + .slider { background-color: #2196F3; } input:checked + .slider:before { transform: translateX(26px); } .slider.round { border-radius: 34px; } .slider.round:before { border-radius: 50%; }</style>
+@*Calendar Script*@
+
+<script>
+    $(function() {
+      var allGrids = $("table[id^='jqGrid']");
+
+      allGrids.each(function() {
+        var grid = $(this);
+        grid.on("gridComplete", function() {
+          var rows = grid.jqGrid('getDataIDs');
+          for (var i = 0; i < rows.length; i++) {
+            var rowData = grid.jqGrid('getRowData', rows[i]);
+            var color = rowData.Color;
+            $('#' + rows[i]).css('background-color', color);
+          }
+        });
+      });
+    });
+  </script>
+
+    <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var today = new Date();
+    var day = today.getDate();
+    var month = today.getMonth() + 1;
+    var year = today.getFullYear();
+    if (day < 10) {
+        day = '0' + day;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    var formattedDate = year + '-' + month + '-' + day;
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      initialDate: formattedDate,
+      locale: "tr",
+      themeSystem: "jquery-ui",
+      navLinks: true, // can click day/week names to navigate views
+      selectable: true,
+      selectMirror: true,
+      eventDisplay: "block",
+      select: function(arg) {
+          var date = arg.startStr;
+          document.getElementById("partialZoneSs").style.display = "block";
+          $("#partialZoneContentSs").load("/Schedule/AddOrUpdateScheduleShift?date="+date);
+          debugger;
+        //var title = prompt('Event Title:');
+        //if (title) {
+        //  calendar.addEvent({
+        //    title: title,
+        //    start: arg.start,
+        //    end: arg.end,
+        //    allDay: arg.allDay
+        //  })
+        //}
+        calendar.unselect()
+      },
+      eventClick: function(arg) {
+          var eventId = arg.event.id
+          var modifiedByName = "clicker"
+          Swal.fire({
+            title: 'Hangi işlemi Yapmak istersiniz?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Show Details',
+            denyButtonText: 'Delete',
+            customClass: {
+                actions: 'my-actions',
+                cancelButton: 'order-1 right-gap',
+                confirmButton: 'order-2',
+                denyButton: 'order-3',
+            }
+          }).then((result) => {
+          if (result.isConfirmed) {///////////////////////////////////////////////////Update
+              var detailTitle = arg.event._def.extendedProps.description;
+              var detailOwner = arg.event._def.title;
+              var detailStart = moment(arg.event.start).format('DD/MM/yyyy');
+              var detailEnd = moment(arg.event.end).format('DD/MM/yyyy');
+              debugger;
+              Swal.fire({
+                title: '<strong style="font-size: 25px;">'+ detailOwner +'</strong>',
+                icon: 'question',
+                html:
+                '<b>Start Date: </b> ' + detailStart +
+                '<br/><b>End Date: </b> ' + detailEnd +
+                '<br/><b>Hours: </b>' + detailTitle,
+                showCloseButton: false,
+                showCancelButton: false,
+                focusConfirm: false,
+                confirmButtonText:
+                '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+                cancelButtonText:
+                '<i class="fa fa-thumbs-down"></i>',
+                cancelButtonAriaLabel: 'Thumbs down'
+              })
+          } else if (result.isDenied) {//////////////////////////////////////////////Delete
+              var DeleteScheduleShiftData = {
+                    Id : eventId
+              }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Schedule/DeleteScheduleShift",
+                            data: DeleteScheduleShiftData,
+                            success: function(data) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                                )
+                                onNeedReload();
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+
+
+
+                    }
+                })
+              //Swal.fire('Deleted', '', 'success')
+          }
+})
+      },
+      editable: true,
+      dayMaxEvents: true, // allow "more" link when too many events
+      eventDidMount: function (info) {
+          var detailTitle = info.event._def.extendedProps.description;
+          var detailOwner = info.event._def.title
+            $(info.el).popover({
+                title: detailTitle,
+                placement: 'top',
+                trigger: 'hover',
+                content: detailOwner,
+                container: 'body'
+            });
+      },
+      eventRender: function(info) {
+      //  var tooltip = new Tooltip(info.el, {
+      //      title: info.event.extendedProps.description,
+      //      placement: 'top',
+      //      trigger: 'click',
+      //      container: 'body'
+      //  });
+      },
+      events: "/Profile/Profile/GetCalendarDatas/"
+    });
+
+    calendar.render();
+  });
+
+</script>
+
+@*//////////////////////////////////////////////////////////////////////////////*@
+
+</head>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+    <body>
+        @*-----------------------------------------------------------------------------------------------*@
+        <div class="container" style="width:60%; margin-top:4%; margin-left: 1%; position:absolute" >
+          <div class="container">
+              <div id='calendar' style="position: relative; z-index: 0;"></div>
+          </div>
+        </div>
+        @*-----------------------------------------------------------------------------------------------*@
+
+        <div class="container" style="width:20%; margin-top:4%; margin-left: 65%; position:absolute" >
+            <form id ="userForm" method="post" onsubmit="return false" asp-area="Admin" asp-controller="User" asp-action="AddOrUpdateUsers" enctype="multipart/form-data" style="margin-top:10px;">
+                <div class="profile-pic">
+                    <div  class="-label" > 
+                    <label for="file" id="ppArea" style="display:none;">
+                                <i class="fas fa-camera"></i>
+                                <label for="file">Değiştir</label>
+                                    @Html.TextBoxFor(u => u.Picture, new { type = "file", id = "file", @onchange = "loadFile(this)" })
+                                <input type="submit" value="Yükle" />
+                    </label>
+                    </div> 
+                    <img src="@Url.Content(@Model.PictureUrl)" id="output" width="200" />
+                </div>
+                @Html.HiddenFor(u => u.Id)
+                @Html.HiddenFor(u => u.PictureName)
+                <div style="/*display: flex; gap: 10px;*/ width:100%; margin-top:20px;">
+                @Html.TextBoxFor(u => u.Name, new { @class = "textBox", @placeholder = "İsim Giriniz.", @length = "20",@oninput = "this.value = this.value.replace(/[^a-zA-Z\\sçÇğĞıİöÖşŞüÜ]/g, '')", @disabled = "disabled" })
+                </div>
+                <div style="margin-top:20px;">
+                @Html.TextBoxFor(u => u.Surname, new { @class = "textBox", @placeholder = "Soyisim Giriniz.", @length = "20",@oninput = "this.value = this.value.replace(/[^a-zA-Z\\sçÇğĞıİöÖşŞüÜ]/g, '')", @disabled = "disabled"  })
+                </div>
+                <div style="margin-top:20px;">
+                @Html.TextBoxFor(u => u.UserName, new { @class = "textBox", @placeholder = "Kullanıcı Adı Giriniz.", @length = "20",@oninput = "this.value = this.value.replace(/[^a-zA-Z\\s0-9_\\-\\.@çÇğĞıİöÖşŞüÜ]/g, '')", @disabled = "disabled"  })
+                </div>
+                <div style="margin-top:20px;">
+                @Html.TextBoxFor(u => u.Email, new { @class = "textBox",type = "email", @placeholder = "örnek@mail.com", @length = "20",@oninput = "this.value = this.value.replace(/[^a-zA-Z\\s0-9_\\-\\.@çÇğĞıİöÖşŞüÜ]/g, '')", @disabled = "disabled"  })
+                </div>
+                <div style="display: flex; gap: 10px; width:100%;margin-top:20px;">
+                @Html.TextBoxFor(u => u.PhoneNumber, new { @class= "textBox", @placeholder = "000 000 0000", @oninput = "this.value = this.value.replace(/[^0-9]/g+, '')", @minlength = "13", @maxlength = "13", @disabled = "disabled"  })
+                </div>
+                <div id="passwordArea" style= "display:none;">
+                    @Html.TextBoxFor(u => u.Password, new { @class = "textBox",@style="margin-top:20px;" , @placeholder = "eskişifre", @length = "20"})
+                @Html.TextBoxFor(u => u.Password, new { @class = "textBox",@style="margin-top:20px;" , @placeholder = "şifre", @length = "20"})
+                @Html.TextBoxFor(u => u.ConfirmPassword, new { @class = "textBox",@style="margin-top:20px;" , @placeholder = "şifre(tekrar)", @length = "20"})
+                </div>
+                @Html.ValidationMessageFor(u => u.PhoneNumber)
+                @Html.ValidationMessageFor(u=>u.Name)
+                <button id ="saveBtn" class="button" style="margin-top:20px; align-self:end; display:none;" type= "submit" onclick="saveUser()">Save</button>
+            </form>
+        </div>
+
+        <div style="margin:2%; margin-top:unset ; position:absolute; background-color: #4a4f61; border-radius: 30px;">
+             <div style="display: flex; gap: 10px; align-items:center;">
+                 <input type="hidden" id="sId" name="sId"/>
+                <a style="color:white; margin:5px; margin-left:20px; font-size:20px;">Sıradaki Vardiya:</a> 
+                <div id="nextShift" style="margin:5px; background-color: lightgreen; border-radius: 30px; font-size:20px; color:whitesmoke; text-shadow:0px 0px 10px black;">
+                    <z style="margin:20px;"><e id="nextShiftName"></e> - <d class="little-title">Başlangıç:</d><e id="startTime"></e> <d class="little-title">Bitiş:</d><e id="endTime"></e>  <d class="little-title">Tarih:</d><e id="nextDate"></e> | <d class="little-title">Başlamasına:</d><e id="countdown_start"></e> <d class="little-title">Bitmesine:</d><e id="countdown_end"></e></z>
+                </div>
+                <button id="startButton" onclick="updateWorkStatus(true)" style="margin:5px; background-color: seagreen; border-radius: 30px; font-size:20px; color:whitesmoke; text-shadow:0px 0px 10px black;">
+                    <z style="margin:20px;" >Başla</z>
+                </button>
+                <button id="endButton" onclick="updateWorkStatus(false)" style="margin:5px; background-color: darkred; border-radius: 30px; font-size:20px; color:whitesmoke; text-shadow:0px 0px 10px black;">
+                    <z style="margin:20px;" >Bitir</z>
+                </button>
+             </div>
+        </div>
+
+        <div style="margin-top:45%; margin-left:70%; position:absolute;">
+             <div style="display: flex; gap: 10px; align-items:center;">
+                <a style="color:white; margin-top:4px; font-size:20px;">Düzenleme Modu</a>
+                <label class="switch"  >
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+             </div>
+        </div>
+        <div id="partialZoneSs" class="modal" style="display:none">
+            <div id="partialZoneContentSs"></div>
+        </div>
+</body>
+<link href="~/css/popUp.css" rel="stylesheet">
+<link href="~/css/site.css" rel="stylesheet">
+
+<script>
+    function saveUser() {
+        debugger;
+    var form = document.getElementById("userForm");
+    var formData = new FormData(form);
+    var opType = "@TempData["OperationType"]";
+    var itemName = "@Model.Name";
+
+    //
+    Swal.fire({
+        title: 'Emin misiniz?',
+        text: itemName + ' adlı kullanıcıyı' + opType + 'işlemi yapmak istediğinizden emin misiniz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Kabul Et',
+        cancelButtonText: 'Vazgeç'
+    }).then((result) => {
+        if (result.isConfirmed){
+            $.ajax({
+                type: "POST",
+                url: "/Admin/User/SaveUser",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(data) {
+                    Swal.fire(
+                        opType + 'İşlemi Başarılı!',
+                        data.message,
+                        'success'
+                    )
+                    onNeedReload();
+                },
+                error: function(error) {
+                    Swal.fire(
+                        'Hata!',
+                        error.message,
+                        'error'
+                    )
+                }
+            });
+        }
+
+    });
+    document.getElementById("partialZone").style.display = "none";
+}
+    function closeModal(){
+        document.getElementById("partialZone").style.display = "none";
+    }
+
+    var loadFile = function (input) {
+      debugger;
+      var image = document.getElementById("output");
+        if (input.files && input.files[0]) {
+            image.src = URL.createObjectURL(input.files[0]);
+        }
+    };
+
+    $('input[type="checkbox"]').click(function() {
+  var value = $(this)[0].checked;
+  if(value) {
+    document.getElementById("ppArea").style.display = "block";
+    document.getElementById("passwordArea").style.display = "block";
+    document.getElementById("saveBtn").style.display = "block";
+  }else {
+    document.getElementById("ppArea").style.display = "none";
+    document.getElementById("passwordArea").style.display = "none";
+    document.getElementById("saveBtn").style.display = "none";
+  }
+});
+</script>
+<script type="text/javascript">
+
+    //var grid2 = $("#jqGrid2");
+    var selectedStRowId = -1;
+    var row;
+    //var calendar = $('#calendar');
+    var rowId;
+    var rowName;
+    var rowSTime;
+    var rowETime;
+    var rowColor;
+
+    function onNeedReload(){
+                debugger;
+                grid2.setGridParam({ datatype: 'json' });
+                debugger;
+                var pageCount = grid2.getGridParam("lastpage");
+                for (let i = 0; i < pageCount; i++) {
+                        grid2.trigger("reloadGrid", [{page: i, current: true}]);
+                }
+                //calendar.fullCalendar('refetchEvents');
+
+
+        }
+
+    $(document).ready(function () {
+        debugger;
+    });
+
+
+
+       $(document).on('click', '.StEdit_btn', function () {
+
+                    var row = $(this).closest('tr.jqgrow');
+                    selectedStRowId = row.attr('id');
+                    var rowId = selectedStRowId
+                    var rowName = row.find('td:eq(1)').text();
+                    var rowSTime = row.find('td:eq(2)').text();
+                    var rowETime = row.find('td:eq(3)').text();
+                    var rowColor = row.find('td:eq(4)').text();
+                    debugger;
+                    if(selectedStRowId != -1){
+                debugger;
+                $.ajax({
+                url: "/Schedule",
+                type: "GET",
+                success: function (result) {
+                    var myModel = @Html.Raw(Json.Serialize(Model));
+                    debugger;
+                    currentId = rowId;
+                    var modifiedByName = "mvcDefault"; //şimdilik
+
+                    document.getElementById("updatedShiftType").value = rowName;
+                    document.getElementById("updatedStartTime").value = rowSTime;
+                    document.getElementById("updatedEndTime").value = rowETime;
+                    document.getElementById("updatedColor").value = rowColor;
+                    debugger;
+                    $("#updateShiftTypeModal.modal-content").html(result);
+                    document.getElementById("updateShiftTypeModal").style.display = "block";
+                }
+            });
+            }
+       });
+
+       $(document).on('click', '.StDel_btn', function () {
+                debugger;
+                var row = $(this).closest('tr.jqgrow');
+                var rowId = row.attr('id');
+
+                debugger;
+
+                var modifiedByName = "mvcDefault" //şimdilik
+
+
+                var DeleteShiftData = {
+                    ShiftTypeId : rowId,
+                    ModifiedByName: modifiedByName
+
+                }
+                document.getElementById("updateShiftTypeModal").style.display = "none";
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Schedule/DeleteShiftType",
+                            data: DeleteShiftData,
+                            success: function(data) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                                )
+                                onNeedReload();
+                            },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+
+
+
+                    }
+                })
+                debugger;
+        });
+    $(document).ready(function() {
+
+        var isSpecial = false;
+        onClickNewAdd = function() {
+            $.ajax({
+                url: "/Schedule",
+                type: "GET",
+                success: function (result) {
+                    $("#addShiftTypeModal.modal-content").html(result);
+                    document.getElementById("addShiftTypeModal").style.display = "block";
+                }
+            });
+        } 
+        openShiftType = function() {
+            //$.ajax({
+            //    url: "/Schedule",
+            //    type: "GET",
+            //    success: function (result) {
+            //        $("#shiftTypePartial.modal-content").html(result);
+            //        document.getElementById("shiftTypePartial").style.display = "block";
+            //        document.getElementById("stButton").style.display= "none";
+            //    }
+            //});
+            document.getElementById("partialZoneSt").style.display = "block";
+                $("#partialZoneContent").load("Schedule/ShiftTypes");
+                document.getElementById("stButton").style.display = "none";
+        }
+
+        onClickSave = function(){
+            debugger;
+                var inputtedShiftType = $('#inputtedShiftType').val()
+                var newStartTime = $('#inputtedStartTime').val()
+                var newEndTime = $('#inputtedEndTime').val()
+                var newColor =  $('#inputtedColor').val()
+                debugger;
+                var NewShiftData = {
+                        InputtedShiftType : inputtedShiftType,
+                        StartTime : newStartTime,
+                        EndTime : newEndTime,
+                        Color : newColor,
+
+                }
+                debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "/Schedule/AddShiftType",
+                        data: NewShiftData,
+                        success: function(data) {
+                            onNeedReload();
+                            document.getElementById("addShiftTypeModal").style.display = "none";
+                        },
+                        error: function(error) {
+                        console.log(error);
+                        }
+                    });
+
+                    debugger;
+        }
+
+
+
+        onClickUpdate = function(){
+            debugger;
+                var inputtedShiftType = $('#updatedShiftType').val()
+                var newStartTime = $('#updatedStartTime').val()
+                var newEndTime = $('#updatedEndTime').val()
+                var newColor =  $('#updatedColor').val()
+                debugger;
+                var UpdatedShiftData = {
+                    ShiftTypeId : selectedStRowId,
+                    InputtedShiftType : inputtedShiftType,
+                    StartTime : newStartTime,
+                    EndTime : newEndTime,
+                    Color : newColor,
+
+                }
+                document.getElementById("updateShiftTypeModal").style.display = "none";
+
+                Swal.fire({
+                    title: 'Are you sure about that?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if (result.isConfirmed){
+                        $.ajax({
+                        type: "POST",
+                        url: "/Schedule/UpdateShiftType",
+                        data: UpdatedShiftData,
+                        success: function(data) {
+                            Swal.fire(
+                                    'Updated!',
+                                    'Your choose has been deleted.',
+                                    'success'
+                            )
+                            onNeedReload();
+
+                        },
+                            error: function(error) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Deleting failed.',
+                                    'error'
+                                )
+                            }
+                        });
+                    }
+                });
+        }
+
+    });
+</script>
+<script>
+    var countdownStart;
+var countdownEnd;
+
+function fetchNextShiftTime() {
+    // AJAX request to server to fetch the next shift time
+    $.ajax({
+        url: '/Profile/Profile/GetNextShift', // Replace with your controller and action
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            // Assuming the server returns the next shift start and end time as Unix timestamps
+            document.getElementById("nextShiftName").textContent = data.ShiftTypeName
+            document.getElementById("startTime").textContent = data.StartTime.slice(0, -3);
+            document.getElementById("endTime").textContent = data.EndTime.slice(0, -3);
+            document.getElementById("nextDate").textContent = data.StartDate.slice(0, -9);
+            document.getElementById("nextShift").style.backgroundColor = data.Color;
+            document.getElementById("sId").value = data.ShiftId;
+            debugger;
+            if(data.Enter != null){
+                document.getElementById("startButton").disabled = true;
+            }else{
+                document.getElementById("startButton").disabled = false;
+            }
+            if(data.Exit != null){
+                document.getElementById("endButton").disabled = true;
+            }else{
+                document.getElementById("endButton").disabled = false;
+            }
+            var startDateString = data.StartDate;  // "2023-08-03T00:00:00"
+            var startTimeString = data.StartTime;  // "17:00:00"
+
+            // Başlangıç tarihinden "T00:00:00" kısmını kaldırıp, bitiş saatini ekliyoruz
+            var startDateTimeString = startDateString.replace("T00:00:00", "T" + startTimeString);
+
+            var nextShiftStartTime = new Date(startDateTimeString);  // Yeni bir Date nesnesi oluşturuyoruz
+            var endDateString = data.EndDate;  // "2023-08-03T00:00:00"
+            var endTimeString = data.EndTime;  // "17:00:00"
+
+            // Bitiş tarihinden "T00:00:00" kısmını kaldırıp, bitiş saatini ekliyoruz
+            var endDateTimeString = endDateString.replace("T00:00:00", "T" + endTimeString);
+
+            var nextShiftEndTime = new Date(endDateTimeString);  // Yeni bir Date nesnesi oluşturuyoruz
+            startCountdown(nextShiftStartTime, 'start');
+            startCountdown(nextShiftEndTime, 'end');
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function startCountdown(time, type) {
+    if (type == 'start' && countdownStart) {
+        clearInterval(countdownStart);
+    } else if (type == 'end' && countdownEnd) {
+        clearInterval(countdownEnd);
+    }
+
+    var countdown = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = time - now;
+
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        document.getElementById("countdown_" + type).innerHTML = hours + "Saat " + minutes + "Dakika ";
+
+        if (distance < 0) {
+            clearInterval(countdown);
+            document.getElementById("countdown_" + type).innerHTML = "Süresi Doldu!";
+            if (type == 'end') {
+                fetchNextShiftTime();
+            }
+        }
+    }, 1000);
+
+    if (type == 'start') {
+        countdownStart = countdown;
+    } else if (type == 'end') {
+        countdownEnd = countdown;
+    }
+}
+
+// Fetch the next shift time when the page loads
+fetchNextShiftTime();
+
+function updateWorkStatus(statusType) {
+    var shiftId = document.getElementById("sId").value  // shiftId değeri
+    var isStart = statusType  // isStart değeri
+    debugger;
+    $.ajax({
+    url: '/Profile/Profile/UpdateWorkStatus?shiftId='+ shiftId + '&isStart=' + isStart,  // Metodunuzun URL'si
+    type: 'GET',  // HTTP isteği tipi
+    success: function(response) {
+        if(statusType == true){
+            Swal.fire(
+                'Başlandı!',
+                'Vardiyaya Başlandı. İyi Çalışmalar!',
+                'success'
+            )
+            document.getElementById("startButton").disabled = true;
+        }else{
+            Swal.fire(
+                'Paydos!',
+                'Vardiya Tamamlandı.',
+                'success'
+            )
+            document.getElementById("endButton").disabled = true;
+        }
+    },
+    error: function(error) {
+        Swal.fire(
+                'Hata!',
+                'Bir hata nedeniyle vardiya durumu güncellenemiyor',
+                'error'
+            )
+    }
+});
+}
+</script>
+<style>
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+    .profile-pic {
+        color: transparent;
+        transition: all .3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        transition: all .3s ease;
+    }
+
+    .profile-pic input {
+        display: none;
+    }
+
+    .profile-pic img {
+        position: absolute;
+        object-fit: cover;
+        width: 165px;
+        height: 165px;
+        box-shadow: 0 0 10px 0 rgba(255, 255, 255, .35);
+        border-radius: 100px;
+        z-index: 0;
+    }
+
+    .profile-pic .-label {
+        cursor: pointer;
+        height: 165px;
+        width: 165px;
+    }
+
+    .profile-pic:hover .-label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, .8);
+        z-index: 10000;
+        color: rgb(250, 250, 250);
+        transition: background-color .2s ease-in-out;
+        border-radius: 100px;
+        margin-bottom: 0;
+    }
+
+    .profile-pic span {
+        display: inline-flex;
+        padding: .2em;
+        height: 2em;
+    }
+
+    .little-title{
+        font-size:15px;
+        color:black;
+        border-bottom: 1px solid black;
+        font-weight: bold;
+        text-shadow:0px 0px 8px white;
+    }
+</style>

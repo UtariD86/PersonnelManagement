@@ -7,166 +7,117 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PersonnelManagement.Mvc.styles.css" asp-append-version="true" />
-@*    <link href="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\content\css\jquery.datatables.min.css" rel="stylesheet" />
-    <link href="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\content\css\buttons.datatables.min.css" rel="stylesheet" />*@
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         tfoot input {
-        width: 100%;
-        padding: 3px;
-        box-sizing: border-box;
-    }
+            width: 100%;
+            padding: 3px;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background-color: #1d6693;
+            color: #fff;
+            padding-top: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #559cca;
+        }
+
+        .main-content {
+            margin-left: 200px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PersonnelManagement.Mvc</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Department" asp-action="Index">Departments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Position" asp-action="Index">Positions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Index">Schedule</a>
-                        </li>
-                    </ul>
-                </div>
+    <div class="sidebar">
+        <ul>
+            <div style="display: flex; gap: 10px; width:100%; margin:5px; margin-left:30px">
+            <li>
+                <a asp-area="" asp-controller="Profile" asp-action="Profile">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Admin" asp-action="User">
+                    <i class="fa fa-cog" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="User" asp-action="Logout">
+                    <i class="fa fa-sign-out-alt" aria-hidden="true"></i>
+                </a>
+            </li>
             </div>
-        </nav>
-    </header>
-    <div class="container">
+            <hr style="color: white" />
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Department" asp-action="Index">Departments</a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Position" asp-action="Index">Positions</a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Schedule" asp-action="Index">Schedule</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            
+        </header>
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - PersonnelManagement.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @*<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery.datatables.min.js"></script>
-
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\datatables.buttons.min.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jszip.min.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\pdfmake.min.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\vfs_fonts.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\buttons.html5.min.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\buttons.print.min.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery.datatables.min.js"></script>
-<script src="d:\dolap\learnc#\myinternship\personnelmanagementsystem\personnelmanagement.mvc\scripts\jquery-3.5.1.js"></script>*@
-<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready( function () {
-    $('#example').DataTable({
-        columnDefs: [
-            {
-                targets: -1,
-                data: null,
-                defaultContent: '<button>Save</button> | <button>Delete</button>',
-            },
-        ],
-    });
-
-    $('#example tbody').on('click', 'button', function () {
-        //var data = table.row($(this).parents('tr')).data();
-        //alert(/*data[0] + "nin görevi" + data[2]*/);
-        window.alert("Tıklandı")
-        
-    });
-
-    
-} );
-</script>
-
-@*<script>
-    $('#buttons1').DataTable( {
-    buttons: [
-        'Save', 'Delete'
-    ]
-} );
-</script>*@
-
-@*<script>
-    @await RenderSectionAsync("Scripts", required: false)
-        <script>$(document).ready(function () {
-    // Setup - add a text input to each footer cell
-    $('#example tfoot th').each(function () {
-        var title = $(this).text();
-        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-    });
-
-    // DataTable
-    var table = $('#example').DataTable({
-        initComplete: function () {
-            // Apply the search
-            this.api()
-                .columns()
-                .every(function () {
-                    var that = this;
-
-                    $('input', this.footer()).on('keyup change clear', function () {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-                });
-        },
-    });
-
-    $('#buttons').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'güncelle', 'sil'
-        ]
-    } );
-});</script>*@
-@*<script>
-    //its not over until i win
-        $(document).ready(function() {
-        $('#deplist').on('change', function() {
-            window.alert("DEĞİŞTİ")
-        var selectedDepartment = $('#deplist').val();
-        debugger;
-        console.log(selectedDepartment);
-        $.ajax({
-            type: "GET",
-            url: "/Employee",
-            data: { department: selectedDepartment },
-            console.log(selectedDepartment);
-            debugger;
-            success: function(data) {
-                var options = "";
-                for (var i = 0; i < Model.Positions.length; i++) {
-                    if(Model.Positions[i].DepartmentName == selectedDepartment){
-                        options += "<option value='deneme'>deneme</option>"
-                        options += "<option value='" + Model.Positions[i].PositionName + "'>" + Model.Positions[i].PositionName + "</option>";
-                    }
-                }
-                $('#poslist').html(options)
-            }
+    <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#example').DataTable({
+                columnDefs: [
+                    {
+                        targets: -1,
+                        data: null,
+                        defaultContent: '<button>Save</button> | <button>Delete</button>',
+                    },
+                ],
+            });
         });
-    });
-});
-
-</script>*@
+    </script>
 </body>
 </html>

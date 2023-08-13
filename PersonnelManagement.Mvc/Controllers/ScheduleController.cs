@@ -1,13 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using PersonnelManagement.Data.Abstract;
 using PersonnelManagement.Data.Concrete.Contexts;
 using PersonnelManagement.Data.Concrete.Repositories;
+using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Entities.DTOs;
+using PersonnelManagement.Mvc.Helpers.Abstract;
 using PersonnelManagement.Mvc.Models;
 using PersonnelManagement.Services.Abstract;
 using PersonnelManagement.Services.Concrete;
+using System.Data;
 using System.Dynamic;
-using zurafworks.Shared.Utilities.Results.ComplexTypes;
+using zurafworks.Shared.Results.ComplexTypes;
 
 namespace PersonnelManagement.Mvc.Controllers
 {
@@ -18,7 +25,10 @@ namespace PersonnelManagement.Mvc.Controllers
 
         private readonly IShiftTypeService stm;
         private readonly IScheduleShiftService ssm;
-        public ScheduleController(IScheduleShiftService _ssm, IShiftTypeService _stm)
+        private readonly IShiftService sm;
+        private readonly UserManager<User> _userManager;
+        //private readonly IThemeColorHelper themeColorHelper;
+        public ScheduleController(IScheduleShiftService _ssm, IShiftTypeService _stm, IShiftService _sm, UserManager<User> userManager/*, IThemeColorHelper _themeColorHelper*/)
         {
             //PersonnelManagerContext context = new PersonnelManagerContext();
             //IShiftTypeRepository shiftTypeRepository = new EfShiftTypeRepository(context);
@@ -29,6 +39,9 @@ namespace PersonnelManagement.Mvc.Controllers
             //ssm = new ScheduleShiftManager(scheduleShiftRepository, shiftRepository, employeeRepository, shiftTypeRepository);
             ssm = _ssm;
             stm = _stm;
+            sm = _sm;
+            _userManager = userManager;
+            //themeColorHelper = _themeColorHelper;
         }
         public IActionResult Index()
         {
@@ -43,8 +56,75 @@ namespace PersonnelManagement.Mvc.Controllers
             }
             return NotFound();
         }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetTemplate()
+        {
+            var stream = stm.CreateExcel();
+            string fileName = "shiftTypes.xlsx";
+            try
+            {
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex);
+            }
+        }
 
-        public JsonResult GetShiftTypes()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SetTemplate(IFormFile excelStream)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            bool isSuccess = false;
+            IList<ShiftType> shiftTypes = new List<ShiftType>();
+            using (var stream = excelStream.OpenReadStream())
+            using (var workbook = new XLWorkbook(stream))
+            {
+                var worksheet = workbook.Worksheet(1);
+                var rows = worksheet.RangeUsed().RowsUsed();
+
+                // İlk satırı başlık satırı olarak kabul ediyoruz, bu yüzden atlıyoruz.
+                foreach (var row in rows.Skip(1))
+                {
+                    var nameValue = row.Cell(1).GetValue<string>();
+                    if (string.IsNullOrWhiteSpace(nameValue))
+                        continue;
+                    int startHour = row.Cell(2).GetValue<int>();
+                    int startMinute = row.Cell(3).GetValue<int>();
+                    int endHour = row.Cell(4).GetValue<int>();
+                    int endMinute = row.Cell(5).GetValue<int>();
+                    var color = row.Cell(6).GetValue<string>();
+                    if (startHour > 23 || startMinute > 59 || endHour > 23 || endMinute > 59)
+                    {
+                        return Json(new { success = isSuccess, message = "Verileriniz bozuk lütfen excel dosyanızı kontrol edip tekrar deneyin!" });
+                    }
+
+                    var startTime = new TimeSpan(startHour, startMinute, 0);
+                    var endTime = new TimeSpan(endHour, endMinute, 0);
+
+                    var shiftType = new ShiftType
+                    {
+                        Name = row.Cell(1).GetValue<string>(),
+                        StartTime = startTime,
+                        EndTime = endTime,
+                        Color = color,
+                        ModifiedDate = DateTime.Now,
+                        ModifiedByName = user.UserName
+                    };
+
+                    shiftTypes.Add(shiftType);
+                }
+            }
+            var data = stm.BulkInsert(shiftTypes).Result;
+            if(data.ResultStatus == ResultStatus.Success)
+            {
+                isSuccess = true;
+            }
+            return Json(new { success = isSuccess, message = data.Message });
+        }
+
+
+    public JsonResult GetShiftTypes()
         {
             var data = stm.GetAll().Result.Data;
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
@@ -55,92 +135,183 @@ namespace PersonnelManagement.Mvc.Controllers
             var data = ssm.GetAll().Result.Data;
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
-
-        [HttpPost]
-        public IActionResult AddShiftType(AddShiftTypeModel stModel)
+        [HttpGet]
+        public async Task<IActionResult> AddOrUpdateShiftType(int? id)
         {
-            var newSt = new ShiftTypeDetailsDto();
-
-
-            newSt.ShiftTypeName = stModel.InputtedShiftType;
-            newSt.StartTime = stModel.StartTime;
-            newSt.EndTime = stModel.EndTime;
-            newSt.Color= stModel.Color;
-            newSt.ModifiedByName = "mvcSend";
-
-
-            stm.Add(newSt);
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult AddScheduleShift(AddScheduleShiftModel ssModel)
-        {
-            var newSs = new ScheduleShiftDetailsDto();
-            newSs.EmployeeId = ssModel.EmployeeId;
-            newSs.StartDate = ssModel.StartDate;
-            newSs.EndDate = ssModel.EndDate;
-            newSs.IsSpecial = ssModel.IsSpecial;
-            if(ssModel.IsSpecial == true)
+            var model = new ShiftTypeModel();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (id.HasValue)
             {
-                newSs.SpecialShiftType = ssModel.SpecialShiftType;
-                newSs.SpecialStartTime = ssModel.SpecialStartTime;
-                newSs.SpecialEndTime = ssModel.SpecialEndTime;
-                newSs.SpecialColor = ssModel.SpecialColor;
+                var result = await stm.GetById(id.Value);
+                var entity = result.Data;
+                if (entity != null && result.ResultStatus == ResultStatus.Success)
+                {
+                    model.Id = entity.Id;
+                    model.Name = entity.Name;
+                    model.StartTime = entity.StartTime;
+                    model.EndTime = entity.EndTime;
+                    model.Color = entity.Color;
+                    model.ModifiedByName = user != null ? user.Name : "";
+                }
+                TempData["OperationType"] = " Guncelleme ";
             }
             else
             {
-                newSs.ShiftTypeId = ssModel.ShiftTypeId;
+                TempData["OperationType"] = " Veritabanına Kaydetme ";
             }
+            return PartialView(model);
+        }
+
+        public async Task<IActionResult> AddOrUpdateScheduleShift(string date, int? id)
+        {
+            var model = new ScheduleShiftModel();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            model.StartDate = DateTime.Parse(date);
+            model.EndDate = model.StartDate;
+            model.ShiftTypes = stm.GetAll().Result.Data;
+            if (id.HasValue)
+            {
+                //güncelleme eklersem yapacağım ama şimdilik gereksiz geldi
+                //var result = await stm.GetById(id.Value);
+                //var entity = result.Data;
+                //if (entity != null && result.ResultStatus == ResultStatus.Success)
+                //{
+                //    model.Id = entity.Id;
+                //    model.ModifiedByName = user != null ? user.Name : "";
+                //}
+                //TempData["OperationType"] = " Guncelleme ";
+            }
+            else
+            {
+                TempData["OperationType"] = " Veritabanına Kaydetme ";
+            }
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveShiftType(ShiftTypeModel model)
+        {
+            var message = "resultMessage";
+            var id = model.Id;
+            var newSt = new ShiftType();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            newSt.Name = model.Name;
+            newSt.StartTime = model.StartTime;
+            newSt.EndTime = model.EndTime;
+            newSt.Color = model.Color;
+            newSt.ModifiedByName = user != null ? user.Name : "";
+            if (id != 0 && id != null)
+            {
+                newSt.Id = id;
+                var result = stm.Update(newSt);
+                if (!string.IsNullOrEmpty(result.Result.Message))
+                {
+                    message = result.Result.Message;
+                }
+            }
+            if (id == 0)
+            {
+                newSt.CreatedByName = newSt.ModifiedByName;
+                var result = stm.Add(newSt);
+                if (!string.IsNullOrEmpty(result.Result.Message))
+                {
+                    message = result.Result.Message;
+                }
+            }
+            if (id == null || model.Name == null)
+            {
+                message = "Kaydetmeye çalıştığınız veriler kayıp ya da bulunamıyor.";
+            }
+            return Json(message);
+        }
+
+        public async Task<IActionResult> SaveScheduleShift(ScheduleShiftModel model)
+        {
+            var message = "resultMessage";
+            var id = model.Id;
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var newSt = new ShiftType();
+            var newSh = new Shift();
+            var newSs = new ScheduleShift();
+            newSs.ModifiedByName = user != null ? user.Name : "";
+            if (model.IsSpecial == true)
+            {
+                
+                newSt.Name = model.SpecialShiftType;
+                newSt.StartTime = model.SpecialStartTime;
+                newSt.EndTime = model.SpecialEndTime;
+                newSt.Color = model.SpecialColor;
+                newSt.ModifiedByName = user != null ? user.Name : "";
+                newSt.CreatedByName = newSt.ModifiedByName;
+                model.ShiftTypeId = stm.Add(newSt).Result.Data.Id;
+            }
+
+            newSh.ShiftTypeId = model.ShiftTypeId;
+            newSh.EmployeeId = model.EmployeeId;
+            newSh.ModifiedByName = user != null ? user.Name : "";
+            newSh.CreatedByName = newSh.ModifiedByName;
+            var shift = await sm.Add(newSh);
+            var shiftId = shift.Data.Id;
+
+            if(shiftId != null && id == 0) 
+            {
+                newSs.CreatedByName = newSs.ModifiedByName;
+                newSs.StartDate = model.StartDate;
+                newSs.EndDate = model.EndDate;
+                newSs.ShiftId = shiftId;
+                var result = ssm.Add(newSs);
+                if (!string.IsNullOrEmpty(result.Result.Message))
+                {
+                    message = result.Result.Message;
+                }
+            }
+
+            if (id == null || shiftId == null)
+            {
+                message = "Kaydetmeye çalıştığınız veriler kayıp ya da bulunamıyor.";
+            }
+            return Json(message);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteShiftTypes(DepartmentModel model)
+        {
+            if (model.Id != null || model.Id != 0)
+            {
+                var shiftType = new ShiftType();
+                shiftType.Id = model.Id;
+                var result = await stm.Delete(shiftType);
+                if (!string.IsNullOrEmpty(result.Message))
+                {
+                    TempData["PopupMessage"] = result.Message;
+                }
+            }
+            else
+            {
+                TempData["PopupMessage"] = "Silinirken bir hata oluştu!";
+            }
+            return RedirectToAction("Index");
+        }
+
+        
+
+        public IActionResult DeleteScheduleShift(ScheduleShiftModel ssModel)
+        {
+            var newSs = new ScheduleShift();
+
+            newSs.Id = ssModel.Id;
             newSs.ModifiedByName = "mvcSend";
 
 
-            var entity = ssm.Add(newSs);
+            ssm.Delete(newSs);
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult DeleteScheduleShift(UpdateScheduleShiftModel ssModel)
+        
+        public IActionResult ShiftTypes()
         {
-            var newSs = new ScheduleShiftDetailsDto();
-
-            newSs.ShiftTypeId = ssModel.ScheduleShiftId;
-            newSs.ModifiedByName = "mvcSend";
-
-
-            ssm.Delete(newSs.ShiftTypeId, newSs.ModifiedByName);
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult UpdateShiftType(UpdateShiftTypeModel stModel)
-        {
-            var newSt = new ShiftTypeDetailsDto();
-
-            newSt.ShiftTypeId= stModel.ShiftTypeId;
-            newSt.ShiftTypeName = stModel.InputtedShiftType;
-            newSt.StartTime = stModel.StartTime;
-            newSt.EndTime = stModel.EndTime;
-            newSt.Color = stModel.Color;
-            newSt.ModifiedByName = "mvcSend";
-
-
-            stm.Update(newSt);
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult DeleteShiftType(UpdateShiftTypeModel stModel)
-        {
-            var newSt = new ShiftTypeDetailsDto();
-
-            newSt.ShiftTypeId = stModel.ShiftTypeId;
-            newSt.ModifiedByName = "mvcSend";
-
-
-            stm.Delete(newSt.ShiftTypeId, newSt.ModifiedByName);
-
-            return RedirectToAction("Index");
+            return PartialView("ShiftTypes");
         }
     }
 }

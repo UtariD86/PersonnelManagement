@@ -1,26 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PersonnelManagement.Data.Abstract;
-using PersonnelManagement.Data.Concrete.Contexts;
-using PersonnelManagement.Data.Concrete.Repositories;
+using PersonnelManagement.Entities.Concrete;
 using PersonnelManagement.Entities.DTOs;
 using PersonnelManagement.Mvc.Models;
 using PersonnelManagement.Services.Abstract;
-using PersonnelManagement.Services.Concrete;
 using System.Dynamic;
-using zurafworks.Shared.Utilities.Results.ComplexTypes;
+using zurafworks.Shared.Results.ComplexTypes;
+using zurafworks.Shared.Results.Concrete;
 
 namespace PersonnelManagement.Mvc.Controllers
 {
     public class DepartmentController : Controller
     {
-        //DepartmentManager dm;
         private readonly IDepartmentService dm;
-        public DepartmentController(IDepartmentService _dm)
+        private readonly UserManager<User> _userManager;
+        public DepartmentController(IDepartmentService _dm,UserManager<User> userManager)
         {
-            //IDepartmentRepository departmentRepository = new EfDepatmentRepository(new PersonnelManagerContext());
-            //dm = new DepartmentManager(departmentRepository);
             dm = _dm;
+            _userManager = userManager;
         }
 
 
@@ -38,47 +36,88 @@ namespace PersonnelManagement.Mvc.Controllers
             }
             return NotFound();
         }
-
+        //yetki
         public JsonResult GetDepartments()
         {
             var data = dm.GetAll().Result.Data;
             return Json(data, new Newtonsoft.Json.JsonSerializerSettings());
         }
-
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> AddOrUpdateDepartment(int? id)
+        {
+            var model = new DepartmentModel();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (id.HasValue)
+            {
+                var result = await dm.GetById(id.Value);
+                var entity = result.Data;
+                if (entity!=null && result.ResultStatus == ResultStatus.Success)
+                {
+                    model.Id = entity.Id;
+                    model.Name = entity.Name;
+                    model.ModifiedByName = user!=null ? user.Name :"";
+                }
+                TempData["OperationType"] = " Guncelleme ";
+            }
+            else
+            {
+                TempData["OperationType"] = " Veritabanına Kaydetme ";
+            }
+            return PartialView(model);
+        }
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddDepartment(AddDepartmentModel depModel)
+        public async Task<IActionResult> SaveDepartment(DepartmentModel model)
         {
-            var newDep = new DepartmentDetailsDto();
-
-
-            newDep.DepartmentName = depModel.NewDepartment;
-
-            await dm.Add(newDep);
-
-            return RedirectToAction("Index");
+            var message = "resultMessage";
+            var id = model.Id;
+            var newDep = new Department();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            newDep.Name = model.Name;
+            newDep.ModifiedByName = user != null ? user.Name : "";
+            if (id != 0 && id != null)
+            {
+                newDep.Id = id;
+                var result = dm.Update(newDep);
+                if (!string.IsNullOrEmpty(result.Result.Message))
+                {
+                    message = result.Result.Message;
+                }
+            }
+            if(id == 0)
+            {
+                newDep.CreatedByName = newDep.ModifiedByName;
+                var result = dm.Add(newDep);
+                if (!string.IsNullOrEmpty(result.Result.Message))
+                {
+                    message = result.Result.Message;
+                }
+            }
+            if(id == null || model.Name == null)
+            {
+                message = "Kaydetmeye çalıştığınız veriler kayıp ya da bulunamıyor.";
+            }
+            return Json(message);
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteDepartments(DeleteDepartmentModel depModel)
+        public async Task<IActionResult> DeleteDepartments(DepartmentModel model)
         {
-            await dm.Delete(depModel.DepartmentId, depModel.ModifiedByName);
-
-            return RedirectToAction("Index");
-        }
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateDepartments(UpdateDepartmentModel depModel)
-        {
-            var newDep = new DepartmentDetailsDto();
-
-            newDep.DepartmentId = depModel.DepartmentId;
-            newDep.DepartmentName = depModel.NewDepartment;
-            newDep.ModifiedByName = depModel.ModifiedByName;
-
-            await dm.Update(newDep);
-
+            if(model.Id != null || model.Id != 0)
+            {
+                var department = new Department();
+                department.Id = model.Id;
+                var result = await dm.Delete(department);
+                if (!string.IsNullOrEmpty(result.Message))
+                {
+                    TempData["PopupMessage"] = result.Message;
+                }
+            }
+            else
+            {
+                TempData["PopupMessage"] = "Silinirken bir hata oluştu!";
+            }
             return RedirectToAction("Index");
         }
     }

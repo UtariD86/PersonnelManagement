@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Zuraf\zurafRepo\TekShared\zurafworks.Shared\zurafworks.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\..\Zuraf\zurafRepo\zurafworks.Shared\zurafworks.Shared.csproj" />
     <ProjectReference Include="..\PersonnelManagement.Data\PersonnelManagement.Data.csproj" />
     <ProjectReference Include="..\PersonnelManagement.Entities\PersonnelManagement.Entities.csproj" />

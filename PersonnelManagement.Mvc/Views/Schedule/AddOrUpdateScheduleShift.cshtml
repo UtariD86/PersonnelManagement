@@ -1,0 +1,641 @@
+﻿@model PersonnelManagement.Mvc.Models.ScheduleShiftModel
+@{
+    string sweetAlertTheme = "https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css";
+}
+<head>
+
+   <!--||||||||||||||||||||||||||||||||||||||||||JQGRID VE JQUERY KAYNAKLARI||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.structure.min.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" rel="stylesheet" />
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>*@
+    <script>var $ = jQuery.noConflict(false);</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    <link rel="stylesheet" href=@sweetAlertTheme />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
+   <style>
+body {
+    background-color: #2a2b2f;
+    /*display: flex;*/
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.container {
+    max-width: 90%;
+    margin-top:5% auto;
+    margin-right: 8% auto;
+    margin-left: 8% auto;
+    margin-bottom: 8% auto;
+    padding: 2%;
+    border: 2px solid #559cca;
+    text-align: center;
+}
+
+.searchBoxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.searchBar {
+    flex: 1;
+    padding: 5px;
+    background-color: #4c4b49;
+    color: white;
+    border: 2px solid #559cca;
+    outline: none;
+}
+
+.button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+.Sel_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+.edit_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+.del_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+</style>
+
+
+    <style>
+#myModal {
+  overflow-y: hidden;
+}
+    </style>
+
+        <style>
+body {
+    background-color: #2a2b2f;
+    /*display: flex;*/
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.container {
+    max-width: 100%;
+    margin-top:5% auto;
+    margin-right: 8% auto;
+    margin-left: 8% auto;
+    margin-bottom: 8% auto;
+    padding: 2%;
+    border: 2px solid #559cca;
+    text-align: center;
+}
+
+.searchBoxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.searchBar {
+    flex: 1;
+    padding: 5px;
+    background-color: #4c4b49;
+    color: white;
+    border: 2px solid #559cca;
+    outline: none;
+}
+
+.button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+.edit_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+.del_btn {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4c4b49;
+    color: #559cca;
+    border: 2px solid #559cca;
+    cursor: pointer;
+}
+
+div1 {
+  width: 795px;
+  margin: auto;
+  display: block;
+  text-align: center;
+}
+
+div1 a {
+  text-decoration:none;
+  margin-right: 1rem;
+  list-style: none;
+  padding: 1rem;
+  cursor: pointer;
+  border-bottom: solid 4px ghostwhite;
+  color: ghostwhite;
+  transition: all ease 0.4s;
+}
+
+div1 a:hover {
+  color: aqua; /*text color*/
+  border-color: aqua;
+  font-size: 20px;
+}
+
+div1 a.active {
+  color: #559cca;
+  border-color: #559cca;
+}
+
+.tab_content {
+  padding: 40px 80px;
+}
+
+.other_content {
+  padding: 40px 80px;
+}
+
+.tab-content {
+  display: none;
+  text-align: center;
+  color: whitesmoke;
+  transform: translateY(15px);
+  animation: tab_fade 0.4s ease 1 forwards;
+}
+
+.tab-content.active {
+  display: block;
+}
+.daire {
+ background-color: black;
+ border: 3px solid whitesmoke;
+ height: 30px;
+ -moz-border-radius:75px;
+ -webkit-border-radius: 75px;
+ width: 30px;
+ margin-top:2px;
+}
+
+/*------ Style 2 ------*/
+#inputtedColor {
+    margin-top:2px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  width: 34px;
+  height: 32px;
+  border: none;
+  cursor: pointer;
+}
+#inputtedColor::-webkit-color-swatch {
+  border-radius: 100%;
+   border: 3px solid whitesmoke;
+  border: 7px solid #white;
+}
+#inputtedColor::-moz-color-swatch {
+  border-radius: 50%;
+  border: 7px solid #000000;
+}
+</style>
+</head>
+<div class="container" style="border:none">
+﻿<div class="custom-model-inner">
+
+    <div class="custom-model-wrap" style="width: 975px; position:fixed; ">
+        <div class="close-btn" onclick="closeModal()" style="margin-right:10px; margin-top:5px;">×</div>
+        <div class="pop-up-content-wrap">
+</div>
+            <!-- ======= Operations Section ======= -->
+            <section id="portfolio-details" class="portfolio-details">
+                <div class="container">
+                    <div class="searchBoxContainer">
+                        <div style="display: flex; gap: 10px; width:100%;">
+                              <input type="text" id="mySearchBoxE" placeholder="Çalışan Arama..." class="searchBar">
+                              <input type="text" id="mySearchBoxD" placeholder="Departman Arama..." class="searchBar">
+                              <input type="text" id="mySearchBoxP" placeholder="Pozisyon Arama..." class="searchBar">
+                        </div>
+                    </div>
+                    <table id="jqGrid3" ></table>
+                    <div id="jqGridPager3" style="width:100%; height:auto; margin: auto;"></div>
+                    <r style="color:aqua"/>
+                    <div1 class="container">
+                        <div style="display: flex; gap: 10px;" class="other_content">
+                                <input type="text" class="textBox" id="emp" placeholder="Çalışan Adı" disabled/>
+                                <input type="text" class="textBox" id="dep" placeholder="Departmanı"disabled/>
+                                <input type="text" class="textBox" id="pos" placeholder="Pozisyonu"disabled/>
+                        </div>
+                        <hr style="color:whitesmoke"/>
+                        <form id="ssForm" method="post" onsubmit="return false" asp-controller="Schedule" asp-action="AddOrUpdateScheduleShift">
+                            @Html.HiddenFor(ss => ss.EmployeeId, new {id = "employeeId"})
+                          <div1>
+                            <a class="tab-link active" data-tab="1">Vardiya Tipi Seç</a>
+                            <a class="tab-link" data-tab="2">Özel Vardiya Oluştur</a>
+                          </div1>
+                          <div class="tab_content">
+                            <div id="tab-1" class="tab-content active">
+                                    @Html.DropDownListFor(ss => ss.ShiftTypeId, new SelectList(Model.ShiftTypes, "Id", "Name", Model.ShiftTypeId), "Vardiyayı Seçin", new { @id = "stList", @onchange = "onStListChange(this)", @class = "textBox", @placeholder = "Vardiyayı Seçin" })
+                                <div style="display: flex; gap: 10px;margin-top:5px;">
+                                        @Html.TextBoxFor(ss => ss.ShiftTypeId, new { @class = "textBox", @type = "time", id = "selectedStartTime", @disabled = "disabled" })
+                                        @Html.TextBoxFor(ss => ss.ShiftTypeId, new { @class = "textBox", @type = "time", id = "selectedEndTime", @disabled = "disabled" })
+                                        <div class="daire" id="selectedColor"></div>
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-content">
+                                    @Html.TextBoxFor(ss => ss.SpecialShiftType, new { @class = "textBox", @placeholder = "Vardiya Tipi Giriniz.", @length = "20" })
+                                <div style="display: flex; gap: 10px; margin-top:5px;">
+                                        @Html.TextBoxFor(ss => ss.SpecialStartTime, new { @class = "textBox", @type = "time", id = "inputtedStartTime" })
+                                        @Html.TextBoxFor(ss => ss.SpecialEndTime, new { @class = "textBox", @type = "time", id = "inputtedEndTime" })
+                                        @Html.TextBoxFor(ss => ss.SpecialColor, new {  @type = "color", id = "inputtedColor" })
+                                </div>
+                            </div>
+                          </div>
+                          <hr style="color:whitesmoke"/>
+                            @Html.CheckBoxFor(ss => ss.IsSpecial, new { @type = "hidden",@value = false, id = "isSpecial" })
+                                <div style="display: flex; gap: 10px; margin-top:5px;" class="other_content">
+                                @Html.TextBoxFor(ss => ss.StartDate, "{0:yyyy-MM-dd}", new { @class = "textBox", @type = "date", @id = "inputtedStartDate"})
+                                @Html.TextBoxFor(ss => ss.EndDate, "{0:yyyy-MM-dd}", new { @class = "textBox", @type = "date", @id = "inputtedEndDate"})
+                                </div>
+                                <hr style="color:whitesmoke"/>
+                                    <button id ="saveBtn" class="button" style="margin-top:10px; width:60%;" type= "submit" onclick="saveScheduleShift()">Save</button>
+                        </form>
+                    </div>
+            </section><!-- End Operations Section -->
+        </div>
+    </div>  
+</div>  </div>
+@*<div class="bg-overlay"></div>*@
+
+
+<link href="~/css/popUp.css" rel="stylesheet">
+
+<script>
+    function saveScheduleShift() {
+        debugger;
+    var form = document.getElementById("ssForm");
+    var formData = new FormData(form);
+    var opType = "@TempData["OperationType"]";
+    var name = $("#emp").text();
+    debugger;
+    //
+    Swal.fire({
+        title: 'Emin misiniz?',
+        text: name + ' adlı departmanı' + opType + 'işlemi yapmak istediğinizden emin misiniz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Kabul Et',
+        cancelButtonText: 'Vazgeç'
+    }).then((result) => {
+        if (result.isConfirmed){
+            $.ajax({
+                type: "POST",
+                url: "/Schedule/SaveScheduleShift",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(data) {
+                    Swal.fire(
+                        opType + 'İşlemi Başarılı!',
+                        data.message,
+                        'success'
+                    )
+                    onNeedReload();
+                },
+                error: function(error) {
+                    Swal.fire(
+                        'Hata!',
+                        error.message,
+                        'error'
+                    )
+                }
+            });
+        }
+
+    });
+    document.getElementById("partialZoneSs").style.display = "none";
+}
+
+    function closeModal(){
+        document.getElementById("partialZoneSs").style.display = "none";
+    }
+    
+    
+
+     function onStListChange(select) {
+         debugger;
+        var selectedShiftType = $(select).val();
+        var selectedShift = getSelectedShift(selectedShiftType);
+
+        if (selectedShift) {
+            $("#selectedStartTime").val(selectedShift.starttime);
+            $("#selectedEndTime").val(selectedShift.endtime);
+            $("#selectedColor").css("background-color", selectedShift.color);
+        }
+    }
+
+    function getSelectedShift(shiftTypeId) {
+        var shiftTypes = @Html.Raw(Json.Serialize(Model.ShiftTypes));
+        var selectedShift = shiftTypes.find(function(shift) {
+            return shift.id == shiftTypeId;
+        });
+
+        if (selectedShift) {
+            return {
+                starttime: selectedShift.startTime,
+                endtime: selectedShift.endTime,
+                color: selectedShift.color
+            };
+        }
+
+        return null;
+    }
+</script>
+
+<script>
+    $("div1 a").click(function() {
+      var tabID = $(this).attr("data-tab");
+      debugger;
+      if (tabID == "1") {
+            $("#isSpecial").val("False");
+      }
+
+      if (tabID == "2") {
+            $("#isSpecial").val("True");
+      }
+
+      $(this).addClass("active").siblings().removeClass("active");
+
+      $(".tab-content")
+        .removeClass("active")
+        .hide();
+
+      $("#tab-" + tabID)
+        .addClass("active")
+        .fadeIn();
+    });
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var grid3 = $("#jqGrid3");
+    //var calendar = $('#calendar');
+    var selectedStRowId = -1;
+    var row;
+    var rowId;
+    var rowName;
+    var rowSTime;
+    var rowETime;
+    var rowColor;
+    var popupPosition;
+
+    function onNeedReload(){
+                debugger;
+                grid3.setGridParam({ datatype: 'json' });
+                debugger;
+                var pageCount = grid3.getGridParam("lastpage");
+                for (let i = 0; i < pageCount; i++) {
+                        grid3.trigger("reloadGrid", [{page: i, current: true}]);
+                }
+                //calendar.fullCalendar('refetchEvents');
+
+    }
+
+
+    openPartialForm = function() {
+                console.log("clicked");
+                document.getElementById("partialZone2").style.display = "block";
+                $("#partialZoneContent2").load("Schedule/AddOrUpdateShiftType");
+        };
+    $(document).ready(function () {
+
+
+        grid3.jqGrid({
+                url: '/Employee/GetEmployees',
+                mtype: "POST",
+                datatype: "json",
+                colnames: ["EmployeeId","EmployeeName", "DepartmentName", "PositionName"],
+                colModel: [
+                    { label: 'Id', name: 'Id', key:true,  width: "36px", search:false,hidden:true },
+                    { label: 'Name', name: 'Name', width: "225px", sorttype: function(cell, obj) {return turkishToLower(cell);}},
+                    { label: 'Department', name: 'DepartmentName', width: "225px", sorttype: function(cell, obj) {return turkishToLower(cell);} },
+                    { label: 'Position', name: 'PositionName', width: "225px", sorttype: function(cell, obj) {return turkishToLower(cell);} },
+                    {
+                        name: 'Settings',
+                        index: 'Settings',
+                        width: "125px",
+                        align: 'center',
+                        sortable: false,
+                        formatter: function(cellvalue, options, rowObject) {
+                            return '<button class="Sel_btn">Select</button>&nbsp;&nbsp;&nbsp;';
+                        }
+                    }
+
+                ],
+                width: '890',
+                loadonce: true,
+                navOptions:{reloadGridOptions:{fromServer:true}},
+                multiSort: true,
+                multiSelect: true,
+                viewrecords: true,
+                search: true,
+                rowNum: 10,
+                pager: "#jqGridPager3",
+
+        });
+
+        $("#mySearchBoxE").keyup(function () {
+            var rules = [],
+                postData = grid3.jqGrid("getGridParam", "postData"),
+                colModel = grid3.jqGrid("getGridParam", "colModel"),
+                searchText = $("#mySearchBoxE").val(),
+                l = colModel.length;
+
+            for (var i = 0; i < l; i++) {
+                var cm = colModel[i];
+                if (cm.name === "Name" && cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                    rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                    break;
+                }
+            }
+
+            $.extend(postData, {
+                filters: {
+                    groupOp: "OR",
+                    rules: rules
+                }
+            });
+
+            grid3.jqGrid("setGridParam", { search: true, postData: postData });
+            grid3.trigger("reloadGrid", [{ page: 1, current: true }]);
+            return false;
+        });
+
+        $("#mySearchBoxP").keyup(function () {
+            var rules = [],
+                postData = grid3.jqGrid("getGridParam", "postData"),
+                colModel = grid3.jqGrid("getGridParam", "colModel"),
+                searchText = $("#mySearchBoxP").val(),
+                l = colModel.length;
+
+            for (var i = 0; i < l; i++) {
+                var cm = colModel[i];
+                if (cm.name === "PositionName" && cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                    rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                    break;
+                }
+            }
+
+            $.extend(postData, {
+                filters: {
+                    groupOp: "OR",
+                    rules: rules
+                }
+            });
+
+            grid3.jqGrid("setGridParam", { search: true, postData: postData });
+            grid3.trigger("reloadGrid", [{ page: 1, current: true }]);
+            return false;
+        });
+
+        $("#mySearchBoxD").keyup(function () {
+            var rules = [],
+                postData = grid3.jqGrid("getGridParam", "postData"),
+                colModel = grid3.jqGrid("getGridParam", "colModel"),
+                searchText = $("#mySearchBoxD").val(),
+                l = colModel.length;
+
+            for (var i = 0; i < l; i++) {
+                var cm = colModel[i];
+                if (cm.name === "DepartmentName" && cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                    rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                    break;
+                }
+            }
+
+            $.extend(postData, {
+                filters: {
+                    groupOp: "OR",
+                    rules: rules
+                }
+            });
+
+            grid3.jqGrid("setGridParam", { search: true, postData: postData });
+            grid3.trigger("reloadGrid", [{ page: 1, current: true }]);
+            return false;
+        });
+
+
+
+       $(document).on('click', '.Sel_btn', function () {
+
+            var row = $(this).closest('tr.jqgrow');
+            var rowId = row.attr('id');
+
+            debugger;
+            var emp = row.find('td:eq(1)').text();
+            var dep = row.find('td:eq(2)').text();
+            var pos = row.find('td:eq(3)').text();
+            $("#employeeId").val(rowId);
+            $("#emp").val(emp);
+            $("#dep").val(dep);
+            $("#pos").val(pos);
+            
+       });
+       
+       
+
+        function turkishToLower(str) {
+            return str.replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/İ/g, 'i').replace(/I/g, 'i').toLocaleLowerCase('tr');
+        }
+
+
+});
+</script>
+<style>
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  padding-left: 50px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.custom-model-wrap {
+  bottom: auto !important;
+  right: auto !important;
+}
+
+/*.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}*/
+
+</style>
