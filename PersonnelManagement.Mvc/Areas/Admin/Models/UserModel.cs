@@ -37,6 +37,11 @@ namespace PersonnelManagement.Mvc.Areas.Admin.Models
         [MinLength(5)]
         [MaxLength(50)]
         public string Password { get; set; }
+        
+        [Required]
+        [MinLength(5)]
+        [MaxLength(50)]
+        public string? CurrentPassword { get; set; }
 
         [NotMapped] // Does not effect with your database
         [Compare("Password")]
