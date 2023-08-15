@@ -208,7 +208,9 @@
   });
 
 </script>
-
+<!-- Gritter.js script -->
+        <script src="https://cdn.jsdelivr.net/npm/gritter@1.7.4/js/jquery.gritter.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/gritter@1.7.4/css/jquery.gritter.min.css" rel="stylesheet">
 @*//////////////////////////////////////////////////////////////////////////////*@
 
 </head>
@@ -301,10 +303,7 @@
     function saveUser() {
         var form = document.getElementById("userForm");
         let formData = new FormData(form);
-                // Seçilen dosyayı FormData'ya ekle
-                //formData.append('excelStream', fileInput.files[0]);
                 debugger;
-                // Sunucuya dosyayı gönder
                 fetch('/Profile/Profile/SaveUser', {
                     method: 'POST',
                     body: formData
@@ -328,72 +327,7 @@
                     });
                     }
                 });
-        //debugger;
-        //var form = document.getElementById("userForm");
-        //var formData = new FormData(form);
-        //var opType = "@TempData["OperationType"]";
-        //var itemName = "@Model.Name";
-
-        ////
-        //Swal.fire({
-        //    title: 'Emin misiniz?',
-        //    text: itemName + ' adlı kullanıcıyı' + opType + 'işlemi yapmak istediğinizden emin misiniz?',
-        //    icon: 'warning',
-        //    showCancelButton: true,
-        //    confirmButtonColor: '#3085d6',
-        //    cancelButtonColor: '#d33',
-        //    confirmButtonText: 'Kabul Et',
-        //    cancelButtonText: 'Vazgeç'
-        //}).then((result) => {
-        //    if (result.isConfirmed){
-        //        $.ajax({
-        //            type: "POST",
-        //            url: "/Profile/Profile/SaveUser",
-        //            data: formData,
-        //            contentType: false,
-        //            processData: false,
-        //            cache: false,
-        //            success: function(data) {
-        //                   $.gritter.add({
-        //                    title: 'Başarılı',
-        //                    text: data.message,
-        //                    class_name: 'gritter-error',
-        //                    sticky: false,
-        //                    time: 5000
-        //                    });
-        //            },
-        //            error: function(data){
-        //                $.gritter.add({
-        //                title: 'Hata',
-        //                text: data.message,
-        //                class_name: 'gritter-error',
-        //                sticky: false,
-        //                time: 5000
-        //            });
-        //            }
-        //        }).then(response => response.json()).then(data => {
-        //            if (data.success) {
-        //                $.gritter.add({
-        //                title: 'Başarılı',
-        //                text: data.message,
-        //                class_name: 'gritter-error',
-        //                sticky: false,
-        //                time: 5000
-        //            });
-        //            onNeedReload();
-        //            } else {
-        //                $.gritter.add({
-        //                title: 'Hata',
-        //                text: data.message,
-        //                class_name: 'gritter-error',
-        //                sticky: false,
-        //                time: 5000
-        //            });
-        //            }
-        //        });;
-        //    }
-
-        //});
+        
     }
     function closeModal(){
         document.getElementById("partialZone").style.display = "none";
